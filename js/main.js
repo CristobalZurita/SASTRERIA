@@ -18,9 +18,9 @@
 // 1. NAVBAR
 // ============================================================
 (function initNav() {
-  const nav       = document.getElementById('nav');
-  const burger    = document.getElementById('burger');
-  const drawer    = document.getElementById('drawer');
+  const nav = document.getElementById('nav');
+  const burger = document.getElementById('burger');
+  const drawer = document.getElementById('drawer');
   const drawerClose = document.getElementById('drawer-close');
 
   window.addEventListener('scroll', () => {
@@ -61,7 +61,7 @@
 // 3. CATALOG FILTER
 // ============================================================
 (function initCatalog() {
-  const btns  = document.querySelectorAll('.sec-catalog__filter-btn');
+  const btns = document.querySelectorAll('.sec-catalog__filter-btn');
   const cards = document.querySelectorAll('.fabric-card');
 
   btns.forEach(btn => btn.addEventListener('click', () => {
@@ -106,15 +106,15 @@ function createStepper(config) {
     toastOk,      // mensaje de éxito
   } = config;
 
-  const flow    = document.getElementById(flowId);
+  const flow = document.getElementById(flowId);
   if (!flow) return;
 
-  const barFill   = flow.querySelector('.stepper__bar-fill');
-  const barText   = flow.querySelector('.stepper__progress-row span');
-  const barPct    = flow.querySelector('.stepper__progress-row strong');
-  const dots      = flow.querySelectorAll('.stepper__dots button');
-  const wrapper   = document.getElementById(wrapperId);
-  const resultEl  = document.getElementById(resultId);
+  const barFill = flow.querySelector('.stepper__bar-fill');
+  const barText = flow.querySelector('.stepper__progress-row span');
+  const barPct = flow.querySelector('.stepper__progress-row strong');
+  const dots = flow.querySelectorAll('.stepper__dots button');
+  const wrapper = document.getElementById(wrapperId);
+  const resultEl = document.getElementById(resultId);
 
   let current = 1;
 
@@ -122,13 +122,13 @@ function createStepper(config) {
 
   function updateUI() {
     const p = pct();
-    if (barFill)  barFill.style.width = p + '%';
-    if (barText)  barText.textContent  = `Paso ${current} de ${totalSteps}`;
-    if (barPct)   barPct.textContent   = p + '% completado';
+    if (barFill) barFill.style.width = p + '%';
+    if (barText) barText.textContent = `Paso ${current} de ${totalSteps}`;
+    if (barPct) barPct.textContent = p + '% completado';
 
     dots.forEach((d, i) => {
       d.classList.remove('active', 'done');
-      if (i + 1 < current)       d.classList.add('done');
+      if (i + 1 < current) d.classList.add('done');
       else if (i + 1 === current) d.classList.add('active');
     });
   }
@@ -180,7 +180,7 @@ function createStepper(config) {
   flow.addEventListener('click', e => {
     const nextBtn = e.target.closest('[data-next]');
     const prevBtn = e.target.closest('[data-prev]');
-    const subBtn  = e.target.closest('[data-submit]');
+    const subBtn = e.target.closest('[data-submit]');
 
     if (nextBtn) {
       const errs = validate(current);
@@ -200,12 +200,12 @@ function createStepper(config) {
   function submitFlow(btn) {
     btn.classList.add('btn--loading'); btn.disabled = true;
     setTimeout(() => {
-      if (wrapper)  wrapper.style.display = 'none';
+      if (wrapper) wrapper.style.display = 'none';
       if (resultEl) resultEl.classList.add('show');
       populateSummary();
       // 100% progress
       if (barFill) barFill.style.width = '100%';
-      if (barPct)  barPct.textContent  = '100% completado';
+      if (barPct) barPct.textContent = '100% completado';
       dots.forEach(d => d.classList.replace('active', 'done') || d.classList.add('done'));
       showToast(toastOk, 'ok');
     }, 1800);
@@ -233,39 +233,39 @@ createStepper({
   totalSteps: 10,
   formData: clientData,
   wrapperId: 'client-form-wrap',
-  resultId:  'client-done',
+  resultId: 'client-done',
   summaryId: 'client-summary',
-  toastOk:   '¡Tu solicitud fue enviada! Te contactaremos pronto.',
+  toastOk: '¡Tu solicitud fue enviada! Te contactaremos pronto.',
 
   collectors: {
     1: () => {
-      clientData['Nombre']  = v('cl-nombre') + ' ' + v('cl-apellido');
-      clientData['Correo']  = v('cl-correo');
-      clientData['Teléfono']= v('cl-tel');
+      clientData['Nombre'] = v('cl-nombre') + ' ' + v('cl-apellido');
+      clientData['Correo'] = v('cl-correo');
+      clientData['Teléfono'] = v('cl-tel');
     },
     2: () => {
-      clientData['Región']  = v('cl-region');
-      clientData['Ciudad']  = v('cl-ciudad');
+      clientData['Región'] = v('cl-region');
+      clientData['Ciudad'] = v('cl-ciudad');
     },
     3: () => { clientData['Tipo de prenda'] = radioVal('cl-tipo'); },
-    4: () => { clientData['Ocasión']        = radioVal('cl-ocasion'); },
+    4: () => { clientData['Ocasión'] = radioVal('cl-ocasion'); },
     5: () => {
       clientData['Telas preferidas'] = checkVals('cl-tela');
     },
     6: () => { clientData['Tono de piel'] = radioVal('cl-tono'); },
-    7: () => { clientData['Presupuesto']  = '$' + parseInt(v('cl-presupuesto')).toLocaleString('es-CL') + ' CLP'; },
+    7: () => { clientData['Presupuesto'] = '$' + parseInt(v('cl-presupuesto')).toLocaleString('es-CL') + ' CLP'; },
     8: () => { clientData['Plazo'] = radioVal('cl-plazo'); },
     9: () => { clientData['Disponibilidad'] = radioVal('cl-disponibilidad'); },
-    10:() => { clientData['Descripción del proyecto'] = v('cl-descripcion'); clientData['Referencia visual'] = v('cl-referencia'); },
+    10: () => { clientData['Descripción del proyecto'] = v('cl-descripcion'); clientData['Referencia visual'] = v('cl-referencia'); },
   },
 
   validators: {
     1: () => {
       const errs = [];
-      if (!v('cl-nombre'))  errs.push({ id: 'cl-nombre',  msg: 'Nombre obligatorio.' });
-      if (!v('cl-apellido'))errs.push({ id: 'cl-apellido',msg: 'Apellido obligatorio.' });
+      if (!v('cl-nombre')) errs.push({ id: 'cl-nombre', msg: 'Nombre obligatorio.' });
+      if (!v('cl-apellido')) errs.push({ id: 'cl-apellido', msg: 'Apellido obligatorio.' });
       if (!v('cl-correo') || !v('cl-correo').includes('@')) errs.push({ id: 'cl-correo', msg: 'Correo inválido.' });
-      if (!v('cl-tel'))     errs.push({ id: 'cl-tel',     msg: 'Teléfono obligatorio.' });
+      if (!v('cl-tel')) errs.push({ id: 'cl-tel', msg: 'Teléfono obligatorio.' });
       return errs;
     },
     2: () => {
@@ -274,13 +274,13 @@ createStepper({
       if (!v('cl-ciudad')) errs.push({ id: 'cl-ciudad', msg: 'Ingresa tu ciudad.' });
       return errs;
     },
-    3: () => !radioVal('cl-tipo')       ? [{ id: 'g-tipo',   msg: 'Elige el tipo de prenda.' }]   : [],
-    4: () => !radioVal('cl-ocasion')    ? [{ id: 'g-ocasion',msg: 'Indica la ocasión.' }]          : [],
-    5: () => !checkVals('cl-tela').length? [{ id: 'g-tela',  msg: 'Selecciona al menos una tela.' }]: [],
-    6: () => !radioVal('cl-tono')       ? [{ id: 'g-tono',   msg: 'Elige tu tono de piel.' }]     : [],
-    8: () => !radioVal('cl-plazo')      ? [{ id: 'g-plazo',  msg: 'Indica el plazo.' }]            : [],
+    3: () => !radioVal('cl-tipo') ? [{ id: 'g-tipo', msg: 'Elige el tipo de prenda.' }] : [],
+    4: () => !radioVal('cl-ocasion') ? [{ id: 'g-ocasion', msg: 'Indica la ocasión.' }] : [],
+    5: () => !checkVals('cl-tela').length ? [{ id: 'g-tela', msg: 'Selecciona al menos una tela.' }] : [],
+    6: () => !radioVal('cl-tono') ? [{ id: 'g-tono', msg: 'Elige tu tono de piel.' }] : [],
+    8: () => !radioVal('cl-plazo') ? [{ id: 'g-plazo', msg: 'Indica el plazo.' }] : [],
     9: () => !radioVal('cl-disponibilidad') ? [{ id: 'g-disp', msg: 'Indica tu disponibilidad.' }] : [],
-    10:() => {
+    10: () => {
       const desc = v('cl-descripcion');
       if (!desc || desc.length < 20) return [{ id: 'cl-descripcion', msg: 'Mínimo 20 caracteres.' }];
       return [];
@@ -298,20 +298,20 @@ createStepper({
   totalSteps: 11,
   formData: workerData,
   wrapperId: 'worker-form-wrap',
-  resultId:  'worker-done',
+  resultId: 'worker-done',
   summaryId: 'worker-summary',
-  toastOk:   '¡Postulación enviada con éxito! Nos contactaremos en 3-5 días hábiles.',
+  toastOk: '¡Postulación enviada con éxito! Nos contactaremos en 3-5 días hábiles.',
 
   collectors: {
-    1:  () => { workerData['Nombre'] = v('wk-nombre') + ' ' + v('wk-apellido'); workerData['RUT'] = v('wk-rut'); workerData['Correo'] = v('wk-correo'); workerData['Teléfono'] = v('wk-tel'); },
-    2:  () => { workerData['Fecha nac.'] = v('wk-fnac'); workerData['Género'] = v('wk-genero'); workerData['Nacionalidad'] = v('wk-nac'); },
-    3:  () => { workerData['Región'] = v('wk-region'); workerData['Ciudad'] = v('wk-ciudad'); workerData['Dirección'] = v('wk-dir'); },
-    4:  () => { workerData['Cargo'] = radioVal('wk-cargo'); },
-    5:  () => { workerData['Nivel educacional'] = radioVal('wk-edu'); workerData['Institución'] = v('wk-inst'); },
-    6:  () => { workerData['Experiencia'] = radioVal('wk-exp'); },
-    7:  () => { workerData['Especialidades'] = checkVals('wk-esp'); },
-    8:  () => { workerData['Disponibilidad'] = radioVal('wk-disp'); workerData['Modalidad'] = radioVal('wk-modal'); },
-    9:  () => { workerData['Expectativa salarial'] = '$' + parseInt(v('wk-salario')).toLocaleString('es-CL') + ' / mes'; },
+    1: () => { workerData['Nombre'] = v('wk-nombre') + ' ' + v('wk-apellido'); workerData['RUT'] = v('wk-rut'); workerData['Correo'] = v('wk-correo'); workerData['Teléfono'] = v('wk-tel'); },
+    2: () => { workerData['Fecha nac.'] = v('wk-fnac'); workerData['Género'] = v('wk-genero'); workerData['Nacionalidad'] = v('wk-nac'); },
+    3: () => { workerData['Región'] = v('wk-region'); workerData['Ciudad'] = v('wk-ciudad'); workerData['Dirección'] = v('wk-dir'); },
+    4: () => { workerData['Cargo'] = radioVal('wk-cargo'); },
+    5: () => { workerData['Nivel educacional'] = radioVal('wk-edu'); workerData['Institución'] = v('wk-inst'); },
+    6: () => { workerData['Experiencia'] = radioVal('wk-exp'); },
+    7: () => { workerData['Especialidades'] = checkVals('wk-esp'); },
+    8: () => { workerData['Disponibilidad'] = radioVal('wk-disp'); workerData['Modalidad'] = radioVal('wk-modal'); },
+    9: () => { workerData['Expectativa salarial'] = '$' + parseInt(v('wk-salario')).toLocaleString('es-CL') + ' / mes'; },
     10: () => { workerData['Motivación'] = v('wk-motiv'); workerData['Portafolio/LinkedIn'] = v('wk-link'); },
     11: () => { workerData['Referencias'] = v('wk-ref'); },
   },
@@ -319,16 +319,16 @@ createStepper({
   validators: {
     1: () => {
       const e = [];
-      if (!v('wk-nombre'))   e.push({ id: 'wk-nombre',   msg: 'Nombre obligatorio.' });
+      if (!v('wk-nombre')) e.push({ id: 'wk-nombre', msg: 'Nombre obligatorio.' });
       if (!v('wk-apellido')) e.push({ id: 'wk-apellido', msg: 'Apellido obligatorio.' });
       if (!v('wk-rut') || v('wk-rut').length < 8) e.push({ id: 'wk-rut', msg: 'RUT inválido.' });
       if (!v('wk-correo') || !v('wk-correo').includes('@')) e.push({ id: 'wk-correo', msg: 'Correo inválido.' });
-      if (!v('wk-tel'))      e.push({ id: 'wk-tel',      msg: 'Teléfono obligatorio.' });
+      if (!v('wk-tel')) e.push({ id: 'wk-tel', msg: 'Teléfono obligatorio.' });
       return e;
     },
     2: () => {
       const e = [];
-      if (!v('wk-fnac'))   e.push({ id: 'wk-fnac',   msg: 'Fecha de nacimiento obligatoria.' });
+      if (!v('wk-fnac')) e.push({ id: 'wk-fnac', msg: 'Fecha de nacimiento obligatoria.' });
       if (!v('wk-genero')) e.push({ id: 'wk-genero', msg: 'Selecciona una opción.' });
       return e;
     },
@@ -338,13 +338,13 @@ createStepper({
       if (!v('wk-ciudad')) e.push({ id: 'wk-ciudad', msg: 'Ingresa tu ciudad.' });
       return e;
     },
-    4:  () => !radioVal('wk-cargo') ? [{ id: 'g-wk-cargo', msg: 'Selecciona el cargo.' }] : [],
-    5:  () => !radioVal('wk-edu')   ? [{ id: 'g-wk-edu',   msg: 'Selecciona tu nivel educacional.' }] : [],
-    6:  () => !radioVal('wk-exp')   ? [{ id: 'g-wk-exp',   msg: 'Indica tu experiencia.' }] : [],
-    7:  () => !checkVals('wk-esp').length ? [{ id: 'g-wk-esp', msg: 'Selecciona al menos una especialidad.' }] : [],
-    8:  () => {
+    4: () => !radioVal('wk-cargo') ? [{ id: 'g-wk-cargo', msg: 'Selecciona el cargo.' }] : [],
+    5: () => !radioVal('wk-edu') ? [{ id: 'g-wk-edu', msg: 'Selecciona tu nivel educacional.' }] : [],
+    6: () => !radioVal('wk-exp') ? [{ id: 'g-wk-exp', msg: 'Indica tu experiencia.' }] : [],
+    7: () => !checkVals('wk-esp').length ? [{ id: 'g-wk-esp', msg: 'Selecciona al menos una especialidad.' }] : [],
+    8: () => {
       const e = [];
-      if (!radioVal('wk-disp'))  e.push({ id: 'g-wk-disp',  msg: 'Indica tu disponibilidad.' });
+      if (!radioVal('wk-disp')) e.push({ id: 'g-wk-disp', msg: 'Indica tu disponibilidad.' });
       if (!radioVal('wk-modal')) e.push({ id: 'g-wk-modal', msg: 'Indica la modalidad.' });
       return e;
     },
@@ -357,7 +357,7 @@ createStepper({
 
 // ---- Range sliders ----
 function initRange(inputId, displayId, prefix = '$', suffix = '') {
-  const input   = document.getElementById(inputId);
+  const input = document.getElementById(inputId);
   const display = document.getElementById(displayId);
   if (!input || !display) return;
   const fmt = val => prefix + parseInt(val).toLocaleString('es-CL') + suffix;
@@ -365,7 +365,7 @@ function initRange(inputId, displayId, prefix = '$', suffix = '') {
   input.addEventListener('input', () => { display.textContent = fmt(input.value); });
 }
 initRange('cl-presupuesto', 'cl-pres-display');
-initRange('wk-salario',     'wk-sal-display');
+initRange('wk-salario', 'wk-sal-display');
 
 // ---- FLOW TABS ----
 document.querySelectorAll('.flow-tabs__btn').forEach(btn => {
@@ -433,3 +433,22 @@ function radioVal(name) {
 function checkVals(name) {
   return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(e => e.value);
 }
+
+
+
+
+
+// =====
+//  1. Funciones para mostrar el catálogo de telas
+// =====
+
+const catalogo = {};
+
+document.querySelectorAll('.fabric-card').forEach(card => {
+  const id = card.dataset.id;
+  const price = Number(card.dataset.price);
+
+  catalogo[id] = price;
+});
+
+console.log("Catálogo de telas:", catalogo);
