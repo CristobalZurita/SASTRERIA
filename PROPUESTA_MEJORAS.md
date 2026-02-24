@@ -1,656 +1,224 @@
 # 📋 PROPUESTA DE MEJORAS — Hilo & Oficio
 
-**Documento base:** FALTANTE.md (Diagnóstico técnico)  
-**Fecha:** 24 de febrero de 2026  
-**Enfoque:** Implementación con localStorage como "Falso Backend"
+**Documento base:** FALTANTES_REALES.md  
+**Fecha:** Febrero 2026  
+**Enfoque:** 100% JavaScript + localStorage (SIN BACKEND)
 
 ---
 
-## 🎯 RESUMEN EJECUTIVO
+## LO QUE FALTA SEGÚN ANÁLISIS REAL
 
-Este documento propone las mejoras técnicas necesarias para hacer el sitio **funcional y activo** sin necesidad de un backend real, utilizando **localStorage de JavaScript** como almacenamiento persistente del lado del cliente.
+### 1. HTML - 11 enlaces rotos por corregir
 
-### Estado Actual vs Propuesta
-
-| Aspecto | Estado Actual | Propuesta |
-|---------|--------------|-----------|
-| Catálogo | Solo visual (HTML) | Objeto JS con datos + funciones |
-| Formularios | Simulación sin guardado | localStorage persistente |
-| Descuentos | No existen | Funciones con lógica de descuentos |
-| Pedidos | No hay sistema | Carrito + cálculo total + confirmación |
+| # | Línea | Cambiar esto | Por esto |
+|---|-------|--------------|----------|
+| 1 | 36 | `<a href="#" class="nav__logo">` | `<a href="#inicio" class="nav__logo">` |
+| 2 | 786 | `<a href="#" class="btn btn--terra btn--lg">Volver al inicio</a>` | `<a href="#inicio" class="btn btn--terra btn--lg">Volver al inicio</a>` |
+| 3 | 1009 | `<a href="#" class="btn btn--indigo btn--lg">Volver al inicio</a>` | `<a href="#inicio" class="btn btn--indigo btn--lg">Volver al inicio</a>` |
+| 4 | 1076 | `<a href="#">Sobre nosotros</a>` | `<a href="#inicio">Sobre nosotros</a>` |
+| 5 | 1077 | `<a href="#">Blog textil</a>` | `<a href="#inicio">Blog textil</a>` |
+| 6 | 1078 | `<a href="#">Contacto</a>` | `<a href="#inicio">Contacto</a>` |
+| 7 | 1079 | `<a href="#">Privacidad</a>` | `<a href="#inicio">Privacidad</a>` |
+| 8 | 1087 | `<a href="#" aria-label="Instagram">📸</a>` | `<a href="https://instagram.com" aria-label="Instagram">📸</a>` |
+| 9 | 1088 | `<a href="#" aria-label="Facebook">📘</a>` | `<a href="https://facebook.com" aria-label="Facebook">📘</a>` |
+| 10 | 1089 | `<a href="#" aria-label="TikTok">🎵</a>` | `<a href="https://tiktok.com" aria-label="TikTok">🎵</a>` |
+| 11 | 1090 | `<a href="#" aria-label="LinkedIn">💼</a>` | `<a href="https://linkedin.com" aria-label="LinkedIn">💼</a>` |
 
 ---
 
-## 1️⃣ FUNCIÓN PARA MOSTRAR EL CATÁLOGO
+### 2. JAVASCRIPT - 11 funciones por crear
 
-### 1.1 Estado Actual
-El catálogo está hardcodeado en HTML (solo visual), no hay datos en JavaScript.
-
-### 1.2 Propuesta: Objeto Catalogo + Función mostrarCatalogo()
+AGREGAR EN `js/main.js` (después de `'use strict'`):
 
 ```javascript
 // ============================================================
-// CATÁLOGO DE TELAS — Objeto con datos
+// 1. CATÁLOGO DE TELAS — Objeto con datos
 // ============================================================
 const catalogoTelas = {
-  // Telas Naturales
-  linoPremium: {
-    id: 'lino-premium',
-    nombre: 'Lino Premium',
-    tipo: 'natural',
-    precio: 4200,
-    precioFormateado: '$4.200',
-    unidad: 'metro',
-    stock: true,
-    descripcion: '100% Lino belga de alta calidad'
-  },
-  sedaNatural: {
-    id: 'seda-natural',
-    nombre: 'Seda Natural',
-    tipo: 'premium',
-    precio: 12800,
-    precioFormateado: '$12.800',
-    unidad: 'metro',
-    stock: true,
-    descripcion: '100% Seda natural importada'
-  },
-  algodonPopelin: {
-    id: 'algodon-popelin',
-    nombre: 'Algodón Popelín',
-    tipo: 'natural',
-    precio: 2800,
-    precioFormateado: '$2.800',
-    unidad: 'metro',
-    stock: true,
-    descripcion: '100% Algodón peruano'
-  },
-  gabardinaNavy: {
-    id: 'gabardina-navy',
-    nombre: 'Gabardina Navy',
-    tipo: 'mezcla',
-    precio: 3500,
-    precioFormateado: '$3.500',
-    unidad: 'metro',
-    stock: true,
-    descripcion: 'Poliésters-Viscosa premium'
-  },
-  // Telas adicionales para el catálogo
-  lanaMerino: {
-    id: 'lana-merino',
-    nombre: 'Lana Merino',
-    tipo: 'natural',
-    precio: 8500,
-    precioFormateado: '$8.500',
-    unidad: 'metro',
-    stock: true,
-    descripcion: '100% Lana merino australiana'
-  },
-  satenBruñido: {
-    id: 'saten-brunido',
-    nombre: 'Satén Bruñido',
-    tipo: 'premium',
-    precio: 9800,
-    precioFormateado: '$9.800',
-    unidad: 'metro',
-    stock: true,
-    descripcion: 'Satén de alta caída'
-  },
-  denimCoreano: {
-    id: 'denim-coreano',
-    nombre: 'Denim Coreano',
-    tipo: 'mezcla',
-    precio: 4500,
-    precioFormateado: '$4.500',
-    unidad: 'metro',
-    stock: false,
-    descripcion: 'Denim importado de Corea'
-  },
-  organzaSilk: {
-    id: 'organza-silk',
-    nombre: 'Organza de Seda',
-    tipo: 'premium',
-    precio: 11200,
-    precioFormateado: '$11.200',
-    unidad: 'metro',
-    stock: true,
-    descripcion: 'Organza transparente premium'
-  }
+  linoPremium: { id: 'lino-premium', nombre: 'Lino Premium', tipo: 'natural', precio: 4200, precioFormateado: '$4.200', unidad: 'metro', stock: true },
+  sedaNatural: { id: 'seda-natural', nombre: 'Seda Natural', tipo: 'premium', precio: 12800, precioFormateado: '$12.800', unidad: 'metro', stock: true },
+  algodonPopelin: { id: 'algodon-popelin', nombre: 'Algodón Popelín', tipo: 'natural', precio: 2800, precioFormateado: '$2.800', unidad: 'metro', stock: true },
+  gabardinaNavy: { id: 'gabardina-navy', nombre: 'Gabardina Navy', tipo: 'mezcla', precio: 3500, precioFormateado: '$3.500', unidad: 'metro', stock: true }
 };
 
 // ============================================================
-// FUNCIÓN: Mostrar catálogo en consola
+// 2. MOSTRAR CATÁLOGO
 // ============================================================
 function mostrarCatalogo() {
   console.log('═══════════════════════════════════════════');
   console.log('📦 CATÁLOGO — Hilo & Oficio');
   console.log('═══════════════════════════════════════════');
-  
-  let contador = 1;
-  
   for (const [key, tela] of Object.entries(catalogoTelas)) {
     const stockStatus = tela.stock ? '✅ Disponible' : '❌ Agotado';
-    console.log(`${contador}. ${tela.nombre.toUpperCase()}`);
-    console.log(`   💰 Precio: ${tela.precioFormateado} / ${tela.unidad}`);
-    console.log(`   🏷️ Tipo: ${tela.tipo}`);
-    console.log(`   📊 Estado: ${stockStatus}`);
-    console.log(`   📝 ${tela.descripcion}`);
-    console.log('───────────────────────────────────────────');
-    contador++;
+    console.log(`• ${tela.nombre} - ${tela.precioFormateado}/mt - ${stockStatus}`);
   }
-  
-  console.log(`Total de productos: ${Object.keys(catalogoTelas).length}`);
   console.log('═══════════════════════════════════════════');
 }
 
-// Ejecutar al cargar para verificar
-// mostrarCatalogo();
-```
-
-### 1.3 Dónde implementarlo
-- **Archivo:** `js/main.js`
-- **Ubicación sugerida:** Al inicio del archivo, después de `'use strict'`
-- **Elemento HTML relacionado:** `#catalogo`, `.fabric-card`
-
----
-
-## 2️⃣ FUNCIÓN PARA CALCULAR EL TOTAL
-
-### 2.1 Estado Actual
-No existe sistema de pedidos ni cálculo de precios.
-
-### 2.2 Propuesta: Sistema de Carrito + calcularTotal()
-
-```javascript
 // ============================================================
-// SISTEMA DE PEDIDOS — Carrito
+// 3. CARRITO
 // ============================================================
 let carrito = [];
 
-// Función para agregar al carrito
+// ============================================================
+// 4. AGREGAR AL CARRITO
+// ============================================================
 function agregarAlCarrito(productoId, cantidad = 1) {
   const producto = catalogoTelas[productoId];
+  if (!producto) { console.error(`❌ Producto no encontrado: ${productoId}`); return false; }
+  if (!producto.stock) { console.error(`❌ Agotado: ${producto.nombre}`); return false; }
   
-  if (!producto) {
-    console.error(`❌ Producto no encontrado: ${productoId}`);
-    return false;
-  }
-  
-  if (!producto.stock) {
-    console.error(`❌ Producto agotado: ${producto.nombre}`);
-    return false;
-  }
-  
-  // Verificar si ya está en el carrito
   const existente = carrito.find(item => item.id === productoId);
+  if (existente) { existente.cantidad += cantidad; }
+  else { carrito.push({ id: producto.id, nombre: producto.nombre, precio: producto.precio, cantidad: cantidad }); }
   
-  if (existente) {
-    existente.cantidad += cantidad;
-    console.log(`✅ Actualizado: ${producto.nombre} (cantidad: ${existente.cantidad})`);
-  } else {
-    carrito.push({
-      id: producto.id,
-      nombre: producto.nombre,
-      precio: producto.precio,
-      cantidad: cantidad
-    });
-    console.log(`✅ Agregado: ${producto.nombre} x${cantidad}`);
-  }
-  
-  // Guardar en localStorage
   guardarCarrito();
-  
+  console.log(`✅ Agregado: ${producto.nombre} x${cantidad}`);
   return true;
 }
 
-// Función para ver el carrito
+// ============================================================
+// 5. VER CARRITO
+// ============================================================
 function verCarrito() {
   console.log('═══════════════════════════════════════════');
   console.log('🛒 CARRITO DE COMPRAS');
   console.log('═══════════════════════════════════════════');
-  
-  if (carrito.length === 0) {
-    console.log('El carrito está vacío.');
-    return;
-  }
+  if (carrito.length === 0) { console.log('El carrito está vacío.'); return; }
   
   let subtotal = 0;
-  
   carrito.forEach((item, index) => {
     const itemTotal = item.precio * item.cantidad;
     subtotal += itemTotal;
-    console.log(`${index + 1}. ${item.nombre}`);
-    console.log(`   Cantidad: ${item.cantidad} | Precio unitario: $${item.precio.toLocaleString()}`);
-    console.log(`   Subtotal: $${itemTotal.toLocaleString()}`);
-    console.log('───────────────────────────────────────────');
+    console.log(`${index + 1}. ${item.nombre} x${item.cantidad} = $${itemTotal.toLocaleString()}`);
   });
-  
   console.log(`Subtotal: $${subtotal.toLocaleString()} CLP`);
   console.log('═══════════════════════════════════════════');
-  
   return subtotal;
 }
 
-// Función principal: calcular total
+// ============================================================
+// 6. CALCULAR TOTAL + 7. APLICAR DESCUENTO (ANIDADA)
+// ============================================================
 function calcularTotal(pedido) {
-  // Si viene como array de IDs, convertir a formato carrito
-  if (Array.isArray(pedido) && typeof pedido[0] === 'string') {
-    pedido = pedido.map(id => {
-      const producto = catalogoTelas[id];
-      return producto ? { ...producto, cantidad: 1 } : null;
-    }).filter(Boolean);
-  }
+  if (!pedido || pedido.length === 0) { console.error('❌ Carrito vacío'); return 0; }
   
-  // Calcular subtotal
   let subtotal = 0;
+  pedido.forEach(item => { subtotal += item.precio * item.cantidad; });
   
-  pedido.forEach(item => {
-    subtotal += item.precio * item.cantidad;
-  });
-  
-  console.log('═══════════════════════════════════════════');
-  console.log('💰 CÁLCULO DE TOTAL');
-  console.log('═══════════════════════════════════════════');
   console.log(`Subtotal: $${subtotal.toLocaleString()} CLP`);
   
-  // Aplicar descuento (función anidada)
-  const totalConDescuento = aplicarDescuento(subtotal);
-  
-  console.log('═══════════════════════════════════════════');
-  
-  return totalConDescuento;
-}
-```
-
-### 2.3 Dónde implementarlo
-- **Archivo:** `js/main.js`
-- **Ubicación sugerida:** Después de la función `mostrarCatalogo()`
-
----
-
-## 3️⃣ APLICANDO DESCUENTOS CON FUNCIONES ANIDADAS
-
-### 3.1 Estado Actual
-No existe lógica de descuentos.
-
-### 3.2 Propuesta: aplicarDescuento() anidada
-
-```javascript
-// ============================================================
-// FUNCIÓN: Aplicar descuentos (anidada dentro de calcularTotal)
-// ============================================================
-function aplicarDescuento(total) {
-  // Esta función se llama DENTRO de calcularTotal()
-  
+  // Función anidada: aplicarDescuento
   let descuentoAplicado = 0;
-  let porcentaje = 0;
+  if (subtotal > 100000) { descuentoAplicado = subtotal * 0.20; console.log(`🎉 Descuento 20%: -$${descuentoAplicado.toLocaleString()}`); }
+  else if (subtotal > 50000) { descuentoAplicado = subtotal * 0.10; console.log(`🎉 Descuento 10%: -$${descuentoAplicado.toLocaleString()}`); }
   
-  if (total > 100000) {
-    // Descuento del 20% para compras mayores a $100.000
-    porcentaje = 20;
-    descuentoAplicado = total * 0.20;
-  } else if (total > 50000) {
-    // Descuento del 10% para compras mayores a $50.000
-    porcentaje = 10;
-    descuentoAplicado = total * 0.10;
-  }
-  
-  if (descuentoAplicado > 0) {
-    console.log(`🎉 Descuento aplicado: ${porcentaje}% (-$${descuentoAplicado.toLocaleString()})`);
-  } else {
-    console.log('💡 ¡Añade más productos para obtener un descuento!');
-    console.log('   > $50.000 = 10% de descuento');
-    console.log('   > $100.000 = 20% de descuento');
-  }
-  
-  const totalFinal = total - descuentoAplicado;
+  const totalFinal = subtotal - descuentoAplicado;
   console.log(`💵 TOTAL A PAGAR: $${totalFinal.toLocaleString()} CLP`);
-  
   return totalFinal;
 }
 
-// Alias para usar directamente
-function aplicarDescuentoDirecto(total) {
-  return aplicarDescuento(total);
-}
-```
-
-### 3.3 Lógica de descuentos
-
-| Condición | Descuento |
-|-----------|-----------|
-| $0 - $50.000 | 0% (sin descuento) |
-| $50.001 - $100.000 | 10% de descuento |
-| + $100.000 | 20% de descuento |
-
----
-
-## 4️⃣ SIMULANDO EL PROCESO DE COMPRA
-
-### 4.1 Estado Actual
-Los formularios se "envían" sin guardar nada.
-
-### 4.2 Propuesta: realizarPedido() completa
-
-```javascript
 // ============================================================
-// FUNCIÓN: Realizar pedido completo
+// 8. REALIZAR PEDIDO
 // ============================================================
 function realizarPedido(pedido) {
-  // 1. Validar que hay productos
-  if (!pedido || pedido.length === 0) {
-    console.error('❌ El pedido está vacío. Agrega productos primero.');
-    return false;
-  }
+  if (!pedido || pedido.length === 0) { console.error('❌ Pedido vacío'); return false; }
   
-  console.log('═══════════════════════════════════════════');
-  console.log('🚀 PROCESANDO PEDIDO');
-  console.log('═══════════════════════════════════════════');
-  
-  // 2. Llamar a calcularTotal() que internamente llama a aplicarDescuento()
   const totalFinal = calcularTotal(pedido);
-  
-  // 3. Generar ID de pedido
   const idPedido = 'PED-' + Date.now().toString(36).toUpperCase();
   
-  // 4. Crear objeto de pedido completo
   const pedidoCompleto = {
     id: idPedido,
     fecha: new Date().toISOString(),
-    productos: pedido.map(item => ({
-      id: item.id,
-      nombre: item.nombre,
-      precio: item.precio,
-      cantidad: item.cantidad,
-      subtotal: item.precio * item.cantidad
-    })),
+    productos: pedido,
     total: totalFinal,
     estado: 'pendiente'
   };
   
-  // 5. Guardar en localStorage (FALSO BACKEND)
   guardarPedido(pedidoCompleto);
   
-  // 6. Mensaje de confirmación
   console.log('═══════════════════════════════════════════');
   console.log('✅ ¡PEDIDO CONFIRMADO!');
-  console.log('═══════════════════════════════════════════');
-  console.log(`📋 ID de tu pedido: ${idPedido}`);
-  console.log(`📅 Fecha: ${new Date().toLocaleDateString('es-CL')}`);
-  console.log(`💵 Total pagado: $${totalFinal.toLocaleString()} CLP`);
-  console.log('📧 Te enviaremos un correo de confirmación.');
+  console.log(`📋 ID: ${idPedido}`);
+  console.log(`💵 Total: $${totalFinal.toLocaleString()} CLP`);
   console.log('═══════════════════════════════════════════');
   
-  // Limpiar carrito después del pedido
   carrito = [];
   guardarCarrito();
-  
   return pedidoCompleto;
 }
 
-// Función auxiliar: guardar pedido en localStorage
-function guardarPedido(pedido) {
-  // Obtener pedidos anteriores
-  const pedidos = obtenerPedidos();
-  
-  // Agregar nuevo pedido
-  pedidos.push(pedido);
-  
-  // Guardar en localStorage
-  localStorage.setItem('hiloOfico_pedidos', JSON.stringify(pedidos));
-  
-  console.log('💾 Pedido guardado en localStorage');
-}
-
-// Función auxiliar: obtener todos los pedidos
-function obtenerPedidos() {
-  const pedidos = localStorage.getItem('hiloOfico_pedidos');
-  return pedidos ? JSON.parse(pedidos) : [];
-}
-```
-
----
-
-## 5️⃣ PERSISTENCIA CON LOCALSTORAGE
-
-### 5.1 Estado Actual
-No hay persistencia de datos.
-
-### 5.2 Propuesta: Sistema completo de localStorage
-
-```javascript
 // ============================================================
-// LOCALSTORAGE — Falso Backend
+// LOCALSTORAGE — FALSO BACKEND
 // ============================================================
-
-// Keys para localStorage
 const LS_KEYS = {
   CLIENTES: 'hiloOfico_clientes',
   POSTULANTES: 'hiloOfico_postulantes',
   PEDIDOS: 'hiloOfico_pedidos',
-  CARrito: 'hiloOfico_carrito',
-  PRESUPUESTOS: 'hiloOfico_presupuestos'
+  CARRITO: 'hiloOfico_carrito'
 };
 
-// ----- Guardar Carrito -----
-function guardarCarrito() {
-  localStorage.setItem(LS_KEYS.CARRITO, JSON.stringify(carrito));
-}
+function guardarCarrito() { localStorage.setItem(LS_KEYS.CARRITO, JSON.stringify(carrito)); }
+function cargarCarrito() { const s = localStorage.getItem(LS_KEYS.CARRITO); if (s) { try { carrito = JSON.parse(s); } catch(e) { carrito = []; } } }
 
-// ----- Cargar Carrito al iniciar -----
-function cargarCarrito() {
-  const stored = localStorage.getItem(LS_KEYS.CARRITO);
-  if (stored) {
-    try {
-      carrito = JSON.parse(stored);
-      console.log(`🛒 Carrito cargado: ${carrito.length} productos`);
-    } catch (e) {
-      console.error('Error al cargar carrito:', e);
-      carrito = [];
-    }
-  }
-}
-
-// ----- Guardar datos de cliente -----
 function guardarCliente(datos) {
-  const clientes = obtenerClientes();
-  clientes.push({
-    id: 'CLI-' + Date.now().toString(36).toUpperCase(),
-    fecha: new Date().toISOString(),
-    ...datos
-  });
-  localStorage.setItem(LS_KEYS.CLIENTES, JSON.stringify(clientes));
+  const lista = obtenerClientes();
+  lista.push({ id: 'CLI-' + Date.now().toString(36).toUpperCase(), fecha: new Date().toISOString(), ...datos });
+  localStorage.setItem(LS_KEYS.CLIENTES, JSON.stringify(lista));
 }
+function obtenerClientes() { const d = localStorage.getItem(LS_KEYS.CLIENTES); return d ? JSON.parse(d) : []; }
 
-function obtenerClientes() {
-  const data = localStorage.getItem(LS_KEYS.CLIENTES);
-  return data ? JSON.parse(data) : [];
-}
-
-// ----- Guardar postulación -----
 function guardarPostulacion(datos) {
-  const postulaciones = obtenerPostulaciones();
-  postulaciones.push({
-    id: 'POST-' + Date.now().toString(36).toUpperCase(),
-    fecha: new Date().toISOString(),
-    ...datos
-  });
-  localStorage.setItem(LS_KEYS.POSTULANTES, JSON.stringify(postulaciones));
+  const lista = obtenerPostulaciones();
+  lista.push({ id: 'POST-' + Date.now().toString(36).toUpperCase(), fecha: new Date().toISOString(), ...datos });
+  localStorage.setItem(LS_KEYS.POSTULANTES, JSON.stringify(lista));
 }
+function obtenerPostulaciones() { const d = localStorage.getItem(LS_KEYS.POSTULANTES); return d ? JSON.parse(d) : []; }
 
-function obtenerPostulaciones() {
-  const data = localStorage.getItem(LS_KEYS.POSTULANTES);
-  return data ? JSON.parse(data) : [];
+function guardarPedido(pedido) {
+  const lista = obtenerPedidos();
+  lista.push(pedido);
+  localStorage.setItem(LS_KEYS.PEDIDOS, JSON.stringify(lista));
 }
+function obtenerPedidos() { const d = localStorage.getItem(LS_KEYS.PEDIDOS); return d ? JSON.parse(d) : []; }
 
-// ----- Guardar presupuesto -----
-function guardarPresupuesto(datos) {
-  const presupuestos = obtenerPresupuestos();
-  presupuestos.push({
-    id: 'PRES-' + Date.now().toString(36).toUpperCase(),
-    fecha: new Date().toISOString(),
-    ...datos
-  });
-  localStorage.setItem(LS_KEYS.PRESUPUESTOS, JSON.stringify(presupuestos));
-}
-
-function obtenerPresupuestos() {
-  const data = localStorage.getItem(LS_KEYS.PRESUPUESTOS);
-  return data ? JSON.parse(data) : [];
-}
-
-// ----- Inicializar al cargar la página -----
-(function initLocalStorage() {
-  cargarCarrito();
-  console.log('💾 Sistema de localStorage inicializado');
-})();
+// Inicializar
+(function initLocalStorage() { cargarCarrito(); console.log('💾 Sistema localStorage iniciado'); })();
 ```
 
 ---
 
-## 6️⃣ INTEGRACIÓN CON FORMULARIOS EXISTENTES
+### 3. HTML - Agregar botones de comprar en catálogo
 
-### 6.1 Modificar submitFlow() en stepper
-
-```javascript
-// Modificar la función submitFlow existente en js/main.js
-// Located around line 195-210
-
-function submitFlow(btn, tipoFlujo) {
-  btn.classList.add('btn--loading'); btn.disabled = true;
-  
-  setTimeout(() => {
-    // Guardar en localStorage según el tipo de flujo
-    if (tipoFlujo === 'cliente') {
-      guardarCliente(clientData);
-      console.log('✅ Cliente guardado en localStorage');
-    } else if (tipoFlujo === 'postulante') {
-      guardarPostulacion(workerData);
-      console.log('✅ Postulación guardada en localStorage');
-    }
-    
-    if (wrapper)  wrapper.style.display = 'none';
-    if (resultEl) resultEl.classList.add('show');
-    populateSummary();
-    
-    if (barFill) barFill.style.width = '100%';
-    if (barPct)  barPct.textContent  = '100% completado';
-    dots.forEach(d => d.classList.replace('active', 'done') || d.classList.add('done'));
-    
-    showToast(toastOk, 'ok');
-  }, 1800);
-}
-```
-
-### 6.2 Botones "Volver al inicio" - Corregir
+En las tarjetas de telas (líneas ~340-380), AGREGAR:
 
 ```html
-<!-- En index.html, cambiar: -->
-<a href="#" class="btn btn--terra btn--lg">Volver al inicio</a>
-<!-- Por: -->
-<a href="#inicio" class="btn btn--terra btn--lg">Volver al```
+<button class="btn btn--terra btn--sm" onclick="agregarAlCarrito('lino-premium', 1)">
+  Agregar al carrito
+</button>
+```
 
 ---
 
-##  inicio</a>
-7️⃣ RESUMEN: DÓNDE IMPLEMENTAR CADA COSA
+### 4. Modificar submitFlow() para guardar en localStorage
 
-### Tabla de implementación
-
-| Función | Archivo | Línea aproximada | Estado actual |
-|---------|---------|-------------------|---------------|
-| `catalogoTelas` | main.js | Después de `'use strict'` | ❌ No existe |
-| `mostrarCatalogo()` | main.js | Después de objeto catálogo | ❌ No existe |
-| `agregarAlCarrito()` | main.js | Después de catálogo | ❌ No existe |
-| `verCarrito()` | main.js | Después de agregar | ❌ No existe |
-| `calcularTotal()` | main.js | Después de verCarrito | ❌ No existe |
-| `aplicarDescuento()` | main.js | Dentro de calcularTotal | ❌ No existe |
-| `realizarPedido()` | main.js | Después de calcularTotal | ❌ No.exists |
-| `LS_KEYS`, `guardar*`, `obtener*` | main.js | Al final del archivo | ❌ No existe |
-| Corregir `href="#"` | index.html | Footer, Navbar, Resultados | ⚠️ Parcial |
-
----
-
-## 8️⃣ EJEMPLO DE USO COMPLETO
+En `js/main.js`,buscar `function submitFlow` y AGREGAR antes del `setTimeout`:
 
 ```javascript
-// ===== EJEMPLO DE USO =====
-
-// 1. Ver catálogo
-mostrarCatalogo();
-
-// 2. Agregar productos al carrito
-agregarAlCarrito('lino-premium', 2);  // 2 metros de lino
-agregarAlCarrito('seda-natural', 1);  // 1 metro de seda
-
-// 3. Ver carrito
-verCarrito();
-
-// 4. Realizar pedido (esto calcula total + descuento + guarda)
-const miPedido = [
-  { id: 'lino-premium', nombre: 'Lino Premium', precio: 4200, cantidad: 2 },
-  { id: 'seda-natural', nombre: 'Seda Natural', precio: 12800, cantidad: 1 }
-];
-
-realizarPedido(miPedido);
-// Output esperado:
-// - Subtotal: $21.200
-// - Descuento 10%: -$2.120
-// - Total a pagar: $19.080 CLP
-
-// 5. Ver todos los pedidos guardados
-console.log(obtenerPedidos());
-// Output: Array con todos los pedidos en localStorage
+// Guardar en localStorage
+if (flowId === 'flow-client') { guardarCliente(clientData); }
+if (flowId === 'flow-worker') { guardarPostulacion(workerData); }
 ```
 
 ---
 
-## 9️⃣ PRÓXIMOS PASOS PARA EL EQUIPO
+## 📋 RESUMEN DE IMPLEMENTACIÓN
 
-### Sprint 1: Implementar Catálogo + Carrito
-- [ ] Crear objeto `catalogoTelas` en `js/main.js`
-- [ ] Implementar `mostrarCatalogo()`
-- [ ] Implementar `agregarAlCarrito()` y `verCarrito()`
+| # | Qué hacer | Dónde | Estado |
+|---|-----------|-------|--------|
+| 1 | Corregir 11 enlaces `href="#"` | index.html | ❌ POR HACER |
+| 2 | Agregar 11 funciones JS | js/main.js | ❌ POR HACER |
+| 3 | Agregar botones comprar | index.html | ❌ POR HACER |
+| 4 | Modificar submitFlow | js/main.js | ❌ POR HACER |
 
-### Sprint 2: Sistema de Pedidos
-- [ ] Implementar `calcularTotal()` con `aplicarDescuento()` anidada
-- [ ] Implementar `realizarPedido()`
-- [ ] Conectar con botones de catálogo (agregar "Agregar al carrito" en HTML)
-
-### Sprint 3: LocalStorage
-- [ ] Crear sistema de persistencia completo
-- [ ] Modificar `submitFlow()` para guardar en localStorage
-- [ ] Crear panel de administración simple (visualizar pedidos)
-
-### Sprint 4: Correcciones menores
-- [ ] Corregir enlaces rotos (`href="#"` → `href="#inicio"`)
-- [ ] Mejorar validaciones de email y RUT
-- [ ] Agregar funcionalidad a dots del stepper
-
----
-
-## 📁 ARCHIVO ACTUALIZADO RESULTANTE
-
-```
-js/main.js (propuesta de adiciones):
-
-Línea 1-10:  ✓现有代码
-Línea 11:    + const catalogoTelas = { ... }
-Línea 50:    + function mostrarCatalogo() { ... }
-Línea 75:    + let carrito = []
-Línea 77:    + function agregarAlCarrito() { ... }
-Línea 100:   + function verCarrito() { ... }
-Línea 130:   + function calcularTotal() { ... }
-Línea 150:   +   function aplicarDescuento() { ... } // Anidada
-Línea 175:   + function realizarPedido() { ... }
-Línea 210:   + const LS_KEYS = { ... }
-Línea 220:   + function guardarCarrito() { ... }
-Línea 225:   + function cargarCarrito() { ... }
-Línea 235:   + function guardarCliente() { ... }
-Línea 245:   + function guardarPostulacion() { ... }
-Línea 255:   + function guardarPresupuesto() { ... }
-Línea 265:   + (function initLocalStorage() { ... })();
-```
-
----
-
-*Documento creado como propuesta de mejora. Todas las funciones son **aditivas** - no modifican el código existente, solo agregan funcionalidad.*
+**TODO 100% JavaScript + localStorage - CERO backend**
