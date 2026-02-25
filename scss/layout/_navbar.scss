@@ -224,3 +224,132 @@
     gap: v.$sp-4;
   }
 }
+
+// ============================================================
+// Carrito moderno — solo colores con variables
+// ============================================================
+
+// Botón carrito en la navbar
+#cart {
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: #2D3A6B; // $c-indigo
+  padding: 6px 12px;
+  border-radius: 9999px; // estilo pill
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(45, 58, 107, 0); // transparente inicial
+}
+
+#cart:hover {
+  background: rgba(45, 58, 107, 0.07); // efecto leve de hover
+}
+
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(45, 58, 107, 0.5); // color de superposición
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 300;
+}
+
+.cart-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100vh;
+  background: #FFFDF9; // color blanco cálido
+  box-shadow: 0 6px 28px rgba(108, 66, 38, 0.12);
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.0, 0, 0.2, 1);
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #D9CEBC;
+}
+
+.cart-drawer.active {
+  transform: translateX(0);
+}
+
+.cart-header {
+  padding: 16px;
+  border-bottom: 1px solid #D9CEBC;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-header h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  color: #6B4226;
+  margin: 0;
+}
+
+.cart-header button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #C45C3A; // terracota
+}
+
+.cart-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  font-family: 'Jost', sans-serif;
+  font-size: 1rem;
+  color: #6B4226;
+}
+
+.cart-body p {
+  margin: 0;
+}
+
+.cart-footer {
+  padding: 16px;
+  border-top: 1px solid #D9CEBC;
+}
+
+.cart-footer button {
+  width: 100%;
+  padding: 12px;
+  background-color: #C45C3A; // terracota
+  color: #FFFDF9; // blanco cálido
+  font-family: 'Jost', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); // igual que nav btn
+  box-shadow: 0 4px 14px rgba(196, 92, 58, 0.3); // sombra inicial
+}
+
+.cart-footer button:hover {
+  background-color: #A04428; // terracota oscuro
+  transform: translateY(-2px); // pequeño levantamiento
+  box-shadow: 0 8px 20px rgba(196, 92, 58, 0.42); // sombra más intensa
+}
+
+/* Scrollbar simple */
+.cart-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cart-body::-webkit-scrollbar-thumb {
+  background-color: #C45C3A;
+  border-radius: 4px;
+}
