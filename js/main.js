@@ -478,4 +478,13 @@ document.querySelectorAll('.fabric-card').forEach(card => {
   catalogo[id] = price;
 });
 
-console.log("Catálogo de telas:", catalogo);
+
+function mostrarCatalogo() {
+  console.log("Catálogo disponible:");
+
+  for (let producto in catalogo) {
+    console.log(producto + " - $" + catalogo[producto]);
+  }
+}
+
+mostrarCatalogo();
