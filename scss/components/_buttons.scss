@@ -147,3 +147,25 @@
     transform: rotate(360deg);
   }
 }
+
+.fc-btn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid #C45C3A;
+  background: transparent;
+  color: #C45C3A;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fc-btn:hover {
+  background: #C45C3A;
+  color: #FFFDF9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(196, 92, 58, 0.35);
+}
