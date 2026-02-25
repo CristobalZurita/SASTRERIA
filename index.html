@@ -55,6 +55,9 @@
       </div>
 
       <div class="nav__actions">
+        <div class="nav__cart" id="cart">
+          🛒 <span id="cart-count">0</span>
+        </div>
         <a href="#formularios" class="nav__btn nav__btn--ghost d-none d-md-block">Buscar sastre</a>
         <a href="#formularios" class="nav__btn nav__btn--fill">Postular →</a>
       </div>
@@ -74,6 +77,25 @@
       <a href="#formularios" class="nav__drawer-link--accent">Conectarse →</a>
     </div>
   </nav>
+
+  <!-- Overlay -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+
+  <!-- Carrito lateral -->
+  <aside class="cart-drawer" id="cart-drawer">
+    <div class="cart-header">
+      <h3>Tu carrito</h3>
+      <button id="cart-close">✕</button>
+    </div>
+
+    <div class="cart-body" id="cart-items">
+      <p>Tu carrito está vacío.</p>
+    </div>
+
+    <div class="cart-footer">
+      <button id="cart-checkout">Finalizar pedido</button>
+    </div>
+  </aside>
 
 
   <!-- ═══════════════════════════════════════════════════════
@@ -460,6 +482,9 @@
             <div class="fc-name">Lino Premium</div>
             <div class="fc-type">Natural · 100% Lino belga</div>
             <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
+            <button class="fc-btn">
+              Añadir al carro
+            </button>
           </div>
         </div>
 
@@ -484,6 +509,9 @@
             <div class="fc-name">Seda Natural</div>
             <div class="fc-type">Premium · 100% Seda</div>
             <div class="fc-price"><strong>$12.800</strong><span>/ metro</span></div>
+            <button class="fc-btn">
+              Añadir al carro
+            </button>
           </div>
         </div>
 
@@ -508,6 +536,9 @@
             <div class="fc-name">Algodón Popelín</div>
             <div class="fc-type">Natural · 100% Algodón</div>
             <div class="fc-price"><strong>$2.800</strong><span>/ metro</span></div>
+            <button class="fc-btn">
+              Añadir al carro
+            </button>
           </div>
         </div>
 
@@ -532,6 +563,9 @@
             <div class="fc-name">Gabardina Navy</div>
             <div class="fc-type">Mezcla · Poliéster-Viscosa</div>
             <div class="fc-price"><strong>$3.500</strong><span>/ metro</span></div>
+            <button class="fc-btn">
+              Añadir al carro
+            </button>
           </div>
         </div>
       </div>
@@ -1417,10 +1451,16 @@
   <!-- Scroll to top -->
   <button class="scroll-top" aria-label="Ir arriba">↑</button>
 
+
+
+
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <!-- JS principal del proyecto (js/main.js) -->
   <script src="js/main.js"></script>
+
+
+
 </body>
 
 </html>

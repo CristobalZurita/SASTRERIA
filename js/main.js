@@ -15,7 +15,7 @@
 'use strict';
 
 // ============================================================
-// 1. NAVBAR
+// 1. NAVBAR + CARRITO
 // ============================================================
 (function initNav() {
   const nav = document.getElementById('nav');
@@ -23,10 +23,18 @@
   const drawer = document.getElementById('drawer');
   const drawerClose = document.getElementById('drawer-close');
 
+  // Carrito
+  const cartBtn = document.getElementById("cart");
+  const cartDrawer = document.getElementById("cart-drawer");
+  const cartOverlay = document.getElementById("cart-overlay");
+  const cartClose = document.getElementById("cart-close");
+
+  // Navbar scroll
   window.addEventListener('scroll', () => {
     nav?.classList.toggle('nav--scrolled', window.scrollY > 60);
   }, { passive: true });
 
+  // Burger menu
   burger?.addEventListener('click', () => {
     burger.classList.toggle('open');
     drawer?.classList.toggle('open');
@@ -41,7 +49,26 @@
 
   drawerClose?.addEventListener('click', closeDrawer);
   drawer?.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+
+  // ==== Carrito ====
+  if (cartBtn && cartDrawer && cartOverlay && cartClose) {
+
+    function cerrarCarrito() {
+      cartDrawer.classList.remove("active");
+      cartOverlay.classList.remove("active");
+    }
+
+    cartBtn.addEventListener("click", () => {
+      cartDrawer.classList.add("active");
+      cartOverlay.classList.add("active");
+    });
+
+    cartClose.addEventListener("click", cerrarCarrito);
+    cartOverlay.addEventListener("click", cerrarCarrito);
+  }
+
 })();
+
 
 // ============================================================
 // 2. FADE-UP OBSERVER
