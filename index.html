@@ -114,6 +114,27 @@
 
     <div class="nav__actions">
     <!-- Botones de acción del navbar (lado derecho). -->
+
+      <!-- ====== CARRITO DE COMPRAS ====== -->
+      <!-- Esta funcionalidad fue agregada desde la rama 'rama-amara'.
+           Permite a los usuarios agregar telas al carrito y gestionar sus compras.
+           Elementos relacionados en JS: initNav() busca estos IDs:
+           - cart: botón del carrito en el navbar
+           - cart-overlay: capa oscura detrás del carrito
+           - cart-drawer: panel lateral del carrito
+           - cart-close: botón para cerrar el carrito
+           - cart-count: contador de items en el carrito
+           - cart-items: contenido del carrito
+           - cart-checkout: botón para finalizar pedido
+      -->
+      <div class="nav__cart" id="cart">
+        🛒 <span id="cart-count">0</span>
+        <!-- nav__cart: Icono del carrito con contador de items.
+             id="cart": El JS (initNav) detecta este elemento para inicializar la lógica del carrito.
+             id="cart-count": Muestra la cantidad de items agregados. Inicia en 0. -->
+      </div>
+      <!-- Cierre del div.nav__cart -->
+
       <a href="#formularios" class="nav__btn nav__btn--ghost d-none d-md-block">Buscar sastre</a>
       <!-- d-none: Bootstrap → display:none (oculto en móvil).
            d-md-block: Bootstrap → display:block desde 768px (tablet/desktop).
@@ -146,6 +167,58 @@
     <!-- --accent: Modificador BEM → resalte visual para el CTA principal. -->
   </div>
 </nav>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     CARRITO DE COMPRAS (DRAWER)
+     scss/layout/_navbar.scss → .cart-*
+══════════════════════════════════════════════════════════ -->
+
+<!-- ====== OVERLAY DEL CARRITO ====== -->
+<!-- Capa oscura semitransparente que aparece detrás del carrito lateral.
+     Al hacer clic en ella, se cierra el carrito (evento en JS).
+     CSS: .cart-overlay tiene position:fixed, cover entire screen,
+     background rgba(0,0,0,0.5). Con clase 'active' se vuelve visible. -->
+<div class="cart-overlay" id="cart-overlay"></div>
+<!-- id="cart-overlay": Referenciado en JS (initNav) para agregar/quit classList('active').
+     Inicialmente oculto (opacity:0, pointer-events:none).
+     Al abrir carrito: opacity:1, pointer-events:auto. -->
+
+<!-- ====== DRAWER LATERAL DEL CARRITO ====== -->
+<!-- Panel lateral que se desliza desde la derecha.
+     Muestra los items agregados, total y botón de checkout.
+     position:fixed, right:0, top:0, height:100%.
+     Con clase 'active' se traduce translateX(0), sin ella translateX(100%). -->
+<aside class="cart-drawer" id="cart-drawer">
+<!-- id="cart-drawer": JS detecta este elemento para controlar su apertura/cierre.
+     classList.toggle('active') en JS abre/cierra el drawer. -->
+
+  <div class="cart-header">
+  <!-- Header del carrito con título y botón de cerrar. -->
+    <h3>Tu carrito</h3>
+    <!-- Título visible del carrito. -->
+    <button id="cart-close">✕</button>
+    <!-- id="cart-close": Botón X para cerrar el drawer.
+         JS: cartClose.addEventListener('click', cerrarCarrito) -->
+  </div>
+
+  <div class="cart-body" id="cart-items">
+  <!-- Cuerpo del carrito: lista de items agregados.
+       Scrollable si hay muchos items (CSS overflow-y:auto). -->
+    <p>Tu carrito está vacío.</p>
+    <!-- Mensaje por defecto cuando no hay items.
+         JS reemplaza este contenido con la lista de items al agregar productos. -->
+  </div>
+  <!-- id="cart-items": JS inserta dinámicamente los items del carrito aquí.
+       Estructura típica: .cart-item { nombre, precio, botón eliminar } -->
+
+  <div class="cart-footer">
+  <!-- Footer del carrito: total y botón de checkout. -->
+    <button id="cart-checkout">Finalizar pedido</button>
+    <!-- id="cart-checkout": Botón para proceder al pago/checkout.
+         JS: cartCheckout.addEventListener('click', ...) para procesar el pedido. -->
+  </div>
+</aside>
 
 
 <!-- ═══════════════════════════
@@ -575,6 +648,15 @@
           <div class="fc-type">Natural · 100% Lino belga</div>
           <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
           <!-- <strong>: Precio en negrita. <span>: unidad en texto secundario. -->
+
+          <!-- ====== BOTÓN AÑADIR AL CARRO ====== -->
+          <!-- Funcionalidad de carrito de compras (rama-amara).
+               Al hacer clic, el JS agrega esta tela al carrito.
+               initCatalog() detecta .fc-btn y agrega el evento click. -->
+          <button class="fc-btn">Añadir al carro</button>
+          <!-- fc-btn: Botón para agregar la tela al carrito.
+               El JS obtiene los datos del producto desde los atributos data-*
+               del elemento padre (.fabric-card): data-id, data-name, data-price. -->
         </div>
       </div>
 
@@ -593,6 +675,9 @@
           <div class="fc-name">Seda Natural</div>
           <div class="fc-type">Premium · 100% Seda</div>
           <div class="fc-price"><strong>$12.800</strong><span>/ metro</span></div>
+          <!-- ====== BOTÓN AÑADIR AL CARRO ====== -->
+          <!-- Funcionalidad de carrito de compras (rama-amara). -->
+          <button class="fc-btn">Añadir al carro</button>
         </div>
       </div>
 
@@ -610,6 +695,9 @@
           <div class="fc-name">Algodón Popelín</div>
           <div class="fc-type">Natural · 100% Algodón</div>
           <div class="fc-price"><strong>$2.800</strong><span>/ metro</span></div>
+          <!-- ====== BOTÓN AÑADIR AL CARRO ====== -->
+          <!-- Funcionalidad de carrito de compras (rama-amara). -->
+          <button class="fc-btn">Añadir al carro</button>
         </div>
       </div>
 
@@ -637,6 +725,9 @@
           <div class="fc-name">Gabardina Navy</div>
           <div class="fc-type">Mezcla · Poliéster-Viscosa</div>
           <div class="fc-price"><strong>$3.500</strong><span>/ metro</span></div>
+          <!-- ====== BOTÓN AÑADIR AL CARRO ====== -->
+          <!-- Funcionalidad de carrito de compras (rama-amara). -->
+          <button class="fc-btn">Añadir al carro</button>
         </div>
       </div>
 
