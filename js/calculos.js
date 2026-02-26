@@ -1,17 +1,21 @@
+<<<<<<< HEAD
 // 2. Función que calcula el total del pedido
 // Recibe:
 // - pedido: un arreglo con los productos comprados
 // - catalogo: un objeto que contiene los productos y sus precios
 function calcularTotalPedido(pedido, catalogo) {
+=======
+// calculos.js
+
+// Función que calcula el total del carrito a partir de los productos agregados
+function calcularTotalCarrito(items) {
+>>>>>>> 5e0a5339374deb0978bd3123a9ecb540a4c4330c
   let total = 0;
 
-  // Recorre cada producto del pedido
-  pedido.forEach(producto => {
-    // Suma al total el precio del producto según el catálogo
-    total += catalogo[producto];
+  items.forEach(item => {
+    total += item.precio;
   });
 
-  // Devuelve el total final de la compra
   return total;
 }
 
