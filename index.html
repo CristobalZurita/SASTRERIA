@@ -622,7 +622,10 @@
     <div class="cat-grid">
 
       <!-- ====== Tarjeta: Lino ====== -->
-      <div class="fabric-card fade-up delay-1" data-type="natural">
+      <div class="fabric-card fade-up delay-1" data-type="natural" data-id="lino" data-name="Lino Premium" data-price="4200">
+      <!-- data-id: Identificador único de la tela (usado por JS para el carrito).
+           data-name: Nombre para mostrar en el carrito.
+           data-price: Precio por metro (número). -->
       <!-- data-type="natural": El JS compara este valor con data-filter del botón activo.
            Si no coincide → agrega 'fabric-card--dimmed' (atenúa la tarjeta).
            Si coincide o filter='all' → quita --dimmed (tarjeta completamente visible). -->
@@ -661,7 +664,8 @@
       </div>
 
       <!-- ====== Tarjeta: Seda ====== -->
-      <div class="fabric-card fade-up delay-2" data-type="premium">
+      <div class="fabric-card fade-up delay-2" data-type="premium" data-id="seda" data-name="Seda Natural" data-price="12800">
+      <!-- data-id, data-name, data-price: Attributes para el carrito de compras. -->
       <!-- Solo visible con filtro "Premium" o "Todos". -->
         <div class="fc-wrap">
           <svg class="fc-img" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
@@ -682,7 +686,10 @@
       </div>
 
       <!-- ====== Tarjeta: Algodón ====== -->
-      <div class="fabric-card fade-up delay-3" data-type="natural">
+      <div class="fabric-card fade-up delay-3" data-type="natural" data-id="algodon" data-name="Algodón Popelín" data-price="2800">
+      <!-- data-id: Identificador para el carrito.
+           data-name: Nombre para mostrar.
+           data-price: Precio por metro. -->
         <div class="fc-wrap">
           <svg class="fc-img" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
             <defs><pattern id="fc-alg" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#C45C3A"/><rect x="0" y="0" width="5" height="5" fill="#D06B47" opacity=".4"/><rect x="5" y="5" width="5" height="5" fill="#A04428" opacity=".32"/></pattern></defs>
@@ -702,7 +709,8 @@
       </div>
 
       <!-- ====== Tarjeta: Gabardina ====== -->
-      <div class="fabric-card fade-up delay-4" data-type="mezcla">
+      <div class="fabric-card fade-up delay-4" data-type="mezcla" data-id="gabardina" data-name="Gabardina Navy" data-price="3500">
+      <!-- data-id, data-name, data-price: Attributes para el carrito de compras. -->
       <!-- data-type="mezcla": Solo visible con "Mezclas" o "Todos". -->
         <div class="fc-wrap">
           <svg class="fc-img" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
