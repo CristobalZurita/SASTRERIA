@@ -71,6 +71,56 @@
   const cartClose = document.getElementById("cart-close");
   // Botón ✕ dentro del carrito para cerrarlo.
 
+  // main.js
+
+// Array para almacenar los productos del carrito
+let carritoItems = [];
+
+// Función para agregar productos al carrito
+function agregarAlCarrito(boton) {
+  const tarjeta = boton.closest('.fabric-card');
+
+  const id = tarjeta.dataset.id;
+  const nombre = tarjeta.dataset.name;
+  const precio = Number(tarjeta.dataset.price);
+
+  if (!id || !nombre || isNaN(precio)) return;
+
+  carritoItems.push({ id, nombre, precio });
+  actualizarCarrito();
+}
+
+// Función para actualizar el carrito en pantalla
+function actualizarCarrito() {
+  const contador = document.getElementById('cart-count');
+  if (contador) contador.textContent = carritoItems.length;
+
+  const container = document.getElementById('cart-items');
+  if (!container) return;
+
+  if (carritoItems.length === 0) {
+    container.innerHTML = '<p>Tu carrito está vacío.</p>';
+    return;
+  }
+
+  let html = '';
+
+  // 👉 EL TOTAL SE CALCULA USANDO LA FUNCIÓN DE calculos.js
+  const total = calcularTotalCarrito(carritoItems);
+
+  carritoItems.forEach(item => {
+    html += `
+      <div class="cart-item">
+        <span>${item.nombre}</span>
+        <span>$${item.precio}</span>
+      </div>
+    `;
+  });
+
+  html += `<p class="cart-total"><strong>Total: $${total}</strong></p>`;
+  container.innerHTML = html;
+}
+
   // ========================================
   // ---- Comportamiento del Navbar al hacer scroll ----
   // ========================================
@@ -153,6 +203,20 @@
     cartClose.addEventListener("click", cerrarCarrito);
     cartOverlay.addEventListener("click", cerrarCarrito);
   }
+
+  // ---- Binding de botones 'Añadir al carro' ----
+  // Añade listeners a cada botón de las tarjetas para invocar la función
+  // `agregarAlCarrito` que está definida en este mismo IIFE.
+  document.querySelectorAll('.fc-btn').forEach(boton => {
+    boton.addEventListener('click', () => {
+      try {
+        agregarAlCarrito(boton);
+      } catch (err) {
+        // No interfiere con el flujo si algo falla; lo registramos para depuración.
+        console.error('Error al añadir al carrito:', err);
+      }
+    });
+  });
 
 })();
 // El () final invoca inmediatamente la función declarada arriba.
