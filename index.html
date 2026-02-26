@@ -1,1466 +1,1691 @@
 <!DOCTYPE html>
+<!-- DOCTYPE: Declara HTML5. Debe ir SIEMPRE en la primera línea.
+     Sin esto el navegador entra en "quirks mode" (modo antiguo) y el
+     renderizado es impredecible. -->
+
 <html lang="es">
+<!-- <html>: Elemento raíz de toda la página.
+     lang="es": Idioma español — importante para:
+       - Lectores de pantalla (accesibilidad)
+       - Motores de búsqueda (SEO)
+       - Corrección ortográfica del navegador -->
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- <head>: Contiene metadatos (info SOBRE la página, no contenido visible). -->
+
+  <meta charset="UTF-8"/>
+  <!-- charset="UTF-8": Conjunto de caracteres universal.
+       Sin esto, tildes y ñ aparecen como símbolos extraños (ÃÃ©). -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- viewport: Controla la visualización en móviles.
+       width=device-width → el ancho se adapta al dispositivo.
+       initial-scale=1.0  → zoom inicial al 100%.
+       Sin esta línea, los móviles mostrarían la versión desktop encogida. -->
+
   <title>Hilo & Oficio — Plataforma Textil Nacional · Chile</title>
-  <meta name="description"
-    content="Conectamos clientes con los mejores sastres artesanales de Chile. Encuentra tu tela ideal y trabaja con un experto en tu región." />
+  <!-- <title>: Texto en la pestaña del navegador y en resultados de Google.
+       Es el factor de SEO más importante en el <head>. -->
 
-  <!-- Google Fonts: Cormorant Garamond + Jost + Courier Prime -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600;700&family=Courier+Prime:wght@400;700&display=swap"
-    rel="stylesheet" />
+  <meta name="description" content="Conectamos clientes con los mejores sastres artesanales de Chile. Encuentra tu tela ideal y trabaja con un experto en tu región."/>
+  <!-- description: Aparece en resultados de búsqueda debajo del título.
+       No afecta el ranking directamente pero sí el CTR (porcentaje de clics).
+       Recomendación: 150-160 caracteres. -->
 
-  <!-- Bootstrap 5 (vendor) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <!-- preconnect: Optimización de rendimiento.
+       Le dice al navegador "prepara la conexión con este servidor AHORA"
+       antes de que sea necesaria, reduciendo latencia (DNS+TCP+TLS). -->
 
-  <!--
-    CSS compilado desde: scss/main.scss
-    Arquitectura SASS 7-1:
-      abstracts/ _variables _mixins _functions
-      base/       _reset _typography
-      layout/     _navbar _hero _footer
-      components/ _buttons _cards _stepper
-      pages/      _home
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <!-- Misma optimización para el servidor de archivos de Google.
+       crossorigin: Necesario para solicitudes entre dominios distintos (CORS). -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet"/>
+  <!-- Carga 3 fuentes desde Google Fonts:
+       - Cormorant Garamond: Serif elegante para títulos
+       - Jost: Sans-serif moderna para texto de cuerpo
+       - Courier Prime: Monoespaciada estilo máquina de escribir
+       display=swap: Muestra fuente del sistema mientras carga, evita texto invisible (FOIT). -->
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap 5 cargado desde CDN (servidor externo).
+       Ventajas: probablemente en caché del navegador, servidores cercanos al usuario.
+       .min.css = versión minificada (sin espacios/comentarios) → archivo más pequeño.
+       Aporta: sistema de grilla, clases utilitarias (d-none, text-center, mt-5, etc.) -->
+
+  <!-- ARQUITECTURA SASS 7-1:
+       main.css se compiló desde archivos .scss organizados en carpetas:
+       abstracts/ → _variables _mixins _functions  (no generan CSS por sí solos)
+       base/       → _reset _typography             (estilos base del documento)
+       layout/     → _navbar _hero _footer          (estructura de página)
+       components/ → _buttons _cards _stepper       (componentes reutilizables)
+       pages/      → _home                          (estilos específicos de la home)
   -->
-  <link rel="stylesheet" href="./css/main.css" />
+  <link rel="stylesheet" href="./css/main.css"/>
+  <!-- CSS propio del proyecto. Va DESPUÉS de Bootstrap para poder sobreescribirlo.
+       ./ → ruta relativa al directorio donde está el HTML. -->
+
 </head>
 
 <body>
+<!-- <body>: Todo el contenido VISIBLE de la página va aquí. Solo puede haber uno. -->
 
-  <!-- ═══════════════════════════════════════════════════════
+
+<!-- ═══════════════════════════
      NAVBAR
      scss/layout/_navbar.scss
-══════════════════════════════════════════════════════════ -->
-  <nav class="nav" id="nav">
-    <div class="nav__wrap">
-      <a href="#" class="nav__logo">
-        <div class="nav__logo-mark">✦</div>
-        <div class="nav__logo-text">
-          <strong>Hilo &amp; Oficio</strong>
-          <small>Plataforma Textil · Chile</small>
-        </div>
-      </a>
+════════════════════════════ -->
 
-      <div class="nav__links">
-        <a href="#como-funciona" class="nav__link">Cómo funciona</a>
-        <a href="#guia-color" class="nav__link">Guía de color</a>
-        <a href="#catalogo" class="nav__link">Telas</a>
-        <a href="#sastres" class="nav__link">Sastres</a>
-        <a href="#formularios" class="nav__link">Conectarse</a>
+<nav class="nav" id="nav">
+<!-- <nav>: Elemento semántico HTML5 para navegación principal.
+     Mejor que <div> porque los lectores de pantalla lo identifican como menú.
+     id="nav": El JS lo selecciona para agregar/quitar 'nav--scrolled' al hacer scroll. -->
+
+  <div class="nav__wrap">
+  <!-- Patrón BEM: Block=nav / Element=__wrap
+       En CSS limita el ancho máximo y centra el contenido. -->
+
+    <a href="#" class="nav__logo">
+    <!-- El logo siempre debe ser un link a la home (href="#" → tope de página). -->
+
+      <div class="nav__logo-mark">✦</div>
+      <!-- Símbolo decorativo. ✦ es carácter Unicode especial. -->
+
+      <div class="nav__logo-text">
+        <strong>Hilo &amp; Oficio</strong>
+        <!-- <strong>: Negrita con importancia semántica.
+             &amp; → entidad HTML para el carácter '&'. SIEMPRE usar &amp; en HTML. -->
+        <small>Plataforma Textil · Chile</small>
+        <!-- <small>: Texto de menor importancia relativa. -->
       </div>
+    </a>
 
-      <div class="nav__actions">
-        <div class="nav__cart" id="cart">
-          🛒 <span id="cart-count">0</span>
-        </div>
-        <a href="#formularios" class="nav__btn nav__btn--ghost d-none d-md-block">Buscar sastre</a>
-        <a href="#formularios" class="nav__btn nav__btn--fill">Postular →</a>
-      </div>
-
-      <button class="nav__burger" id="burger" aria-label="Menú">
-        <span></span><span></span><span></span>
-      </button>
+    <div class="nav__links">
+    <!-- Links principales de navegación. Se ocultan en móvil con CSS. -->
+      <a href="#como-funciona" class="nav__link">Cómo funciona</a>
+      <!-- href="#como-funciona": Anclaje interno. El JS intercepta el clic
+           para hacer scroll SUAVE en vez de salto instantáneo. -->
+      <a href="#guia-color"    class="nav__link">Guía de color</a>
+      <a href="#catalogo"      class="nav__link">Telas</a>
+      <a href="#sastres"       class="nav__link">Sastres</a>
+      <a href="#formularios"   class="nav__link">Conectarse</a>
     </div>
 
-    <!-- Drawer móvil -->
-    <div class="nav__drawer" id="drawer">
-      <button class="nav__drawer-close" id="drawer-close">✕</button>
-      <a href="#como-funciona">Cómo funciona</a>
-      <a href="#guia-color">Guía de color</a>
-      <a href="#catalogo">Telas</a>
-      <a href="#sastres">Sastres</a>
-      <a href="#formularios" class="nav__drawer-link--accent">Conectarse →</a>
-    </div>
-  </nav>
-
-  <!-- Overlay -->
-  <div class="cart-overlay" id="cart-overlay"></div>
-
-  <!-- Carrito lateral -->
-  <aside class="cart-drawer" id="cart-drawer">
-    <div class="cart-header">
-      <h3>Tu carrito</h3>
-      <button id="cart-close">✕</button>
+    <div class="nav__actions">
+    <!-- Botones de acción del navbar (lado derecho). -->
+      <a href="#formularios" class="nav__btn nav__btn--ghost d-none d-md-block">Buscar sastre</a>
+      <!-- d-none: Bootstrap → display:none (oculto en móvil).
+           d-md-block: Bootstrap → display:block desde 768px (tablet/desktop).
+           nav__btn--ghost = botón solo con borde, sin relleno. -->
+      <a href="#formularios" class="nav__btn nav__btn--fill">Postular →</a>
+      <!-- nav__btn--fill = botón relleno. Visible en TODOS los tamaños. -->
     </div>
 
-    <div class="cart-body" id="cart-items">
-      <p>Tu carrito está vacío.</p>
-    </div>
+    <button class="nav__burger" id="burger" aria-label="Menú">
+    <!-- <button>: Semánticamente correcto para elementos interactivos.
+         id="burger": El JS toggle clases con él al hacer clic.
+         aria-label="Menú": Para lectores de pantalla (no hay texto visible). -->
+      <span></span><span></span><span></span>
+      <!-- 3 spans vacíos = las 3 líneas del ícono hamburguesa.
+           CSS las estila. Con clase 'open' (agregada por JS) se animan a X. -->
+    </button>
+  </div>
 
-    <div class="cart-footer">
-      <button id="cart-checkout">Finalizar pedido</button>
-    </div>
-  </aside>
+  <div class="nav__drawer" id="drawer">
+  <!-- Menú lateral deslizante para móvil.
+       Oculto por defecto. JS agrega 'open' para mostrarlo.
+       initNav() cierra el drawer al hacer clic en cualquier link interno. -->
+    <button class="nav__drawer-close" id="drawer-close">✕</button>
+    <!-- ✕ = carácter Unicode de X (diferente a la letra X). -->
+    <a href="#como-funciona">Cómo funciona</a>
+    <a href="#guia-color">Guía de color</a>
+    <a href="#catalogo">Telas</a>
+    <a href="#sastres">Sastres</a>
+    <a href="#formularios" class="nav__drawer-link--accent">Conectarse →</a>
+    <!-- --accent: Modificador BEM → resalte visual para el CTA principal. -->
+  </div>
+</nav>
 
 
-  <!-- ═══════════════════════════════════════════════════════
+<!-- ═══════════════════════════
      HERO
      scss/layout/_hero.scss
-══════════════════════════════════════════════════════════ -->
-  <section class="hero" id="inicio">
-    <div class="hero__split"></div>
+════════════════════════════ -->
 
-    <div class="hero__container">
-      <div class="hero__content">
-        <div class="hero__eyebrow-row">
-          <div class="hero__dot"></div>
-          <span class="eyebrow">Plataforma textil · Chile</span>
-        </div>
+<section class="hero" id="inicio">
+<!-- <section>: Elemento semántico HTML5. Agrupa contenido relacionado.
+     id="inicio": Permite href="#inicio" en links de navegación. -->
 
-        <h1 class="hero__title">
-          Donde el hilo<br>se convierte<br>en <em>arte propio</em>
-        </h1>
+  <div class="hero__split"></div>
+  <!-- Div decorativo que crea la división visual del hero (diagonal/gradiente).
+       Sin contenido. Manejado 100% con CSS. -->
 
-        <p class="hero__desc">
-          Conectamos a mujeres y hombres que buscan ropa exclusiva hecha a medida con sastres artesanales del país.
-          Desde tu tono de piel hasta la tela perfecta.
-        </p>
+  <div class="hero__container">
+    <div class="hero__content">
+    <!-- Columna izquierda: texto principal y CTAs. -->
 
-        <div class="hero__ctas">
-          <a href="#guia-color" class="btn btn--terra btn--lg">Descubrir mi paleta</a>
-          <a href="#formularios" class="btn btn--outline btn--lg">Soy sastre →</a>
-        </div>
-
-        <div class="hero__kpis">
-          <div class="hero__kpi">
-            <strong>340+</strong><span>Sastres activos</span>
-          </div>
-          <div class="hero__kpi-sep"></div>
-          <div class="hero__kpi">
-            <strong>16</strong><span>Regiones</span>
-          </div>
-          <div class="hero__kpi-sep"></div>
-          <div class="hero__kpi">
-            <strong>5.200</strong><span>Proyectos</span>
-          </div>
-        </div>
+      <div class="hero__eyebrow-row">
+        <div class="hero__dot"></div>
+        <!-- Punto animado (CSS pulse animation). Decorativo. -->
+        <span class="eyebrow">Plataforma textil · Chile</span>
+        <!-- "Eyebrow": texto pequeño ENCIMA del título principal.
+             Término de diseño tipográfico. Mayúsculas, letra espaciada. -->
       </div>
 
-      <!-- Telas flotantes con SVG patterns -->
-      <div class="hero__visual">
-        <!-- Lino natural -->
-        <div class="hero__swatch hero__swatch--a">
-          <svg viewBox="0 0 255 335" xmlns="http://www.w3.org/2000/svg" class="hero-swatch-svg">
-            <defs>
-              <pattern id="lino" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                <rect width="8" height="8" fill="#D4B896" />
-                <line x1="0" y1="0" x2="0" y2="8" stroke="#BF9B6E" stroke-width=".9" opacity=".55" />
-                <line x1="4" y1="0" x2="4" y2="8" stroke="#E0C4A4" stroke-width=".5" opacity=".35" />
-                <line x1="0" y1="0" x2="8" y2="0" stroke="#C2976A" stroke-width=".7" opacity=".5" />
-                <line x1="0" y1="4" x2="8" y2="4" stroke="#D8B88A" stroke-width=".4" opacity=".38" />
-              </pattern>
-            </defs>
-            <rect width="255" height="335" fill="url(#lino)" />
-            <rect width="255" height="335" fill="url(#lino)" transform="rotate(90 127 167)" opacity=".35" />
-          </svg>
-          <div class="swatch-label">
-            <strong>Lino Natural</strong><span>Colección 2025</span>
-          </div>
-        </div>
+      <h1 class="hero__title">
+      <!-- <h1>: Título de primer nivel. Solo uno por página. Crucial para SEO. -->
+        Donde el hilo<br>se convierte<br>en <em>arte propio</em>
+        <!-- <br>: Salto de línea forzado para controlar el diseño del título.
+             <em>: Énfasis semántico (itálica). Diferente de <i> que es solo estético. -->
+      </h1>
 
-        <!-- Índigo -->
-        <div class="hero__swatch hero__swatch--b">
-          <svg viewBox="0 0 182 245" xmlns="http://www.w3.org/2000/svg" class="hero-swatch-svg">
-            <defs>
-              <pattern id="seda" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
-                <rect width="7" height="7" fill="#2D3A6B" />
-                <line x1="0" y1="0" x2="7" y2="7" stroke="#4A5A9C" stroke-width=".6" opacity=".55" />
-                <line x1="7" y1="0" x2="0" y2="7" stroke="#1B2648" stroke-width=".4" opacity=".45" />
-              </pattern>
-            </defs>
-            <rect width="182" height="245" fill="url(#seda)" />
-            <rect width="182" height="245" fill="rgba(255,255,255,.04)" />
-          </svg>
-          <div class="swatch-label">
-            <strong>Seda Índigo</strong><span>Premium</span>
-          </div>
-        </div>
+      <p class="hero__desc">
+        Conectamos a mujeres y hombres que buscan ropa exclusiva hecha a medida con sastres artesanales del país.
+      </p>
 
-        <!-- Terracota -->
-        <div class="hero__swatch hero__swatch--c">
-          <svg viewBox="0 0 158 208" xmlns="http://www.w3.org/2000/svg" class="hero-swatch-svg">
-            <defs>
-              <pattern id="terra-p" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-                <rect width="10" height="10" fill="#C45C3A" />
-                <rect x="0" y="0" width="5" height="5" fill="#D06B47" opacity=".4" />
-                <rect x="5" y="5" width="5" height="5" fill="#A04428" opacity=".32" />
-              </pattern>
-            </defs>
-            <rect width="158" height="208" fill="url(#terra-p)" />
-          </svg>
-          <div class="swatch-label">
-            <strong>Popelín Terra</strong><span>Temporada</span>
-          </div>
-        </div>
+      <div class="hero__ctas">
+      <!-- CTA = Call To Action. Botones de acción principal. -->
+        <a href="#guia-color"  class="btn btn--terra btn--lg">Descubrir mi paleta</a>
+        <!-- btn--terra: Color terracota. btn--lg: Tamaño grande. -->
+        <a href="#formularios" class="btn btn--outline btn--lg">Soy sastre →</a>
+        <!-- btn--outline: Solo borde, sin relleno (botón secundario). -->
       </div>
-    </div>
-  </section>
+
+      <div class="hero__kpis">
+      <!-- KPIs = Key Performance Indicators. Métricas del negocio. -->
+        <div class="hero__kpi"><strong>340+</strong><span>Sastres activos</span></div>
+        <div class="hero__kpi-sep"></div>
+        <!-- Separador visual entre KPIs (barra vertical en CSS). -->
+        <div class="hero__kpi"><strong>16</strong><span>Regiones</span></div>
+        <div class="hero__kpi-sep"></div>
+        <div class="hero__kpi"><strong>5.200</strong><span>Proyectos</span></div>
+      </div>
+    </div><!-- /.hero__content -->
+
+    <div class="hero__visual">
+    <!-- Columna derecha: muestras de tela decorativas creadas con SVG. -->
+
+      <div class="hero__swatch hero__swatch--a">
+      <!-- "Swatch" = muestra de tela.
+           --a / --b / --c: Modificadores BEM para posición y tamaño distintos. -->
+
+        <svg viewBox="0 0 255 335" xmlns="http://www.w3.org/2000/svg" class="hero-swatch-svg">
+        <!-- <svg>: Scalable Vector Graphics. No pierde calidad al escalar.
+             viewBox="0 0 255 335": Sistema de coordenadas interno del SVG.
+               (0 0 = origen, 255 335 = ancho y alto del área de dibujo)
+             xmlns: Namespace XML requerido para compatibilidad. -->
+
+          <defs>
+          <!-- <defs>: Define elementos reutilizables (patterns, gradients).
+               No se renderizan directamente, se referencian con url(#id). -->
+
+            <pattern id="lino" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+            <!-- <pattern>: Patrón repetible (como un "tile" de fondo).
+                 id="lino": Referenciado con fill="url(#lino)".
+                 width="8" height="8": Tamaño de cada baldosa del patrón.
+                 patternUnits="userSpaceOnUse": Coordenadas en píxeles del usuario. -->
+
+              <rect width="8" height="8" fill="#D4B896"/>
+              <!-- Fondo de cada tile: color lino natural. -->
+              <line x1="0" y1="0" x2="0" y2="8" stroke="#BF9B6E" stroke-width=".9" opacity=".55"/>
+              <!-- Hilo vertical (urdimbre): línea de (0,0) a (0,8). -->
+              <line x1="4" y1="0" x2="4" y2="8" stroke="#E0C4A4" stroke-width=".5" opacity=".35"/>
+              <!-- Segunda línea vertical, más clara → textura variada. -->
+              <line x1="0" y1="0" x2="8" y2="0" stroke="#C2976A" stroke-width=".7" opacity=".5"/>
+              <!-- Hilo horizontal (trama). -->
+              <line x1="0" y1="4" x2="8" y2="4" stroke="#D8B88A" stroke-width=".4" opacity=".38"/>
+              <!-- Segunda línea horizontal intermedia. -->
+            </pattern>
+          </defs>
+
+          <rect width="255" height="335" fill="url(#lino)"/>
+          <!-- Rellena todo el SVG con el patrón "lino". url(#lino) referencia el <pattern>. -->
+          <rect width="255" height="335" fill="url(#lino)" transform="rotate(90 127 167)" opacity=".35"/>
+          <!-- Segunda capa del patrón rotada 90°. Crea el efecto de entrelazado de hilo.
+               rotate(90 127 167): gira 90° alrededor del centro del rect (127,167). -->
+        </svg>
+
+        <div class="swatch-label">
+          <strong>Lino Natural</strong><span>Colección 2025</span>
+          <!-- Etiqueta superpuesta sobre el SVG (position:absolute en CSS). -->
+        </div>
+      </div><!-- /.hero__swatch--a -->
+
+      <div class="hero__swatch hero__swatch--b">
+      <!-- Segunda muestra: Seda Índigo (azul marino). -->
+        <svg viewBox="0 0 182 245" xmlns="http://www.w3.org/2000/svg" class="hero-swatch-svg">
+          <defs>
+            <pattern id="seda" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+              <rect width="7" height="7" fill="#2D3A6B"/>
+              <!-- Azul índigo oscuro como base. -->
+              <line x1="0" y1="0" x2="7" y2="7" stroke="#4A5A9C" stroke-width=".6" opacity=".55"/>
+              <!-- Diagonal ↘ simula el tejido en diagonal de la seda. -->
+              <line x1="7" y1="0" x2="0" y2="7" stroke="#1B2648" stroke-width=".4" opacity=".45"/>
+              <!-- Diagonal ↙ crea el patrón cruzado característico. -->
+            </pattern>
+          </defs>
+          <rect width="182" height="245" fill="url(#seda)"/>
+          <rect width="182" height="245" fill="rgba(255,255,255,.04)"/>
+          <!-- Blanco muy transparente (4% opacidad) → simula el lustre de la seda. -->
+        </svg>
+        <div class="swatch-label"><strong>Seda Índigo</strong><span>Premium</span></div>
+      </div>
+
+      <div class="hero__swatch hero__swatch--c">
+      <!-- Tercera muestra: Popelín Terracota (rojo/naranja tierra). -->
+        <svg viewBox="0 0 158 208" xmlns="http://www.w3.org/2000/svg" class="hero-swatch-svg">
+          <defs>
+            <pattern id="terra-p" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+              <rect width="10" height="10" fill="#C45C3A"/>
+              <!-- Terracota base. -->
+              <rect x="0" y="0" width="5" height="5" fill="#D06B47" opacity=".4"/>
+              <!-- Cuadrante superior izquierdo más claro. -->
+              <rect x="5" y="5" width="5" height="5" fill="#A04428" opacity=".32"/>
+              <!-- Cuadrante inferior derecho más oscuro.
+                   Los dos cuadrantes alternados simulan la textura del popelín. -->
+            </pattern>
+          </defs>
+          <rect width="158" height="208" fill="url(#terra-p)"/>
+        </svg>
+        <div class="swatch-label"><strong>Popelín Terra</strong><span>Temporada</span></div>
+      </div>
+
+    </div><!-- /.hero__visual -->
+  </div><!-- /.hero__container -->
+</section><!-- /.hero -->
 
 
-  <!-- ═══════════════════════════════════════════════════════
+<!-- ═══════════════════════════
      CÓMO FUNCIONA
      scss/pages/_home.scss → .sec-how
-══════════════════════════════════════════════════════════ -->
-  <section class="sec sec--light">
-    <div class="wrap">
-      <div class="sec-head sec-head--center fade-up" id="como-funciona">
-        <span class="eyebrow">La plataforma</span>
-        <h2>¿Cómo funciona?</h2>
-        <p>En cuatro pasos conectamos tu proyecto de ropa con el sastre perfecto, o te integramos a nuestra red.</p>
-      </div>
+════════════════════════════ -->
 
-      <div class="how-grid">
-        <div class="how-card fade-up delay-1">
-          <div class="how-num">1</div>
-          <div class="how-icon">🎨</div>
-          <h3>Descubre tu paleta</h3>
-          <p>Nuestra guía de color según tu tono de piel te indica los tejidos que mejor te quedan.</p>
-        </div>
-        <div class="how-card fade-up delay-2">
-          <div class="how-num">2</div>
-          <div class="how-icon">🧶</div>
-          <h3>Elige la tela</h3>
-          <p>Navega nuestro catálogo con más de 80 materiales y filtra por tipo, color y precio.</p>
-        </div>
-        <div class="how-card fade-up delay-3">
-          <div class="how-num">3</div>
-          <div class="how-icon">🤝</div>
-          <h3>Conecta con un sastre</h3>
-          <p>Te emparejamos con el artesano más adecuado según tu región y tipo de proyecto.</p>
-        </div>
-        <div class="how-card fade-up delay-4">
-          <div class="how-num">4</div>
-          <div class="how-icon">✨</div>
-          <h3>Recibe tu prenda</h3>
-          <p>Tu sastre trabaja con la tela elegida y entrega según las medidas y diseño acordados.</p>
-        </div>
-      </div>
+<section class="sec sec--light">
+<!-- .sec: Clase base de secciones (padding uniforme).
+     sec--light: Modificador → fondo claro/blanco. -->
+
+  <div class="wrap">
+  <!-- .wrap: Limita el ancho máximo (ej: 1200px) y centra con margin:auto.
+       Patrón muy común: section = fondo 100% ancho, wrap = contenido centrado. -->
+
+    <div class="sec-head sec-head--center fade-up" id="como-funciona">
+    <!-- sec-head: Encabezado de sección (eyebrow + título + descripción).
+         sec-head--center: Alineación centrada.
+         fade-up: El IntersectionObserver del JS lo anima al aparecer en viewport.
+         id="como-funciona": Destino del link href="#como-funciona". -->
+
+      <span class="eyebrow">La plataforma</span>
+      <h2>¿Cómo funciona?</h2>
+      <!-- <h2>: Segundo nivel. Debe usarse después del h1 (que está en el hero). -->
+      <p>En cuatro pasos conectamos tu proyecto de ropa con el sastre perfecto.</p>
     </div>
-  </section>
+
+    <div class="how-grid">
+    <!-- Grid de 4 tarjetas en CSS (probablemente grid-template-columns: repeat(4,1fr)). -->
+
+      <div class="how-card fade-up delay-1">
+      <!-- delay-1: CSS agrega animation-delay para que las tarjetas aparezcan
+           en cascada (cada una con un retardo mayor que la anterior). -->
+        <div class="how-num">1</div>
+        <!-- Número del paso. CSS lo estila como círculo grande. -->
+        <div class="how-icon">🎨</div>
+        <!-- Emoji como ícono. Simple, sin dependencias de librerías externas. -->
+        <h3>Descubre tu paleta</h3>
+        <!-- <h3>: Tercer nivel. Título de tarjeta dentro de sección h2. -->
+        <p>Nuestra guía de color según tu tono de piel te indica los tejidos que mejor te quedan.</p>
+      </div>
+
+      <div class="how-card fade-up delay-2">
+        <div class="how-num">2</div><div class="how-icon">🧶</div>
+        <h3>Elige la tela</h3>
+        <p>Navega nuestro catálogo con más de 80 materiales y filtra por tipo, color y precio.</p>
+      </div>
+
+      <div class="how-card fade-up delay-3">
+        <div class="how-num">3</div><div class="how-icon">🤝</div>
+        <h3>Conecta con un sastre</h3>
+        <p>Te emparejamos con el artesano más adecuado según tu región y tipo de proyecto.</p>
+      </div>
+
+      <div class="how-card fade-up delay-4">
+        <div class="how-num">4</div><div class="how-icon">✨</div>
+        <h3>Recibe tu prenda</h3>
+        <p>Tu sastre trabaja con la tela elegida y entrega según las medidas y diseño acordados.</p>
+      </div>
+
+    </div><!-- /.how-grid -->
+  </div><!-- /.wrap -->
+</section>
 
 
-  <!-- ═══════════════════════════════════════════════════════
-     GUÍA DE COLOR SEGÚN TONO DE PIEL
+<!-- ═══════════════════════════
+     GUÍA DE COLOR
      scss/components/_cards.scss → .skin-card
-══════════════════════════════════════════════════════════ -->
-  <section class="sec">
-    <div class="wrap">
-      <div class="sec-head sec-head--center fade-up" id="guia-color">
-        <span class="eyebrow">Guía de color</span>
-        <h2>Telas y colores según tu tono de piel</h2>
-        <p>Cada piel tiene una paleta que la realza. Encuentra los tejidos y colores que van contigo.</p>
-      </div>
+════════════════════════════ -->
 
-      <div class="skin-grid">
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head sec-head--center fade-up" id="guia-color">
+      <span class="eyebrow">Guía de color</span>
+      <h2>Telas y colores según tu tono de piel</h2>
+      <p>Cada piel tiene una paleta que la realza. Encuentra los tejidos y colores que van contigo.</p>
+    </div>
 
-        <!-- Piel Clara -->
-        <div class="skin-card fade-up delay-1">
-          <div class="skin-card__hero">
-            <svg viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="sc-p1" width="12" height="12" patternUnits="userSpaceOnUse">
-                  <rect width="12" height="12" fill="#E8D9C5" />
-                  <circle cx="6" cy="6" r="2" fill="#C4AD8E" opacity=".3" />
-                </pattern>
-              </defs>
-              <rect width="400" height="90" fill="url(#sc-p1)" />
-            </svg>
-            <div class="skin-dot skin-dot--light"></div>
-          </div>
-          <div class="skin-body">
-            <div class="skin-title">Piel Clara</div>
-            <p class="skin-desc">Tonos marfil, crema y alabastro. Piel que se sonroja con facilidad.</p>
-            <span class="skin-label">✅ Colores recomendados</span>
-            <div class="skin-palette">
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--indigo"></div><span class="skin-color__name">Índigo</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--azul-mar"></div><span class="skin-color__name">Azul
-                  mar</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--lino"></div><span class="skin-color__name">Lino</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--salvia"></div><span class="skin-color__name">Salvia</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--rosa-palo"></div><span class="skin-color__name">Rosa
-                  palo</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--taupe"></div><span class="skin-color__name">Taupe</span>
-              </div>
-            </div>
-            <span class="skin-label skin-label--avoid">❌ Evitar</span>
-            <div class="skin-palette">
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--blanco-hueso"></div><span class="skin-color__name">Blanco
-                  hueso</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--beige-palido"></div><span class="skin-color__name">Beige
-                  pálido</span>
-              </div>
-            </div>
-          </div>
+    <div class="skin-grid">
+    <!-- Grid de 3 columnas para los tonos de piel. En móvil colapsa a 1 columna. -->
+
+      <!-- ====== Piel Clara ====== -->
+      <div class="skin-card fade-up delay-1">
+      <!-- skin-card: El JS (initSkin) le agrega/quita 'skin-card--muted' en hover
+           para atenuar las tarjetas que NO están siendo señaladas. -->
+
+        <div class="skin-card__hero">
+        <!-- Zona visual superior con patrón SVG que representa el tono de piel. -->
+          <svg viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="sc-p1" width="12" height="12" patternUnits="userSpaceOnUse">
+                <rect width="12" height="12" fill="#E8D9C5"/>
+                <!-- Crema/lino → representa visualmente la piel clara. -->
+                <circle cx="6" cy="6" r="2" fill="#C4AD8E" opacity=".3"/>
+                <!-- <circle>: Círculo SVG. cx/cy=centro, r=radio.
+                     Puntos sutiles que simulan textura de tejido. -->
+              </pattern>
+            </defs>
+            <rect width="400" height="90" fill="url(#sc-p1)"/>
+          </svg>
+          <div class="skin-dot skin-dot--light"></div>
+          <!-- Círculo que muestra el tono de piel real.
+               skin-dot--light: En CSS tiene color crema/marfil específico. -->
         </div>
 
-        <!-- Piel Oliva / Media -->
-        <div class="skin-card fade-up delay-2">
-          <div class="skin-card__hero">
-            <svg viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="sc-p2" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <rect width="10" height="10" fill="#C8954A" />
-                  <line x1="0" y1="0" x2="10" y2="10" stroke="#A67830" stroke-width=".6" opacity=".4" />
-                  <line x1="10" y1="0" x2="0" y2="10" stroke="#DEB060" stroke-width=".4" opacity=".35" />
-                </pattern>
-              </defs>
-              <rect width="400" height="90" fill="url(#sc-p2)" />
-            </svg>
-            <div class="skin-dot skin-dot--olive"></div>
+        <div class="skin-body">
+          <div class="skin-title">Piel Clara</div>
+          <p class="skin-desc">Tonos marfil, crema y alabastro. Piel que se sonroja con facilidad.</p>
+
+          <span class="skin-label">✅ Colores recomendados</span>
+          <!-- ✅ emoji de check verde. CSS diferencia este label del de "evitar". -->
+
+          <div class="skin-palette">
+          <!-- Colección de puntos de color + nombre. -->
+            <div class="skin-color">
+              <div class="skin-color__dot skin-color__dot--indigo"></div>
+              <!-- Círculo de color. skin-color__dot--indigo → background-color en CSS. -->
+              <span class="skin-color__name">Índigo</span>
+            </div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--azul-mar"></div><span class="skin-color__name">Azul mar</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--lino"></div><span class="skin-color__name">Lino</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--salvia"></div><span class="skin-color__name">Salvia</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--rosa-palo"></div><span class="skin-color__name">Rosa palo</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--taupe"></div><span class="skin-color__name">Taupe</span></div>
           </div>
-          <div class="skin-body">
-            <div class="skin-title">Piel Oliva / Media</div>
-            <p class="skin-desc">Tonos dorados, trigo y miel. Bronceado natural todo el año.</p>
-            <span class="skin-label">✅ Colores recomendados</span>
-            <div class="skin-palette">
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--mostaza"></div><span
-                  class="skin-color__name">Mostaza</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--terracota"></div><span
-                  class="skin-color__name">Terracota</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--navy"></div><span class="skin-color__name">Navy</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--tomate"></div><span class="skin-color__name">Tomate</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--oliva"></div><span class="skin-color__name">Oliva</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--mandarina"></div><span
-                  class="skin-color__name">Mandarina</span>
-              </div>
-            </div>
-            <span class="skin-label skin-label--avoid">❌ Evitar</span>
-            <div class="skin-palette">
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--cafe-apagado"></div><span class="skin-color__name">Café
-                  apagado</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--arena-gris"></div><span class="skin-color__name">Arena
-                  gris</span>
-              </div>
-            </div>
+
+          <span class="skin-label skin-label--avoid">❌ Evitar</span>
+          <!-- skin-label--avoid: Modificador BEM → color rojo/warning en CSS. -->
+          <div class="skin-palette">
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--blanco-hueso"></div><span class="skin-color__name">Blanco hueso</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--beige-palido"></div><span class="skin-color__name">Beige pálido</span></div>
           </div>
         </div>
+      </div><!-- /.skin-card (piel clara) -->
 
-        <!-- Piel Morena / Oscura -->
-        <div class="skin-card fade-up delay-3">
-          <div class="skin-card__hero">
-            <svg viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="sc-p3" width="8" height="8" patternUnits="userSpaceOnUse">
-                  <rect width="8" height="8" fill="#5C3317" />
-                  <rect x="0" y="0" width="4" height="4" fill="#6E3D1E" opacity=".5" />
-                  <rect x="4" y="4" width="4" height="4" fill="#3B1F0D" opacity=".4" />
-                </pattern>
-              </defs>
-              <rect width="400" height="90" fill="url(#sc-p3)" />
-            </svg>
-            <div class="skin-dot skin-dot--dark"></div>
+      <!-- ====== Piel Oliva ====== -->
+      <div class="skin-card fade-up delay-2">
+        <div class="skin-card__hero">
+          <svg viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="sc-p2" width="10" height="10" patternUnits="userSpaceOnUse">
+                <rect width="10" height="10" fill="#C8954A"/>
+                <!-- Dorado/canela → representa visualmente la piel oliva. -->
+                <line x1="0" y1="0" x2="10" y2="10" stroke="#A67830" stroke-width=".6" opacity=".4"/>
+                <line x1="10" y1="0" x2="0" y2="10" stroke="#DEB060" stroke-width=".4" opacity=".35"/>
+                <!-- Diagonales cruzadas → patrón diferente al del lino. -->
+              </pattern>
+            </defs>
+            <rect width="400" height="90" fill="url(#sc-p2)"/>
+          </svg>
+          <div class="skin-dot skin-dot--olive"></div>
+        </div>
+        <div class="skin-body">
+          <div class="skin-title">Piel Oliva / Media</div>
+          <p class="skin-desc">Tonos dorados, trigo y miel. Bronceado natural todo el año.</p>
+          <span class="skin-label">✅ Colores recomendados</span>
+          <div class="skin-palette">
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--mostaza"></div><span class="skin-color__name">Mostaza</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--terracota"></div><span class="skin-color__name">Terracota</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--navy"></div><span class="skin-color__name">Navy</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--tomate"></div><span class="skin-color__name">Tomate</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--oliva"></div><span class="skin-color__name">Oliva</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--mandarina"></div><span class="skin-color__name">Mandarina</span></div>
           </div>
-          <div class="skin-body">
-            <div class="skin-title">Piel Morena / Oscura</div>
-            <p class="skin-desc">Tonos café, ébano y caoba. Piel con calidez y profundidad natural.</p>
-            <span class="skin-label">✅ Colores recomendados</span>
-            <div class="skin-palette">
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--rosa-hot"></div><span class="skin-color__name">Rosa
-                  hot</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--blanco"></div><span class="skin-color__name">Blanco</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--dorado"></div><span class="skin-color__name">Dorado</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--turquesa"></div><span
-                  class="skin-color__name">Turquesa</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--naranja"></div><span
-                  class="skin-color__name">Naranja</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--purpura"></div><span
-                  class="skin-color__name">Púrpura</span>
-              </div>
-            </div>
-            <span class="skin-label skin-label--avoid">❌ Evitar</span>
-            <div class="skin-palette">
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--gris-neutro"></div><span class="skin-color__name">Gris
-                  neutro</span>
-              </div>
-              <div class="skin-color">
-                <div class="skin-color__dot skin-color__dot--cafe-apagado"></div><span class="skin-color__name">Café
-                  medio</span>
-              </div>
-            </div>
+          <span class="skin-label skin-label--avoid">❌ Evitar</span>
+          <div class="skin-palette">
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--cafe-apagado"></div><span class="skin-color__name">Café apagado</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--arena-gris"></div><span class="skin-color__name">Arena gris</span></div>
           </div>
         </div>
+      </div><!-- /.skin-card (piel oliva) -->
 
-      </div><!-- /.skin-grid -->
-
-      <div class="skin-cta-box fade-up">
-        <h3>¿Quieres asesoría personalizada?</h3>
-        <p>Conecta directamente con un sastre especialista en colorimetría textil.</p>
-        <div class="cta-actions">
-          <a href="#formularios" class="btn btn--mustard btn--lg">Buscar mi sastre ideal</a>
-          <a href="#formularios" class="btn btn--outline-lt">Ver sastres disponibles</a>
+      <!-- ====== Piel Morena ====== -->
+      <div class="skin-card fade-up delay-3">
+        <div class="skin-card__hero">
+          <svg viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="sc-p3" width="8" height="8" patternUnits="userSpaceOnUse">
+                <rect width="8" height="8" fill="#5C3317"/>
+                <!-- Café/ébano → representa visualmente la piel morena oscura. -->
+                <rect x="0" y="0" width="4" height="4" fill="#6E3D1E" opacity=".5"/>
+                <rect x="4" y="4" width="4" height="4" fill="#3B1F0D" opacity=".4"/>
+                <!-- Damero oscuro en cuadrantes opuestos → simula textura del tejido. -->
+              </pattern>
+            </defs>
+            <rect width="400" height="90" fill="url(#sc-p3)"/>
+          </svg>
+          <div class="skin-dot skin-dot--dark"></div>
         </div>
+        <div class="skin-body">
+          <div class="skin-title">Piel Morena / Oscura</div>
+          <p class="skin-desc">Tonos café, ébano y caoba. Piel con calidez y profundidad natural.</p>
+          <span class="skin-label">✅ Colores recomendados</span>
+          <div class="skin-palette">
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--rosa-hot"></div><span class="skin-color__name">Rosa hot</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--blanco"></div><span class="skin-color__name">Blanco</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--dorado"></div><span class="skin-color__name">Dorado</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--turquesa"></div><span class="skin-color__name">Turquesa</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--naranja"></div><span class="skin-color__name">Naranja</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--purpura"></div><span class="skin-color__name">Púrpura</span></div>
+          </div>
+          <span class="skin-label skin-label--avoid">❌ Evitar</span>
+          <div class="skin-palette">
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--gris-neutro"></div><span class="skin-color__name">Gris neutro</span></div>
+            <div class="skin-color"><div class="skin-color__dot skin-color__dot--cafe-apagado"></div><span class="skin-color__name">Café medio</span></div>
+          </div>
+        </div>
+      </div><!-- /.skin-card (piel morena) -->
+
+    </div><!-- /.skin-grid -->
+
+    <div class="skin-cta-box fade-up">
+      <h3>¿Quieres asesoría personalizada?</h3>
+      <p>Conecta directamente con un sastre especialista en colorimetría textil.</p>
+      <div class="cta-actions">
+        <a href="#formularios" class="btn btn--mustard btn--lg">Buscar mi sastre ideal</a>
+        <!-- btn--mustard: Color mostaza. -->
+        <a href="#formularios" class="btn btn--outline-lt">Ver sastres disponibles</a>
+        <!-- btn--outline-lt: Outline con texto claro (para fondos oscuros). -->
       </div>
     </div>
-  </section>
+  </div><!-- /.wrap -->
+</section>
 
 
-  <!-- ═══════════════════════════════════════════════════════
+<!-- ═══════════════════════════
      CATÁLOGO DE TELAS
      scss/pages/_home.scss → .sec-catalog
-══════════════════════════════════════════════════════════ -->
-  <section class="sec sec--dark">
-    <div class="wrap">
-      <div class="sec-head sec-head--center fade-up" id="catalogo">
-        <span class="eyebrow">Materiales</span>
-        <h2>Catálogo de telas</h2>
-        <p>80+ materiales disponibles en nuestras sucursales de norte a sur.</p>
-      </div>
+════════════════════════════ -->
 
-      <div class="cat-filters fade-up">
-        <button class="cf-btn sec-catalog__filter-btn active" data-filter="all">Todos</button>
-        <button class="cf-btn sec-catalog__filter-btn" data-filter="natural">Naturales</button>
-        <button class="cf-btn sec-catalog__filter-btn" data-filter="sintetico">Sintéticos</button>
-        <button class="cf-btn sec-catalog__filter-btn" data-filter="mezcla">Mezclas</button>
-        <button class="cf-btn sec-catalog__filter-btn" data-filter="premium">Premium</button>
-      </div>
-
-      <div class="cat-grid">
-        <!-- Lino -->
-        <div class="fabric-card fade-up delay-1" data-type="natural" data-id="lino" data-name="Lino Premium"
-          data-price="4200">
-          <div class="fc-wrap">
-            <svg class="fc-img" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="fc-lino" width="8" height="8" patternUnits="userSpaceOnUse">
-                  <rect width="8" height="8" fill="#D4B896" />
-                  <line x1="0" y1="0" x2="0" y2="8" stroke="#BF9B6E" stroke-width=".8" opacity=".55" />
-                  <line x1="0" y1="0" x2="8" y2="0" stroke="#C9A97E" stroke-width=".6" opacity=".5" />
-                </pattern>
-              </defs>
-              <rect width="300" height="200" fill="url(#fc-lino)" />
-              <rect width="300" height="200" fill="url(#fc-lino)" transform="rotate(90 150 100)" opacity=".45" />
-            </svg>
-            <div class="fc-dot fc-dot--lino"></div>
-            <div class="fc-stock">En stock</div>
-          </div>
-          <div class="fc-body">
-            <div class="fc-name">Lino Premium</div>
-            <div class="fc-type">Natural · 100% Lino belga</div>
-            <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
-            <button class="fc-btn">
-              Añadir al carro
-            </button>
-          </div>
-        </div>
-
-        <!-- Seda -->
-        <div class="fabric-card fade-up delay-4" data-type="premium" data-id="seda" data-name="Seda Natural"
-          data-price="12800">
-          <div class="fc-wrap">
-            <svg class="fc-img" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="fc-seda" width="6" height="6" patternUnits="userSpaceOnUse">
-                  <rect width="6" height="6" fill="#2D3A6B" />
-                  <line x1="0" y1="0" x2="6" y2="6" stroke="#4A5A9C" stroke-width=".5" opacity=".6" />
-                  <line x1="6" y1="0" x2="0" y2="6" stroke="#1B2648" stroke-width=".4" opacity=".5" />
-                </pattern>
-              </defs>
-              <rect width="300" height="200" fill="url(#fc-seda)" />
-            </svg>
-            <div class="fc-dot fc-dot--indigo"></div>
-            <div class="fc-stock">Premium</div>
-          </div>
-          <div class="fc-body">
-            <div class="fc-name">Seda Natural</div>
-            <div class="fc-type">Premium · 100% Seda</div>
-            <div class="fc-price"><strong>$12.800</strong><span>/ metro</span></div>
-            <button class="fc-btn">
-              Añadir al carro
-            </button>
-          </div>
-        </div>
-
-        <!-- Algodón -->
-        <div class="fabric-card fade-up delay-1" data-type="natural" data-id="algodon" data-name="Algodón Popelín"
-          data-price="2800">
-          <div class="fc-wrap">
-            <svg class="fc-img" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="fc-alg" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <rect width="10" height="10" fill="#C45C3A" />
-                  <rect x="0" y="0" width="5" height="5" fill="#D06B47" opacity=".4" />
-                  <rect x="5" y="5" width="5" height="5" fill="#A04428" opacity=".32" />
-                </pattern>
-              </defs>
-              <rect width="300" height="200" fill="url(#fc-alg)" />
-            </svg>
-            <div class="fc-dot fc-dot--terracota"></div>
-            <div class="fc-stock">En stock</div>
-          </div>
-          <div class="fc-body">
-            <div class="fc-name">Algodón Popelín</div>
-            <div class="fc-type">Natural · 100% Algodón</div>
-            <div class="fc-price"><strong>$2.800</strong><span>/ metro</span></div>
-            <button class="fc-btn">
-              Añadir al carro
-            </button>
-          </div>
-        </div>
-
-        <!-- Gabardina -->
-        <div class="fabric-card fade-up delay-2" data-type="mezcla" data-id="gabardina" data-name="Gabardina Navy"
-          data-price="3500">
-          <div class="fc-wrap">
-            <svg class="fc-img" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="fc-gab" width="12" height="12" patternUnits="userSpaceOnUse">
-                  <rect width="12" height="12" fill="#1E2A45" />
-                  <line x1="0" y1="6" x2="12" y2="6" stroke="#3A4D6B" stroke-width=".9" opacity=".55" />
-                  <line x1="6" y1="0" x2="6" y2="12" stroke="#2E3E5C" stroke-width=".6" opacity=".45" />
-                </pattern>
-              </defs>
-              <rect width="300" height="200" fill="url(#fc-gab)" />
-            </svg>
-            <div class="fc-dot fc-dot--navy"></div>
-            <div class="fc-stock">En stock</div>
-          </div>
-          <div class="fc-body">
-            <div class="fc-name">Gabardina Navy</div>
-            <div class="fc-type">Mezcla · Poliéster-Viscosa</div>
-            <div class="fc-price"><strong>$3.500</strong><span>/ metro</span></div>
-            <button class="fc-btn">
-              Añadir al carro
-            </button>
-          </div>
-        </div>
-      </div>
+<section class="sec sec--dark">
+<!-- sec--dark: Fondo oscuro. Contrasta con secciones claras → ritmo visual. -->
+  <div class="wrap">
+    <div class="sec-head sec-head--center fade-up" id="catalogo">
+      <span class="eyebrow">Materiales</span>
+      <h2>Catálogo de telas</h2>
+      <p>80+ materiales disponibles en nuestras sucursales de norte a sur.</p>
     </div>
-  </section>
+
+    <div class="cat-filters fade-up">
+    <!-- Botones de filtro. El JS (initCatalog) maneja los clics. -->
+
+      <button class="cf-btn sec-catalog__filter-btn active" data-filter="all">Todos</button>
+      <!-- active: Este botón está activo por defecto.
+           data-filter="all": El JS lo lee como btn.dataset.filter → 'all'.
+           Con 'all' → muestra todas las tarjetas (sin dimming). -->
+      <button class="cf-btn sec-catalog__filter-btn" data-filter="natural">Naturales</button>
+      <button class="cf-btn sec-catalog__filter-btn" data-filter="sintetico">Sintéticos</button>
+      <button class="cf-btn sec-catalog__filter-btn" data-filter="mezcla">Mezclas</button>
+      <button class="cf-btn sec-catalog__filter-btn" data-filter="premium">Premium</button>
+    </div>
+
+    <div class="cat-grid">
+
+      <!-- ====== Tarjeta: Lino ====== -->
+      <div class="fabric-card fade-up delay-1" data-type="natural">
+      <!-- data-type="natural": El JS compara este valor con data-filter del botón activo.
+           Si no coincide → agrega 'fabric-card--dimmed' (atenúa la tarjeta).
+           Si coincide o filter='all' → quita --dimmed (tarjeta completamente visible). -->
+        <div class="fc-wrap">
+          <svg class="fc-img" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="fc-lino" width="8" height="8" patternUnits="userSpaceOnUse">
+                <rect width="8" height="8" fill="#D4B896"/>
+                <line x1="0" y1="0" x2="0" y2="8" stroke="#BF9B6E" stroke-width=".8" opacity=".55"/>
+                <line x1="0" y1="0" x2="8" y2="0" stroke="#C9A97E" stroke-width=".6" opacity=".5"/>
+              </pattern>
+            </defs>
+            <rect width="300" height="200" fill="url(#fc-lino)"/>
+            <rect width="300" height="200" fill="url(#fc-lino)" transform="rotate(90 150 100)" opacity=".45"/>
+          </svg>
+          <div class="fc-dot fc-dot--lino"></div>
+          <!-- Círculo de color identificador de la tela. -->
+          <div class="fc-stock">En stock</div>
+          <!-- Badge de disponibilidad. CSS lo posiciona absolutamente sobre la imagen. -->
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Lino Premium</div>
+          <div class="fc-type">Natural · 100% Lino belga</div>
+          <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
+          <!-- <strong>: Precio en negrita. <span>: unidad en texto secundario. -->
+        </div>
+      </div>
+
+      <!-- ====== Tarjeta: Seda ====== -->
+      <div class="fabric-card fade-up delay-2" data-type="premium">
+      <!-- Solo visible con filtro "Premium" o "Todos". -->
+        <div class="fc-wrap">
+          <svg class="fc-img" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs><pattern id="fc-seda" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#2D3A6B"/><line x1="0" y1="0" x2="6" y2="6" stroke="#4A5A9C" stroke-width=".5" opacity=".6"/><line x1="6" y1="0" x2="0" y2="6" stroke="#1B2648" stroke-width=".4" opacity=".5"/></pattern></defs>
+            <rect width="300" height="200" fill="url(#fc-seda)"/>
+          </svg>
+          <div class="fc-dot fc-dot--indigo"></div>
+          <div class="fc-stock">Premium</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Seda Natural</div>
+          <div class="fc-type">Premium · 100% Seda</div>
+          <div class="fc-price"><strong>$12.800</strong><span>/ metro</span></div>
+        </div>
+      </div>
+
+      <!-- ====== Tarjeta: Algodón ====== -->
+      <div class="fabric-card fade-up delay-3" data-type="natural">
+        <div class="fc-wrap">
+          <svg class="fc-img" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs><pattern id="fc-alg" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#C45C3A"/><rect x="0" y="0" width="5" height="5" fill="#D06B47" opacity=".4"/><rect x="5" y="5" width="5" height="5" fill="#A04428" opacity=".32"/></pattern></defs>
+            <rect width="300" height="200" fill="url(#fc-alg)"/>
+          </svg>
+          <div class="fc-dot fc-dot--terracota"></div>
+          <div class="fc-stock">En stock</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Algodón Popelín</div>
+          <div class="fc-type">Natural · 100% Algodón</div>
+          <div class="fc-price"><strong>$2.800</strong><span>/ metro</span></div>
+        </div>
+      </div>
+
+      <!-- ====== Tarjeta: Gabardina ====== -->
+      <div class="fabric-card fade-up delay-4" data-type="mezcla">
+      <!-- data-type="mezcla": Solo visible con "Mezclas" o "Todos". -->
+        <div class="fc-wrap">
+          <svg class="fc-img" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="fc-gab" width="12" height="12" patternUnits="userSpaceOnUse">
+                <rect width="12" height="12" fill="#1E2A45"/>
+                <!-- Navy oscuro para la gabardina. -->
+                <line x1="0" y1="6" x2="12" y2="6" stroke="#3A4D6B" stroke-width=".9" opacity=".55"/>
+                <!-- Línea horizontal central. -->
+                <line x1="6" y1="0" x2="6" y2="12" stroke="#2E3E5C" stroke-width=".6" opacity=".45"/>
+                <!-- Línea vertical central → cuadrícula = textura típica de gabardina tejida. -->
+              </pattern>
+            </defs>
+            <rect width="300" height="200" fill="url(#fc-gab)"/>
+          </svg>
+          <div class="fc-dot fc-dot--navy"></div>
+          <div class="fc-stock">En stock</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Gabardina Navy</div>
+          <div class="fc-type">Mezcla · Poliéster-Viscosa</div>
+          <div class="fc-price"><strong>$3.500</strong><span>/ metro</span></div>
+        </div>
+      </div>
+
+    </div><!-- /.cat-grid -->
+  </div><!-- /.wrap -->
+</section>
 
 
-  <!-- ═══════════════════════════════════════════════════════
+<!-- ═══════════════════════════
      SASTRES DESTACADOS
      scss/components/_cards.scss → .sastre-card
-══════════════════════════════════════════════════════════ -->
-  <section class="sec">
-    <div class="wrap">
-      <div class="sec-head fade-up" id="sastres">
-        <span class="eyebrow">Red de expertos</span>
-        <h2>Sastres destacados</h2>
-        <p>Algunos de los artesanos textiles más reconocidos de nuestra plataforma.</p>
-      </div>
+════════════════════════════ -->
 
-      <div class="sc-grid">
-        <!-- Sastre 1 -->
-        <div class="sastre-card fade-up delay-1">
-          <div class="sc-cover">
-            <svg class="sc-img" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="s1p" width="18" height="18" patternUnits="userSpaceOnUse">
-                  <rect width="18" height="18" fill="#2D3A6B" />
-                  <circle cx="9" cy="9" r="2.5" fill="#4A5A9C" opacity=".3" />
-                </pattern>
-              </defs>
-              <rect width="400" height="190" fill="url(#s1p)" />
-            </svg>
-            <div class="sc-badge">⭐ Top Sastre</div>
-            <div class="sc-verified">✔ Verificado</div>
-          </div>
-          <div class="sc-avatar">M</div>
-          <div class="sc-body">
-            <div class="sc-name">María González</div>
-            <div class="sc-role">Alta Costura · Santiago</div>
-            <div class="sc-tags">
-              <span class="sc-tag">Vestidos</span>
-              <span class="sc-tag">Formal</span>
-              <span class="sc-tag">Novia</span>
-            </div>
-            <div class="sc-rating">
-              <span class="sc-stars">★★★★★</span>
-              <span class="sc-score">5.0</span>
-              <span class="sc-count">(142 reseñas)</span>
-            </div>
-            <div class="sc-meta">
-              <div class="sc-meta-item"><strong>8</strong><span>Años exp.</span></div>
-              <div class="sc-sep"></div>
-              <div class="sc-meta-item"><strong>230</strong><span>Proyectos</span></div>
-              <div class="sc-sep"></div>
-              <div class="sc-meta-item"><strong>$35k</strong><span>Desde/prenda</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sastre 2 -->
-        <div class="sastre-card fade-up delay-2">
-          <div class="sc-cover">
-            <svg class="sc-img" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="s2p" width="14" height="14" patternUnits="userSpaceOnUse">
-                  <rect width="14" height="14" fill="#C45C3A" />
-                  <rect x="0" y="0" width="7" height="7" fill="#D06B47" opacity=".4" />
-                  <rect x="7" y="7" width="7" height="7" fill="#A04428" opacity=".3" />
-                </pattern>
-              </defs>
-              <rect width="400" height="190" fill="url(#s2p)" />
-            </svg>
-            <div class="sc-badge">🏆 Favorito</div>
-            <div class="sc-verified">✔ Verificado</div>
-          </div>
-          <div class="sc-avatar">C</div>
-          <div class="sc-body">
-            <div class="sc-name">Carlos Riquelme</div>
-            <div class="sc-role">Sastrería Clásica · Valparaíso</div>
-            <div class="sc-tags">
-              <span class="sc-tag">Trajes hombre</span>
-              <span class="sc-tag">Uniformes</span>
-            </div>
-            <div class="sc-rating">
-              <span class="sc-stars">★★★★★</span>
-              <span class="sc-score">4.9</span>
-              <span class="sc-count">(89 reseñas)</span>
-            </div>
-            <div class="sc-meta">
-              <div class="sc-meta-item"><strong>15</strong><span>Años exp.</span></div>
-              <div class="sc-sep"></div>
-              <div class="sc-meta-item"><strong>180</strong><span>Proyectos</span></div>
-              <div class="sc-sep"></div>
-              <div class="sc-meta-item"><strong>$45k</strong><span>Desde/prenda</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sastre 3 -->
-        <div class="sastre-card fade-up delay-3">
-          <div class="sc-cover">
-            <svg class="sc-img" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="s3p" width="16" height="16" patternUnits="userSpaceOnUse">
-                  <rect width="16" height="16" fill="#5E8C6A" />
-                  <line x1="0" y1="8" x2="16" y2="8" stroke="#3A6B45" stroke-width=".7" opacity=".45" />
-                  <line x1="8" y1="0" x2="8" y2="16" stroke="#7DAE88" stroke-width=".5" opacity=".4" />
-                </pattern>
-              </defs>
-              <rect width="400" height="190" fill="url(#s3p)" />
-            </svg>
-            <div class="sc-badge">🌿 Eco-Textil</div>
-            <div class="sc-verified">✔ Verificado</div>
-          </div>
-          <div class="sc-avatar">A</div>
-          <div class="sc-body">
-            <div class="sc-name">Ana Fuentes</div>
-            <div class="sc-role">Moda Sostenible · Concepción</div>
-            <div class="sc-tags">
-              <span class="sc-tag">Eco-moda</span>
-              <span class="sc-tag">Infantil</span>
-            </div>
-            <div class="sc-rating">
-              <span class="sc-stars">★★★★☆</span>
-              <span class="sc-score">4.8</span>
-              <span class="sc-count">(64 reseñas)</span>
-            </div>
-            <div class="sc-meta">
-              <div class="sc-meta-item"><strong>5</strong><span>Años exp.</span></div>
-              <div class="sc-sep"></div>
-              <div class="sc-meta-item"><strong>95</strong><span>Proyectos</span></div>
-              <div class="sc-sep"></div>
-              <div class="sc-meta-item"><strong>$22k</strong><span>Desde/prenda</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="text-center mt-5 fade-up">
-        <a href="#formularios" class="btn btn--outline btn--lg">Ver todos los sastres →</a>
-      </div>
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head fade-up" id="sastres">
+    <!-- Sin sec-head--center → alineación izquierda. -->
+      <span class="eyebrow">Red de expertos</span>
+      <h2>Sastres destacados</h2>
+      <p>Algunos de los artesanos textiles más reconocidos de nuestra plataforma.</p>
     </div>
-  </section>
+
+    <div class="sc-grid">
+
+      <!-- ====== Sastre 1: María González ====== -->
+      <div class="sastre-card fade-up delay-1">
+        <div class="sc-cover">
+          <svg class="sc-img" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="s1p" width="18" height="18" patternUnits="userSpaceOnUse">
+                <rect width="18" height="18" fill="#2D3A6B"/>
+                <!-- Azul índigo para la tarjeta de María. -->
+                <circle cx="9" cy="9" r="2.5" fill="#4A5A9C" opacity=".3"/>
+                <!-- Puntos sutiles que dan textura al fondo. -->
+              </pattern>
+            </defs>
+            <rect width="400" height="190" fill="url(#s1p)"/>
+          </svg>
+          <div class="sc-badge">⭐ Top Sastre</div>
+          <!-- Badge superpuesto en la esquina. CSS position:absolute. -->
+          <div class="sc-verified">✔ Verificado</div>
+        </div>
+
+        <div class="sc-avatar">M</div>
+        <!-- Avatar: inicial del nombre en círculo. Superpuesto entre cover y body
+             usando CSS position:absolute con transform:translateY(-50%). -->
+
+        <div class="sc-body">
+          <div class="sc-name">María González</div>
+          <div class="sc-role">Alta Costura · Santiago</div>
+          <div class="sc-tags">
+            <span class="sc-tag">Vestidos</span>
+            <!-- sc-tag: CSS lo estila como "pill" (píldora redondeada). -->
+            <span class="sc-tag">Formal</span>
+            <span class="sc-tag">Novia</span>
+          </div>
+          <div class="sc-rating">
+            <span class="sc-stars">★★★★★</span>
+            <!-- ★: Estrella Unicode sólida. 5 estrellas = calificación perfecta. -->
+            <span class="sc-score">5.0</span>
+            <span class="sc-count">(142 reseñas)</span>
+          </div>
+          <div class="sc-meta">
+          <!-- 3 métricas separadas por divisores visuales. -->
+            <div class="sc-meta-item"><strong>8</strong><span>Años exp.</span></div>
+            <div class="sc-sep"></div>
+            <div class="sc-meta-item"><strong>230</strong><span>Proyectos</span></div>
+            <div class="sc-sep"></div>
+            <div class="sc-meta-item"><strong>$35k</strong><span>Desde/prenda</span></div>
+          </div>
+        </div>
+      </div><!-- /.sastre-card (María) -->
+
+      <!-- ====== Sastre 2: Carlos Riquelme ====== -->
+      <div class="sastre-card fade-up delay-2">
+        <div class="sc-cover">
+          <svg class="sc-img" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
+            <defs><pattern id="s2p" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#C45C3A"/><rect x="0" y="0" width="7" height="7" fill="#D06B47" opacity=".4"/><rect x="7" y="7" width="7" height="7" fill="#A04428" opacity=".3"/></pattern></defs>
+            <!-- Terracota para diferenciar visualmente la tarjeta de Carlos. -->
+            <rect width="400" height="190" fill="url(#s2p)"/>
+          </svg>
+          <div class="sc-badge">🏆 Favorito</div>
+          <div class="sc-verified">✔ Verificado</div>
+        </div>
+        <div class="sc-avatar">C</div>
+        <div class="sc-body">
+          <div class="sc-name">Carlos Riquelme</div>
+          <div class="sc-role">Sastrería Clásica · Valparaíso</div>
+          <div class="sc-tags"><span class="sc-tag">Trajes hombre</span><span class="sc-tag">Uniformes</span></div>
+          <div class="sc-rating"><span class="sc-stars">★★★★★</span><span class="sc-score">4.9</span><span class="sc-count">(89 reseñas)</span></div>
+          <div class="sc-meta">
+            <div class="sc-meta-item"><strong>15</strong><span>Años exp.</span></div>
+            <div class="sc-sep"></div>
+            <div class="sc-meta-item"><strong>180</strong><span>Proyectos</span></div>
+            <div class="sc-sep"></div>
+            <div class="sc-meta-item"><strong>$45k</strong><span>Desde/prenda</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== Sastre 3: Ana Fuentes ====== -->
+      <div class="sastre-card fade-up delay-3">
+        <div class="sc-cover">
+          <svg class="sc-img" viewBox="0 0 400 190" xmlns="http://www.w3.org/2000/svg">
+            <defs><pattern id="s3p" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#5E8C6A"/><line x1="0" y1="8" x2="16" y2="8" stroke="#3A6B45" stroke-width=".7" opacity=".45"/><line x1="8" y1="0" x2="8" y2="16" stroke="#7DAE88" stroke-width=".5" opacity=".4"/></pattern></defs>
+            <!-- Verde salvia para Ana → remite a moda sostenible/eco. -->
+            <rect width="400" height="190" fill="url(#s3p)"/>
+          </svg>
+          <div class="sc-badge">🌿 Eco-Textil</div>
+          <div class="sc-verified">✔ Verificado</div>
+        </div>
+        <div class="sc-avatar">A</div>
+        <div class="sc-body">
+          <div class="sc-name">Ana Fuentes</div>
+          <div class="sc-role">Moda Sostenible · Concepción</div>
+          <div class="sc-tags"><span class="sc-tag">Eco-moda</span><span class="sc-tag">Infantil</span></div>
+          <div class="sc-rating">
+            <span class="sc-stars">★★★★☆</span>
+            <!-- ☆: Estrella vacía → Ana tiene 4.8, no 5.0. -->
+            <span class="sc-score">4.8</span>
+            <span class="sc-count">(64 reseñas)</span>
+          </div>
+          <div class="sc-meta">
+            <div class="sc-meta-item"><strong>5</strong><span>Años exp.</span></div>
+            <div class="sc-sep"></div>
+            <div class="sc-meta-item"><strong>95</strong><span>Proyectos</span></div>
+            <div class="sc-sep"></div>
+            <div class="sc-meta-item"><strong>$22k</strong><span>Desde/prenda</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.sc-grid -->
+
+    <div class="text-center mt-5 fade-up">
+    <!-- text-center: Bootstrap → text-align:center.
+         mt-5: Bootstrap → margin-top grande (3rem). -->
+      <a href="#formularios" class="btn btn--outline btn--lg">Ver todos los sastres →</a>
+    </div>
+  </div><!-- /.wrap -->
+</section>
 
 
-  <!-- ═══════════════════════════════════════════════════════
+
+<!-- ═══════════════════════════
      FORMULARIOS DUALES
      scss/components/_stepper.scss
-══════════════════════════════════════════════════════════ -->
-  <section class="sec form-bg sec--forms">
-    <div class="wrap">
-      <div class="sec-head sec-head--center sec-head--compact fade-up" id="formularios">
-        <span class="eyebrow">Conectarse</span>
-        <h2>¿Qué buscas hacer?</h2>
-        <p>Dos flujos separados: si buscas un sastre o si quieres trabajar con nosotros.</p>
-      </div>
+════════════════════════════ -->
 
-      <div class="form-inner fade-up" id="form-section">
+<section class="sec form-bg sec--forms">
+<!-- form-bg: Clase de fondo específica para la sección de formularios.
+     sec--forms: Modificador con estilos propios de esta sección. -->
 
-        <!-- TABS -->
-        <div class="flow-tabs">
-          <button class="flow-tabs__btn active" data-flow="client">
-            Buscar un sastre
-            <small>Soy cliente</small>
-          </button>
-          <button class="flow-tabs__btn" data-flow="worker">
-            Trabajar en la tienda
-            <small>Postular</small>
-          </button>
-        </div>
+  <div class="wrap">
+    <div class="sec-head sec-head--center sec-head--compact fade-up" id="formularios">
+    <!-- sec-head--compact: Padding reducido → no empuja demasiado el formulario.
+         id="formularios": Destino de todos los links "Conectarse", "Postular", etc.
+         del navbar, footer y CTAs de la página. -->
+      <span class="eyebrow">Conectarse</span>
+      <h2>¿Qué buscas hacer?</h2>
+      <p>Dos flujos separados: si buscas un sastre o si quieres trabajar con nosotros.</p>
+    </div>
 
-        <!-- ════════════════════════════════════════════
+    <div class="form-inner fade-up" id="form-section">
+    <!-- id="form-section": El JS hace scrollIntoView() a este elemento cada vez
+         que el usuario avanza un paso, para que el top del formulario
+         siempre sea visible al cambiar de paso. -->
+
+      <!-- ====== TABS ====== -->
+      <div class="flow-tabs">
+      <!-- Contenedor de las pestañas (tabs) para elegir entre los dos flujos.
+           El JS (event listener en .flow-tabs__btn) maneja el cambio de tab:
+           oculta un stepper__flow y muestra el otro. -->
+
+        <button class="flow-tabs__btn active" data-flow="client">
+        <!-- Tab activo por defecto (clase 'active').
+             data-flow="client": El JS construye el id del flujo a mostrar:
+             'flow-' + btn.dataset.flow → 'flow-client' -->
+          Buscar un sastre
+          <small>Soy cliente</small>
+          <!-- <small>: Subtítulo del tab. Indica el rol del usuario.
+               Visible dentro del botón para mayor claridad. -->
+        </button>
+
+        <button class="flow-tabs__btn" data-flow="worker">
+        <!-- Sin 'active' → inactivo por defecto.
+             data-flow="worker" → 'flow-worker' cuando se haga clic. -->
+          Trabajar en la tienda
+          <small>Postular</small>
+        </button>
+      </div><!-- /.flow-tabs -->
+
+
+      <!-- ═══════════════════════════════════
            FLUJO CLIENTE — 10 pasos
-      ════════════════════════════════════════════ -->
-        <div class="stepper__flow active" id="flow-client">
+      ════════════════════════════════════ -->
 
-          <!-- Progreso -->
-          <div class="stepper__progress">
-            <div class="bar-track">
-              <div class="bar-fill stepper__bar-fill"></div>
-            </div>
-            <div class="prog-row stepper__progress-row">
-              <span>Paso 1 de 10</span>
-              <strong>0% completado</strong>
-            </div>
-            <div class="stepper__dots">
-              <button class="active">1</button><button>2</button><button>3</button><button>4</button><button>5</button>
-              <button>6</button><button>7</button><button>8</button><button>9</button><button>10</button>
-            </div>
+      <div class="stepper__flow active" id="flow-client">
+      <!-- stepper__flow: Contenedor de todo el flujo de un stepper.
+           active: Lo hace visible. El otro stepper (flow-worker) no la tiene.
+           id="flow-client": createStepper({ flowId: 'flow-client' }) lo referencia. -->
+
+        <!-- === BARRA DE PROGRESO === -->
+        <div class="stepper__progress">
+          <div class="bar-track">
+            <div class="bar-fill stepper__bar-fill"></div>
+            <!-- bar-fill: Empieza en width:0%. El JS cambia el width:
+                 barFill.style.width = pct + '%'
+                 CSS tiene transition para que sea animado. -->
           </div>
+          <div class="prog-row stepper__progress-row">
+          <!-- El JS selecciona los hijos para actualizar texto:
+               flow.querySelector('.stepper__progress-row span') → "Paso X de Y"
+               flow.querySelector('.stepper__progress-row strong') → "X% completado" -->
+            <span>Paso 1 de 10</span>
+            <strong>0% completado</strong>
+          </div>
+          <div class="stepper__dots">
+          <!-- Indicadores numerados. El JS los gestiona con dots.forEach():
+               - 'done' → pasos ya completados (antes del actual)
+               - 'active' → paso actual
+               - sin clase → pasos futuros -->
+            <button class="active">1</button>
+            <button>2</button><button>3</button><button>4</button><button>5</button>
+            <button>6</button><button>7</button><button>8</button><button>9</button>
+            <button>10</button>
+            <!-- 10 dots, uno por cada paso del flujo cliente. -->
+          </div>
+        </div><!-- /.stepper__progress -->
 
-          <div id="client-form-wrap">
 
-            <!-- Paso 1: Datos de contacto -->
-            <div class="step stepper__step active" data-step="1">
-              <div class="step-head">
-                <div class="step-num">Paso 01 / 10 — Datos de contacto</div>
-                <h3>¿Quién eres?</h3>
-                <p>Necesitamos tus datos básicos para conectarte con el sastre más adecuado.</p>
-              </div>
-              <div class="srow">
-                <div class="sf stepper__field"><label for="cl-nombre">Nombre <span class="req">*</span></label><input
-                    type="text" id="cl-nombre" class="si stepper__input" placeholder="Ej: Carolina" /><span
-                    class="err"></span></div>
-                <div class="sf stepper__field"><label for="cl-apellido">Apellido <span
-                      class="req">*</span></label><input type="text" id="cl-apellido" class="si stepper__input"
-                    placeholder="Ej: Muñoz" /><span class="err"></span></div>
-              </div>
-              <div class="srow">
-                <div class="sf stepper__field"><label for="cl-correo">Correo electrónico <span
-                      class="req">*</span></label><input type="email" id="cl-correo" class="si stepper__input"
-                    placeholder="tu@correo.cl" /><span class="err"></span></div>
-                <div class="sf stepper__field"><label for="cl-tel">Teléfono <span class="req">*</span></label><input
-                    type="tel" id="cl-tel" class="si stepper__input" placeholder="+56 9 1234 5678" /><span
-                    class="err"></span></div>
-              </div>
-              <div class="step-nav"><span></span><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+        <div id="client-form-wrap">
+        <!-- wrapperId: 'client-form-wrap' en createStepper().
+             El JS lo oculta al enviar: wrapper.style.display = 'none'
+             y muestra la pantalla de éxito (client-done). -->
+
+          <!-- ═══ PASO 1: Datos de contacto ═══ -->
+          <div class="step stepper__step active" data-step="1">
+          <!-- stepper__step: Cada paso del formulario.
+               active: Solo este paso es visible inicialmente.
+               data-step="1": El JS lo usa para navegar:
+               flow.querySelector('.stepper__step[data-step="1"]') -->
+
+            <div class="step-head">
+              <div class="step-num">Paso 01 / 10 — Datos de contacto</div>
+              <h3>¿Quién eres?</h3>
+              <p>Necesitamos tus datos básicos para conectarte con el sastre más adecuado.</p>
             </div>
 
-            <!-- Paso 2: Ubicación -->
-            <div class="step stepper__step" data-step="2">
-              <div class="step-head">
-                <div class="step-num">Paso 02 / 10 — Ubicación</div>
-                <h3>¿Dónde estás?</h3>
-                <p>Te conectamos con sastres en tu región para facilitar las visitas y medidas.</p>
+            <div class="srow">
+            <!-- srow = stepper row. Fila de dos campos en paralelo (grid 2 columnas). -->
+
+              <div class="sf stepper__field">
+              <!-- stepper__field: El JS agrega 'error' aquí cuando falla la validación:
+                   field.classList.add('error') → activa estilos rojos en CSS.
+                   Al corregir y avanzar, el error se limpia. -->
+                <label for="cl-nombre">Nombre <span class="req">*</span></label>
+                <!-- for="cl-nombre": Asocia la etiqueta con el input por id.
+                     Clic en la etiqueta → foco va al input (mejora UX y accesibilidad).
+                     .req: CSS muestra el asterisco en rojo (campo obligatorio). -->
+                <input type="text" id="cl-nombre" class="si stepper__input" placeholder="Ej: Carolina"/>
+                <!-- id="cl-nombre": El helper v('cl-nombre') lo lee para obtener el valor.
+                     placeholder: Texto de ayuda que desaparece al escribir. -->
+                <span class="err"></span>
+                <!-- Span vacío para mensajes de error. El JS lo llena:
+                     errSpan.textContent = 'Nombre obligatorio.' -->
               </div>
-              <div class="sf stepper__field"><label for="cl-region">Región <span class="req">*</span></label>
-                <select id="cl-region" class="si stepper__input si--select">
-                  <option value="">— Selecciona tu región —</option>
-                  <option>Región Metropolitana de Santiago</option>
-                  <option>Región de Valparaíso</option>
-                  <option>Región del Biobío</option>
-                  <option>Región de La Araucanía</option>
-                  <option>Región de Los Lagos</option>
-                  <option>Región de Antofagasta</option>
-                  <option>Región de Coquimbo</option>
-                  <option>Región del Maule</option>
-                  <option>Región de Ñuble</option>
-                  <option>Región de Los Ríos</option>
-                  <option>Región de Arica y Parinacota</option>
-                  <option>Región de Tarapacá</option>
-                  <option>Región de Atacama</option>
-                  <option>Región del Libertador G. B. O'Higgins</option>
-                  <option>Región de Aysén</option>
-                  <option>Región de Magallanes</option>
-                </select>
+
+              <div class="sf stepper__field">
+                <label for="cl-apellido">Apellido <span class="req">*</span></label>
+                <input type="text" id="cl-apellido" class="si stepper__input" placeholder="Ej: Muñoz"/>
                 <span class="err"></span>
               </div>
-              <div class="sf stepper__field"><label for="cl-ciudad">Ciudad / Comuna <span
-                    class="req">*</span></label><input type="text" id="cl-ciudad" class="si stepper__input"
-                  placeholder="Ej: Providencia" /><span class="err"></span></div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
             </div>
 
-            <!-- Paso 3: Tipo de prenda -->
-            <div class="step stepper__step" data-step="3">
-              <div class="step-head">
-                <div class="step-num">Paso 03 / 10 — Tipo de prenda</div>
-                <h3>¿Qué prenda buscas?</h3>
-                <p>Esto nos permite filtrar sastres con experiencia específica.</p>
-              </div>
-              <div class="opts" data-group="g-tipo">
-                <div class="opt"><input type="radio" name="cl-tipo" id="ct1" value="Vestido de novia" /><label
-                    for="ct1"><span class="ico">👰</span><span class="lbl">Vestido de novia</span></label></div>
-                <div class="opt"><input type="radio" name="cl-tipo" id="ct2" value="Traje formal hombre" /><label
-                    for="ct2"><span class="ico">👔</span><span class="lbl">Traje formal</span></label></div>
-                <div class="opt"><input type="radio" name="cl-tipo" id="ct3" value="Vestido de fiesta" /><label
-                    for="ct3"><span class="ico">👗</span><span class="lbl">Vestido fiesta</span></label></div>
-                <div class="opt"><input type="radio" name="cl-tipo" id="ct4" value="Ropa casual" /><label
-                    for="ct4"><span class="ico">👕</span><span class="lbl">Ropa casual</span></label></div>
-                <div class="opt"><input type="radio" name="cl-tipo" id="ct5" value="Uniforme laboral" /><label
-                    for="ct5"><span class="ico">🦺</span><span class="lbl">Uniforme</span></label></div>
-                <div class="opt"><input type="radio" name="cl-tipo" id="ct6" value="Ropa infantil" /><label
-                    for="ct6"><span class="ico">🧸</span><span class="lbl">Infantil</span></label></div>
-                <div class="opt"><input type="radio" name="cl-tipo" id="ct7" value="Abrigo / Chaqueta" /><label
-                    for="ct7"><span class="ico">🧥</span><span class="lbl">Abrigo</span></label></div>
-                <div class="opt"><input type="radio" name="cl-tipo" id="ct8" value="Otro" /><label for="ct8"><span
-                      class="ico">✂️</span><span class="lbl">Otro</span></label></div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 4: Ocasión -->
-            <div class="step stepper__step" data-step="4">
-              <div class="step-head">
-                <div class="step-num">Paso 04 / 10 — Ocasión</div>
-                <h3>¿Para qué ocasión?</h3>
-                <p>El contexto nos ayuda a recomendar tejidos y acabados adecuados.</p>
-              </div>
-              <div class="opts" data-group="g-ocasion">
-                <div class="opt"><input type="radio" name="cl-ocasion" id="co1" value="Matrimonio / Boda" /><label
-                    for="co1"><span class="ico">💍</span><span class="lbl">Matrimonio</span></label></div>
-                <div class="opt"><input type="radio" name="cl-ocasion" id="co2" value="Evento corporativo" /><label
-                    for="co2"><span class="ico">🏢</span><span class="lbl">Corporativo</span></label></div>
-                <div class="opt"><input type="radio" name="cl-ocasion" id="co3" value="Fiesta o celebración" /><label
-                    for="co3"><span class="ico">🎉</span><span class="lbl">Fiesta</span></label></div>
-                <div class="opt"><input type="radio" name="cl-ocasion" id="co4" value="Uso diario" /><label
-                    for="co4"><span class="ico">🌞</span><span class="lbl">Uso diario</span></label></div>
-                <div class="opt"><input type="radio" name="cl-ocasion" id="co5" value="Trabajo / Oficina" /><label
-                    for="co5"><span class="ico">💼</span><span class="lbl">Trabajo</span></label></div>
-                <div class="opt"><input type="radio" name="cl-ocasion" id="co6" value="Otro" /><label for="co6"><span
-                      class="ico">🎭</span><span class="lbl">Otro</span></label></div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 5: Telas preferidas -->
-            <div class="step stepper__step" data-step="5">
-              <div class="step-head">
-                <div class="step-num">Paso 05 / 10 — Tejidos</div>
-                <h3>¿Qué telas te interesan?</h3>
-                <p>Puedes elegir más de una. Usaremos esto para filtrar el catálogo disponible.</p>
-              </div>
-              <div class="opts opts--grid-sm" data-group="g-tela">
-                <div class="opt"><input type="checkbox" name="cl-tela" id="ctl1" value="Lino" /><label for="ctl1"><span
-                      class="ico">🌾</span><span class="lbl">Lino</span></label></div>
-                <div class="opt"><input type="checkbox" name="cl-tela" id="ctl2" value="Seda" /><label for="ctl2"><span
-                      class="ico">🪞</span><span class="lbl">Seda</span></label></div>
-                <div class="opt"><input type="checkbox" name="cl-tela" id="ctl3" value="Algodón" /><label
-                    for="ctl3"><span class="ico">☁️</span><span class="lbl">Algodón</span></label></div>
-                <div class="opt"><input type="checkbox" name="cl-tela" id="ctl4" value="Lana" /><label for="ctl4"><span
-                      class="ico">🐑</span><span class="lbl">Lana</span></label></div>
-                <div class="opt"><input type="checkbox" name="cl-tela" id="ctl5" value="Satén" /><label for="ctl5"><span
-                      class="ico">✨</span><span class="lbl">Satén</span></label></div>
-                <div class="opt"><input type="checkbox" name="cl-tela" id="ctl6" value="Tul" /><label for="ctl6"><span
-                      class="ico">🌸</span><span class="lbl">Tul</span></label></div>
-                <div class="opt"><input type="checkbox" name="cl-tela" id="ctl7" value="Denim" /><label for="ctl7"><span
-                      class="ico">👖</span><span class="lbl">Denim</span></label></div>
-                <div class="opt"><input type="checkbox" name="cl-tela" id="ctl8" value="Organza" /><label
-                    for="ctl8"><span class="ico">🌬️</span><span class="lbl">Organza</span></label></div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 6: Tono de piel -->
-            <div class="step stepper__step" data-step="6">
-              <div class="step-head">
-                <div class="step-num">Paso 06 / 10 — Colorimetría</div>
-                <h3>¿Cuál es tu tono de piel?</h3>
-                <p>Usamos esto para recomendarte colores de tela que mejor realcen tu piel.</p>
-              </div>
-              <div class="opts" data-group="g-tono">
-                <div class="opt"><input type="radio" name="cl-tono" id="cto1" value="Piel clara" /><label
-                    for="cto1"><span class="ico">🌸</span><span class="lbl">Clara</span><span class="sub">Marfil,
-                      crema</span></label></div>
-                <div class="opt"><input type="radio" name="cl-tono" id="cto2" value="Piel oliva / media" /><label
-                    for="cto2"><span class="ico">🌻</span><span class="lbl">Oliva / Media</span><span
-                      class="sub">Dorado, miel</span></label></div>
-                <div class="opt"><input type="radio" name="cl-tono" id="cto3" value="Piel morena / oscura" /><label
-                    for="cto3"><span class="ico">🌑</span><span class="lbl">Morena / Oscura</span><span
-                      class="sub">Café, ébano</span></label></div>
-                <div class="opt"><input type="radio" name="cl-tono" id="cto4" value="Prefiero no especificar" /><label
-                    for="cto4"><span class="ico">🎨</span><span class="lbl">Sin preferencia</span></label></div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 7: Presupuesto -->
-            <div class="step stepper__step" data-step="7">
-              <div class="step-head">
-                <div class="step-num">Paso 07 / 10 — Presupuesto</div>
-                <h3>¿Cuánto puedes invertir?</h3>
-                <p>Esto nos permite mostrarte sastres dentro de tu rango de precio.</p>
-              </div>
+            <div class="srow">
               <div class="sf stepper__field">
-                <label>Presupuesto para la prenda completa (CLP)</label>
-                <div class="range-disp" id="cl-pres-display">$50.000</div>
-                <input type="range" id="cl-presupuesto" class="si stepper__input" min="20000" max="1000000" step="5000"
-                  value="50000" />
-                <div class="range-lbl"><span>$20.000</span><span>$1.000.000+</span></div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 8: Plazo -->
-            <div class="step stepper__step" data-step="8">
-              <div class="step-head">
-                <div class="step-num">Paso 08 / 10 — Plazo</div>
-                <h3>¿En cuánto tiempo la necesitas?</h3>
-                <p>El plazo afecta la disponibilidad de los sastres y el precio final.</p>
-              </div>
-              <div class="opts" data-group="g-plazo">
-                <div class="opt"><input type="radio" name="cl-plazo" id="cp1"
-                    value="Urgente: menos de 2 semanas" /><label for="cp1"><span class="ico">🚨</span><span
-                      class="lbl">Urgente</span><span class="sub">Menos de 2 semanas</span></label></div>
-                <div class="opt"><input type="radio" name="cl-plazo" id="cp2" value="Normal: 2 a 4 semanas" /><label
-                    for="cp2"><span class="ico">📅</span><span class="lbl">Normal</span><span class="sub">2 a 4
-                      semanas</span></label></div>
-                <div class="opt"><input type="radio" name="cl-plazo" id="cp3" value="Sin apuro: 1 a 3 meses" /><label
-                    for="cp3"><span class="ico">🗓️</span><span class="lbl">Sin apuro</span><span class="sub">1 a 3
-                      meses</span></label></div>
-                <div class="opt"><input type="radio" name="cl-plazo" id="cp4" value="Flexible" /><label for="cp4"><span
-                      class="ico">🤷</span><span class="lbl">Flexible</span><span class="sub">Sin fecha
-                      límite</span></label></div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 9: Disponibilidad de visita -->
-            <div class="step stepper__step" data-step="9">
-              <div class="step-head">
-                <div class="step-num">Paso 09 / 10 — Disponibilidad</div>
-                <h3>¿Cuándo puedes reunirte?</h3>
-                <p>El sastre necesitará tomarte medidas al menos una vez presencialmente.</p>
-              </div>
-              <div class="opts" data-group="g-disp">
-                <div class="opt"><input type="radio" name="cl-disponibilidad" id="cd1"
-                    value="Días de semana (mañana)" /><label for="cd1"><span class="ico">🌅</span><span
-                      class="lbl">Lunes-Viernes</span><span class="sub">Mañana</span></label></div>
-                <div class="opt"><input type="radio" name="cl-disponibilidad" id="cd2"
-                    value="Días de semana (tarde)" /><label for="cd2"><span class="ico">🌆</span><span
-                      class="lbl">Lunes-Viernes</span><span class="sub">Tarde / noche</span></label></div>
-                <div class="opt"><input type="radio" name="cl-disponibilidad" id="cd3" value="Fines de semana" /><label
-                    for="cd3"><span class="ico">🏖️</span><span class="lbl">Fin de semana</span><span class="sub">Sábado
-                      / Domingo</span></label></div>
-                <div class="opt"><input type="radio" name="cl-disponibilidad" id="cd4" value="Flexible" /><label
-                    for="cd4"><span class="ico">🕐</span><span class="lbl">Flexible</span></label></div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 10: Descripción y referencia -->
-            <div class="step stepper__step" data-step="10">
-              <div class="step-head">
-                <div class="step-num">Paso 10 / 10 — Descripción</div>
-                <h3>Cuéntanos más de tu proyecto</h3>
-                <p>Agrega detalles adicionales para que el sastre entienda bien tu visión.</p>
-              </div>
-              <div class="sf stepper__field"><label for="cl-descripcion">Descripción del proyecto <span
-                    class="req">*</span></label><textarea id="cl-descripcion" class="si stepper__input si--ta"
-                  placeholder="Describe la prenda: colores, estilo, detalles especiales... (mínimo 20 caracteres)"></textarea><span
-                  class="err"></span></div>
-              <div class="sf stepper__field"><label for="cl-referencia">Link de referencia visual
-                  (opcional)</label><input type="url" id="cl-referencia" class="si stepper__input"
-                  placeholder="https://pin.it/... o Instagram" /><small>Una imagen de Pinterest o Instagram nos ayuda
-                  mucho.</small></div>
-              <div class="divider">Revisa y envía</div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--terra btn--lg" data-submit>✅ Buscar mi sastre</button></div>
-            </div>
-
-          </div><!-- /#client-form-wrap -->
-
-          <!-- Resultado cliente -->
-          <div class="sdone" id="client-done">
-            <div class="sdone-icon">🤝</div>
-            <h2>¡Solicitud enviada!</h2>
-            <p>Analizaremos tu perfil y te contactaremos en 24-48 horas con hasta 3 sastres recomendados en tu zona.</p>
-            <div class="s-summary">
-              <h4>Resumen de tu solicitud</h4>
-              <div id="client-summary"></div>
-            </div>
-            <a href="#" class="btn btn--terra btn--lg">Volver al inicio</a>
-          </div>
-        </div><!-- /#flow-client -->
-
-
-        <!-- ════════════════════════════════════════════
-           FLUJO POSTULANTE — 11 pasos
-      ════════════════════════════════════════════ -->
-        <div class="stepper__flow" id="flow-worker">
-
-          <!-- Progreso -->
-          <div class="stepper__progress">
-            <div class="bar-track">
-              <div class="bar-fill stepper__bar-fill"></div>
-            </div>
-            <div class="prog-row stepper__progress-row">
-              <span>Paso 1 de 11</span>
-              <strong>0% completado</strong>
-            </div>
-            <div class="stepper__dots">
-              <button
-                class="active">1</button><button>2</button><button>3</button><button>4</button><button>5</button><button>6</button>
-              <button>7</button><button>8</button><button>9</button><button>10</button><button>11</button>
-            </div>
-          </div>
-
-          <div id="worker-form-wrap">
-
-            <!-- Paso 1: Datos personales -->
-            <div class="step stepper__step active" data-step="1">
-              <div class="step-head">
-                <div class="step-num">Paso 01 / 11 — Datos personales</div>
-                <h3>Empecemos con tu identidad</h3>
-                <p>Necesitamos tus datos básicos para registrar tu postulación formalmente.</p>
-              </div>
-              <div class="srow">
-                <div class="sf stepper__field"><label for="wk-nombre">Nombre <span class="req">*</span></label><input
-                    type="text" id="wk-nombre" class="si stepper__input" placeholder="Ej: Roberto" /><span
-                    class="err"></span></div>
-                <div class="sf stepper__field"><label for="wk-apellido">Apellido <span
-                      class="req">*</span></label><input type="text" id="wk-apellido" class="si stepper__input"
-                    placeholder="Ej: Paredes" /><span class="err"></span></div>
-              </div>
-              <div class="sf stepper__field"><label for="wk-rut">RUT <span class="req">*</span></label><input
-                  type="text" id="wk-rut" class="si stepper__input" placeholder="12.345.678-9" /><small>Con puntos y
-                  guión.</small><span class="err"></span></div>
-              <div class="srow">
-                <div class="sf stepper__field"><label for="wk-correo">Correo <span class="req">*</span></label><input
-                    type="email" id="wk-correo" class="si stepper__input" placeholder="tu@correo.cl" /><span
-                    class="err"></span></div>
-                <div class="sf stepper__field"><label for="wk-tel">Teléfono <span class="req">*</span></label><input
-                    type="tel" id="wk-tel" class="si stepper__input" placeholder="+56 9 ..." /><span class="err"></span>
-                </div>
-              </div>
-              <div class="step-nav"><span></span><button class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 2: Datos adicionales -->
-            <div class="step stepper__step" data-step="2">
-              <div class="step-head">
-                <div class="step-num">Paso 02 / 11 — Datos adicionales</div>
-                <h3>Un poco más sobre ti</h3>
-                <p>Información complementaria que nos ayuda a procesar tu candidatura.</p>
-              </div>
-              <div class="srow">
-                <div class="sf stepper__field"><label for="wk-fnac">Fecha de nacimiento <span
-                      class="req">*</span></label><input type="date" id="wk-fnac" class="si stepper__input" /><span
-                    class="err"></span></div>
-                <div class="sf stepper__field"><label for="wk-genero">Género <span class="req">*</span></label>
-                  <select id="wk-genero" class="si stepper__input si--select">
-                    <option value="">— Seleccionar —</option>
-                    <option>Masculino</option>
-                    <option>Femenino</option>
-                    <option>No binario</option>
-                    <option>Prefiero no indicar</option>
-                  </select>
-                  <span class="err"></span>
-                </div>
-              </div>
-              <div class="sf stepper__field"><label for="wk-nac">Nacionalidad</label><input type="text" id="wk-nac"
-                  class="si stepper__input" placeholder="Ej: Chilena" /></div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 3: Ubicación -->
-            <div class="step stepper__step" data-step="3">
-              <div class="step-head">
-                <div class="step-num">Paso 03 / 11 — Ubicación</div>
-                <h3>¿Dónde vives actualmente?</h3>
-                <p>Asignamos postulantes a tiendas según disponibilidad regional.</p>
-              </div>
-              <div class="sf stepper__field"><label for="wk-region">Región <span class="req">*</span></label>
-                <select id="wk-region" class="si stepper__input si--select">
-                  <option value="">— Región —</option>
-                  <option>Región Metropolitana de Santiago</option>
-                  <option>Región de Valparaíso</option>
-                  <option>Región del Biobío</option>
-                  <option>Región de La Araucanía</option>
-                  <option>Región de Los Lagos</option>
-                  <option>Región de Antofagasta</option>
-                  <option>Región de Coquimbo</option>
-                  <option>Región del Maule</option>
-                  <option>Región de Ñuble</option>
-                  <option>Región de Los Ríos</option>
-                  <option>Otra región</option>
-                </select>
+                <label for="cl-correo">Correo electrónico <span class="req">*</span></label>
+                <input type="email" id="cl-correo" class="si stepper__input" placeholder="tu@correo.cl"/>
+                <!-- type="email": El navegador valida el formato básico.
+                     En móvil muestra teclado con @ y .com accesibles. -->
                 <span class="err"></span>
               </div>
-              <div class="srow">
-                <div class="sf stepper__field"><label for="wk-ciudad">Ciudad <span class="req">*</span></label><input
-                    type="text" id="wk-ciudad" class="si stepper__input" placeholder="Ej: Las Condes" /><span
-                    class="err"></span></div>
-                <div class="sf stepper__field"><label for="wk-dir">Dirección (opcional)</label><input type="text"
-                    id="wk-dir" class="si stepper__input" placeholder="Calle y número" /></div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 4: Cargo -->
-            <div class="step stepper__step" data-step="4">
-              <div class="step-head">
-                <div class="step-num">Paso 04 / 11 — Cargo</div>
-                <h3>¿A qué cargo postulas?</h3>
-                <p>Elige el rol que mejor describe tu perfil profesional.</p>
-              </div>
-              <div class="opts" data-group="g-wk-cargo">
-                <div class="opt"><input type="radio" name="wk-cargo" id="wc1" value="Sastre / Modista" /><label
-                    for="wc1"><span class="ico">✂️</span><span class="lbl">Sastre / Modista</span><span
-                      class="sub">Confección a medida</span></label></div>
-                <div class="opt"><input type="radio" name="wk-cargo" id="wc2" value="Vendedor/a Textil" /><label
-                    for="wc2"><span class="ico">🏪</span><span class="lbl">Vendedor/a</span><span class="sub">Atención
-                      en tienda</span></label></div>
-                <div class="opt"><input type="radio" name="wk-cargo" id="wc3" value="Diseñador/a de Moda" /><label
-                    for="wc3"><span class="ico">👗</span><span class="lbl">Diseñador/a</span><span class="sub">Patrones
-                      y colecciones</span></label></div>
-                <div class="opt"><input type="radio" name="wk-cargo" id="wc4" value="Bordador/a" /><label
-                    for="wc4"><span class="ico">🧶</span><span class="lbl">Bordador/a</span><span class="sub">Arte
-                      textil manual</span></label></div>
-                <div class="opt"><input type="radio" name="wk-cargo" id="wc5" value="Encargado/a de Bodega" /><label
-                    for="wc5"><span class="ico">📦</span><span class="lbl">Bodega</span><span class="sub">Gestión de
-                      inventario</span></label></div>
-                <div class="opt"><input type="radio" name="wk-cargo" id="wc6" value="Otro perfil" /><label
-                    for="wc6"><span class="ico">💼</span><span class="lbl">Otro perfil</span></label></div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 5: Educación -->
-            <div class="step stepper__step" data-step="5">
-              <div class="step-head">
-                <div class="step-num">Paso 05 / 11 — Formación</div>
-                <h3>¿Cuál es tu nivel educacional?</h3>
-                <p>Incluye cualquier formación formal o técnica en el área textil.</p>
-              </div>
-              <div class="opts" data-group="g-wk-edu">
-                <div class="opt"><input type="radio" name="wk-edu" id="we1" value="Enseñanza Media completa" /><label
-                    for="we1"><span class="ico">🎒</span><span class="lbl">Enseñanza Media</span></label></div>
-                <div class="opt"><input type="radio" name="wk-edu" id="we2" value="Técnico de nivel superior" /><label
-                    for="we2"><span class="ico">📋</span><span class="lbl">Técnico Superior</span></label></div>
-                <div class="opt"><input type="radio" name="wk-edu" id="we3"
-                    value="Universitario (en curso o egresado)" /><label for="we3"><span class="ico">🎓</span><span
-                      class="lbl">Universitario</span></label></div>
-                <div class="opt"><input type="radio" name="wk-edu" id="we4"
-                    value="Curso o taller especializado" /><label for="we4"><span class="ico">📚</span><span
-                      class="lbl">Curso / Taller</span></label></div>
-                <div class="opt"><input type="radio" name="wk-edu" id="we5" value="Autodidacta" /><label for="we5"><span
-                      class="ico">🔧</span><span class="lbl">Autodidacta</span></label></div>
-              </div>
-              <div class="sf stepper__field sf--mt"><label for="wk-inst">Institución (opcional)</label><input
-                  type="text" id="wk-inst" class="si stepper__input"
-                  placeholder="Ej: INACAP, Duoc UC, Universidad de Chile" /></div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 6: Experiencia -->
-            <div class="step stepper__step" data-step="6">
-              <div class="step-head">
-                <div class="step-num">Paso 06 / 11 — Experiencia</div>
-                <h3>¿Cuántos años de experiencia tienes?</h3>
-                <p>Cuéntanos tu trayectoria en el rubro textil o en ventas de retail.</p>
-              </div>
-              <div class="opts" data-group="g-wk-exp">
-                <div class="opt"><input type="radio" name="wk-exp" id="wex1"
-                    value="Sin experiencia (postulante junior)" /><label for="wex1"><span class="ico">🌱</span><span
-                      class="lbl">Sin experiencia</span><span class="sub">Postulante junior</span></label></div>
-                <div class="opt"><input type="radio" name="wk-exp" id="wex2" value="Menos de 1 año" /><label
-                    for="wex2"><span class="ico">🌿</span><span class="lbl">Menos de 1 año</span></label></div>
-                <div class="opt"><input type="radio" name="wk-exp" id="wex3" value="1 a 3 años" /><label
-                    for="wex3"><span class="ico">📗</span><span class="lbl">1 – 3 años</span></label></div>
-                <div class="opt"><input type="radio" name="wk-exp" id="wex4" value="3 a 7 años" /><label
-                    for="wex4"><span class="ico">📘</span><span class="lbl">3 – 7 años</span></label></div>
-                <div class="opt"><input type="radio" name="wk-exp" id="wex5" value="Más de 7 años" /><label
-                    for="wex5"><span class="ico">🏆</span><span class="lbl">+7 años</span><span class="sub">Nivel
-                      experto</span></label></div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 7: Especialidades -->
-            <div class="step stepper__step" data-step="7">
-              <div class="step-head">
-                <div class="step-num">Paso 07 / 11 — Especialidades</div>
-                <h3>¿En qué te especializas?</h3>
-                <p>Selecciona todas las que apliquen. Esto nos ayuda a encontrar el match perfecto.</p>
-              </div>
-              <div class="opts opts--grid-md" data-group="g-wk-esp">
-                <div class="opt"><input type="checkbox" name="wk-esp" id="wesp1" value="Ropa formal" /><label
-                    for="wesp1"><span class="ico">👔</span><span class="lbl">Formal</span></label></div>
-                <div class="opt"><input type="checkbox" name="wk-esp" id="wesp2" value="Moda casual" /><label
-                    for="wesp2"><span class="ico">👕</span><span class="lbl">Casual</span></label></div>
-                <div class="opt"><input type="checkbox" name="wk-esp" id="wesp3" value="Vestidos de novia" /><label
-                    for="wesp3"><span class="ico">👰</span><span class="lbl">Novia</span></label></div>
-                <div class="opt"><input type="checkbox" name="wk-esp" id="wesp4" value="Ropa infantil" /><label
-                    for="wesp4"><span class="ico">🧸</span><span class="lbl">Infantil</span></label></div>
-                <div class="opt"><input type="checkbox" name="wk-esp" id="wesp5" value="Uniformes" /><label
-                    for="wesp5"><span class="ico">🦺</span><span class="lbl">Uniformes</span></label></div>
-                <div class="opt"><input type="checkbox" name="wk-esp" id="wesp6" value="Textiles para el hogar" /><label
-                    for="wesp6"><span class="ico">🛋️</span><span class="lbl">Hogar</span></label></div>
-                <div class="opt"><input type="checkbox" name="wk-esp" id="wesp7" value="Moda sostenible" /><label
-                    for="wesp7"><span class="ico">🌿</span><span class="lbl">Eco-moda</span></label></div>
-                <div class="opt"><input type="checkbox" name="wk-esp" id="wesp8" value="Arte textil / Bordado" /><label
-                    for="wesp8"><span class="ico">🎨</span><span class="lbl">Arte textil</span></label></div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 8: Disponibilidad y modalidad -->
-            <div class="step stepper__step" data-step="8">
-              <div class="step-head">
-                <div class="step-num">Paso 08 / 11 — Disponibilidad</div>
-                <h3>¿Cómo te gustaría trabajar?</h3>
-                <p>Indica tu disponibilidad horaria y la modalidad que prefieres.</p>
-              </div>
-              <div class="sf stepper__field"><label>Disponibilidad horaria <span class="req">*</span></label>
-                <div class="opts" data-group="g-wk-disp">
-                  <div class="opt"><input type="radio" name="wk-disp" id="wd1"
-                      value="Jornada completa (45h/sem)" /><label for="wd1"><span class="ico">⏰</span><span
-                        class="lbl">Full time</span><span class="sub">45 hrs/semana</span></label></div>
-                  <div class="opt"><input type="radio" name="wk-disp" id="wd2" value="Media jornada (25h/sem)" /><label
-                      for="wd2"><span class="ico">🕑</span><span class="lbl">Part time</span><span class="sub">25
-                        hrs/semana</span></label></div>
-                  <div class="opt"><input type="radio" name="wk-disp" id="wd3" value="Por proyecto (freelance)" /><label
-                      for="wd3"><span class="ico">🎯</span><span class="lbl">Freelance</span><span class="sub">Por
-                        proyecto</span></label></div>
-                </div>
-              </div>
-              <div class="sf stepper__field sf--mt"><label>Modalidad preferida <span class="req">*</span></label>
-                <div class="opts" data-group="g-wk-modal">
-                  <div class="opt"><input type="radio" name="wk-modal" id="wm1" value="Presencial en tienda" /><label
-                      for="wm1"><span class="ico">🏬</span><span class="lbl">Presencial</span><span class="sub">En
-                        tienda</span></label></div>
-                  <div class="opt"><input type="radio" name="wk-modal" id="wm2" value="Trabajo desde casa" /><label
-                      for="wm2"><span class="ico">🏠</span><span class="lbl">Remoto</span><span class="sub">Desde
-                        casa</span></label></div>
-                  <div class="opt"><input type="radio" name="wk-modal" id="wm3" value="Híbrido" /><label for="wm3"><span
-                        class="ico">🔄</span><span class="lbl">Híbrido</span></label></div>
-                </div>
-              </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
-            </div>
-
-            <!-- Paso 9: Expectativa salarial -->
-            <div class="step stepper__step" data-step="9">
-              <div class="step-head">
-                <div class="step-num">Paso 09 / 11 — Expectativa económica</div>
-                <h3>¿Cuánto esperas ganar?</h3>
-                <p>Esto nos ayuda a presentarte ofertas dentro de tu rango esperado.</p>
-              </div>
               <div class="sf stepper__field">
-                <label>Expectativa salarial mensual líquida (CLP)</label>
-                <div class="range-disp" id="wk-sal-display">$500.000</div>
-                <input type="range" id="wk-salario" class="si stepper__input" min="300000" max="3500000" step="50000"
-                  value="500000" />
-                <div class="range-lbl"><span>$300.000</span><span>$3.500.000+</span></div>
+                <label for="cl-tel">Teléfono <span class="req">*</span></label>
+                <input type="tel" id="cl-tel" class="si stepper__input" placeholder="+56 9 1234 5678"/>
+                <!-- type="tel": En móvil muestra teclado numérico. -->
+                <span class="err"></span>
               </div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
             </div>
 
-            <!-- Paso 10: Motivación y portafolio -->
-            <div class="step stepper__step" data-step="10">
-              <div class="step-head">
-                <div class="step-num">Paso 10 / 11 — Motivación</div>
-                <h3>¿Por qué Hilo &amp; Oficio?</h3>
-                <p>Cuéntanos tu historia, qué te apasiona del mundo textil y qué te motiva a unirte.</p>
-              </div>
-              <div class="sf stepper__field"><label for="wk-motiv">Carta de motivación <span
-                    class="req">*</span></label><textarea id="wk-motiv" class="si stepper__input si--ta"
-                  placeholder="Escribe aquí tu motivación personal, experiencias relevantes y por qué serías un gran aporte a nuestro equipo... (mínimo 40 caracteres)"></textarea><span
-                  class="err"></span></div>
-              <div class="sf stepper__field"><label for="wk-link">Portafolio, LinkedIn o Instagram profesional
-                  (opcional)</label><input type="url" id="wk-link" class="si stepper__input"
-                  placeholder="https://linkedin.com/in/tu-perfil o Instagram" /><small>Muéstranos tu trabajo. Aumenta
-                  significativamente tus posibilidades de ser seleccionado.</small></div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--indigo" data-next>Siguiente →</button></div>
+            <div class="step-nav">
+            <!-- Fila de navegación: botones Atrás / Siguiente. -->
+              <span></span>
+              <!-- Espacio vacío izquierdo: no hay "Atrás" en el paso 1. -->
+              <button class="btn btn--indigo" data-next>Siguiente →</button>
+              <!-- data-next: Atributo que el JS detecta con:
+                   e.target.closest('[data-next]')
+                   Al hacer clic → valida el paso actual → avanza si no hay errores. -->
+            </div>
+          </div><!-- /.stepper__step[data-step="1"] -->
+
+
+          <!-- ═══ PASO 2: Ubicación ═══ -->
+          <div class="step stepper__step" data-step="2">
+          <!-- Sin 'active' → oculto. JS lo muestra al avanzar del paso 1. -->
+            <div class="step-head">
+              <div class="step-num">Paso 02 / 10 — Ubicación</div>
+              <h3>¿Dónde estás?</h3>
+              <p>Te conectamos con sastres en tu región para facilitar las visitas y medidas.</p>
             </div>
 
-            <!-- Paso 11: Referencias -->
-            <div class="step stepper__step" data-step="11">
-              <div class="step-head">
-                <div class="step-num">Paso 11 / 11 — Referencias</div>
-                <h3>¡Último paso!</h3>
-                <p>Añade referencias laborales o personas que puedan dar cuenta de tu trayectoria.</p>
-              </div>
-              <div class="sf stepper__field"><label for="wk-ref">Referencias (nombre, empresa y
-                  teléfono)</label><textarea id="wk-ref" class="si stepper__input si--ta si--ta-short"
-                  placeholder="Ej: Juan Pérez — Telas El Águila — +56 9 8765 4321&#10;Ana López — Boutique Moderna — +56 9 1111 2222"></textarea><small>Opcional
-                  pero muy recomendado. Incluye al menos una referencia laboral.</small></div>
-              <div class="divider">Todo listo — envía tu postulación</div>
-              <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button
-                  class="btn btn--terra btn--lg" data-submit>🚀 Enviar postulación</button></div>
+            <div class="sf stepper__field">
+              <label for="cl-region">Región <span class="req">*</span></label>
+              <select id="cl-region" class="si stepper__input si--select">
+              <!-- <select>: Lista desplegable.
+                   si--select: Modificador para estilado (flecha personalizada, padding). -->
+                <option value="">— Selecciona tu región —</option>
+                <!-- Primera opción vacía = placeholder.
+                     value="": El JS valida !v('cl-region') → true si no se seleccionó nada. -->
+                <option>Región Metropolitana de Santiago</option>
+                <option>Región de Valparaíso</option>
+                <option>Región del Biobío</option>
+                <option>Región de La Araucanía</option>
+                <option>Región de Los Lagos</option>
+                <option>Región de Antofagasta</option>
+                <option>Región de Coquimbo</option>
+                <option>Región del Maule</option>
+                <option>Región de Ñuble</option>
+                <option>Región de Los Ríos</option>
+                <option>Región de Arica y Parinacota</option>
+                <option>Región de Tarapacá</option>
+                <option>Región de Atacama</option>
+                <option>Región del Libertador G. B. O'Higgins</option>
+                <option>Región de Aysén</option>
+                <option>Región de Magallanes</option>
+                <!-- Las 16 regiones de Chile. Sin value explícito → el texto ES el value. -->
+              </select>
+              <span class="err"></span>
             </div>
 
-          </div><!-- /#worker-form-wrap -->
-
-          <!-- Resultado postulante -->
-          <div class="sdone" id="worker-done">
-            <div class="sdone-icon">🎉</div>
-            <h2>¡Postulación enviada!</h2>
-            <p>Revisaremos tu perfil y te contactaremos en los próximos 3 a 5 días hábiles con los próximos pasos del
-              proceso de selección.</p>
-            <div class="s-summary">
-              <h4>Resumen de tu postulación</h4>
-              <div id="worker-summary"></div>
+            <div class="sf stepper__field">
+              <label for="cl-ciudad">Ciudad / Comuna <span class="req">*</span></label>
+              <input type="text" id="cl-ciudad" class="si stepper__input" placeholder="Ej: Providencia"/>
+              <span class="err"></span>
             </div>
-            <a href="#" class="btn btn--indigo btn--lg">Volver al inicio</a>
+
+            <div class="step-nav">
+              <button class="btn btn--outline" data-prev>← Atrás</button>
+              <!-- data-prev: El JS detecta con closest('[data-prev]') → goTo(current-1). -->
+              <button class="btn btn--indigo" data-next>Siguiente →</button>
+            </div>
           </div>
-        </div><!-- /#flow-worker -->
-
-      </div><!-- /.form-inner -->
-    </div>
-  </section>
 
 
-  <!-- ═══════════════════════════════════════════════════════
-     BANNER CTA
-══════════════════════════════════════════════════════════ -->
-  <section class="sec sec--banner">
-    <div class="wrap">
-      <div class="banner-box fade-up">
-        <h2>¿Tienes talento textil?<br>Únete a la red.</h2>
-        <p>Más de 340 sastres ya forman parte de Hilo &amp; Oficio. Postula hoy y conecta con clientes de todo Chile.
-        </p>
-        <div class="banner-actions">
-          <a href="#formularios" class="btn btn--mustard btn--lg">Postular ahora</a>
-          <a href="#guia-color" class="btn btn--outline-lt btn--lg">Ver guía de color</a>
+          <!-- ═══ PASO 3: Tipo de prenda ═══ -->
+          <div class="step stepper__step" data-step="3">
+            <div class="step-head">
+              <div class="step-num">Paso 03 / 10 — Tipo de prenda</div>
+              <h3>¿Qué prenda buscas?</h3>
+              <p>Esto nos permite filtrar sastres con experiencia específica.</p>
+            </div>
+
+            <div class="opts" data-group="g-tipo">
+            <!-- data-group="g-tipo": Si la validación falla (ningún radio marcado),
+                 el JS busca este elemento para insertar el mensaje de error:
+                 flow.querySelector('[data-group="g-tipo"]') → grp.after(errorP) -->
+
+              <div class="opt">
+              <!-- .opt: Contenedor de un radio + label.
+                   El CSS oculta el radio nativo: input[type=radio] { display:none }
+                   y estila el <label> como tarjeta seleccionable (card).
+                   Al hacer clic en el label, el radio se selecciona internamente. -->
+                <input type="radio" name="cl-tipo" id="ct1" value="Vestido de novia"/>
+                <!-- name="cl-tipo": Todos los radios con el mismo name forman un grupo
+                     → solo uno puede estar seleccionado a la vez.
+                     value: Lo que se guarda en formData al seleccionar este radio. -->
+                <label for="ct1">
+                <!-- for="ct1": Al hacer clic aquí, selecciona el radio con id="ct1". -->
+                  <span class="ico">👰</span>
+                  <!-- Emoji como ícono visual. Sin dependencias de librerías. -->
+                  <span class="lbl">Vestido de novia</span>
+                </label>
+              </div>
+
+              <div class="opt"><input type="radio" name="cl-tipo" id="ct2" value="Traje formal hombre"/><label for="ct2"><span class="ico">👔</span><span class="lbl">Traje formal</span></label></div>
+              <div class="opt"><input type="radio" name="cl-tipo" id="ct3" value="Vestido de fiesta"/><label for="ct3"><span class="ico">👗</span><span class="lbl">Vestido fiesta</span></label></div>
+              <div class="opt"><input type="radio" name="cl-tipo" id="ct4" value="Ropa casual"/><label for="ct4"><span class="ico">👕</span><span class="lbl">Ropa casual</span></label></div>
+              <div class="opt"><input type="radio" name="cl-tipo" id="ct5" value="Uniforme laboral"/><label for="ct5"><span class="ico">🦺</span><span class="lbl">Uniforme</span></label></div>
+              <div class="opt"><input type="radio" name="cl-tipo" id="ct6" value="Ropa infantil"/><label for="ct6"><span class="ico">🧸</span><span class="lbl">Infantil</span></label></div>
+              <div class="opt"><input type="radio" name="cl-tipo" id="ct7" value="Abrigo / Chaqueta"/><label for="ct7"><span class="ico">🧥</span><span class="lbl">Abrigo</span></label></div>
+              <div class="opt"><input type="radio" name="cl-tipo" id="ct8" value="Otro"/><label for="ct8"><span class="ico">✂️</span><span class="lbl">Otro</span></label></div>
+            </div><!-- /.opts -->
+
+            <div class="step-nav">
+              <button class="btn btn--outline" data-prev>← Atrás</button>
+              <button class="btn btn--indigo" data-next>Siguiente →</button>
+            </div>
+          </div>
+
+
+          <!-- ═══ PASO 4: Ocasión ═══ -->
+          <div class="step stepper__step" data-step="4">
+            <div class="step-head">
+              <div class="step-num">Paso 04 / 10 — Ocasión</div>
+              <h3>¿Para qué ocasión?</h3>
+              <p>El contexto nos ayuda a recomendar tejidos y acabados adecuados.</p>
+            </div>
+            <div class="opts" data-group="g-ocasion">
+              <div class="opt"><input type="radio" name="cl-ocasion" id="co1" value="Matrimonio / Boda"/><label for="co1"><span class="ico">💍</span><span class="lbl">Matrimonio</span></label></div>
+              <div class="opt"><input type="radio" name="cl-ocasion" id="co2" value="Evento corporativo"/><label for="co2"><span class="ico">🏢</span><span class="lbl">Corporativo</span></label></div>
+              <div class="opt"><input type="radio" name="cl-ocasion" id="co3" value="Fiesta o celebración"/><label for="co3"><span class="ico">🎉</span><span class="lbl">Fiesta</span></label></div>
+              <div class="opt"><input type="radio" name="cl-ocasion" id="co4" value="Uso diario"/><label for="co4"><span class="ico">🌞</span><span class="lbl">Uso diario</span></label></div>
+              <div class="opt"><input type="radio" name="cl-ocasion" id="co5" value="Trabajo / Oficina"/><label for="co5"><span class="ico">💼</span><span class="lbl">Trabajo</span></label></div>
+              <div class="opt"><input type="radio" name="cl-ocasion" id="co6" value="Otro"/><label for="co6"><span class="ico">🎭</span><span class="lbl">Otro</span></label></div>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+
+          <!-- ═══ PASO 5: Telas preferidas (checkboxes) ═══ -->
+          <div class="step stepper__step" data-step="5">
+            <div class="step-head">
+              <div class="step-num">Paso 05 / 10 — Tejidos</div>
+              <h3>¿Qué telas te interesan?</h3>
+              <p>Puedes elegir más de una. Usaremos esto para filtrar el catálogo disponible.</p>
+            </div>
+            <div class="opts opts--grid-sm" data-group="g-tela">
+            <!-- opts--grid-sm: Grid más compacto. Los checkboxes permiten selección múltiple.
+                 checkVals('cl-tela') en JS devuelve array con todos los valores marcados. -->
+
+              <div class="opt">
+                <input type="checkbox" name="cl-tela" id="ctl1" value="Lino"/>
+                <!-- type="checkbox": Permite marcar MÚLTIPLES opciones simultáneamente.
+                     A diferencia del radio que solo permite una.
+                     name="cl-tela": checkVals('cl-tela') los recoge todos juntos. -->
+                <label for="ctl1"><span class="ico">🌾</span><span class="lbl">Lino</span></label>
+              </div>
+
+              <div class="opt"><input type="checkbox" name="cl-tela" id="ctl2" value="Seda"/><label for="ctl2"><span class="ico">🪞</span><span class="lbl">Seda</span></label></div>
+              <div class="opt"><input type="checkbox" name="cl-tela" id="ctl3" value="Algodón"/><label for="ctl3"><span class="ico">☁️</span><span class="lbl">Algodón</span></label></div>
+              <div class="opt"><input type="checkbox" name="cl-tela" id="ctl4" value="Lana"/><label for="ctl4"><span class="ico">🐑</span><span class="lbl">Lana</span></label></div>
+              <div class="opt"><input type="checkbox" name="cl-tela" id="ctl5" value="Satén"/><label for="ctl5"><span class="ico">✨</span><span class="lbl">Satén</span></label></div>
+              <div class="opt"><input type="checkbox" name="cl-tela" id="ctl6" value="Tul"/><label for="ctl6"><span class="ico">🌸</span><span class="lbl">Tul</span></label></div>
+              <div class="opt"><input type="checkbox" name="cl-tela" id="ctl7" value="Denim"/><label for="ctl7"><span class="ico">👖</span><span class="lbl">Denim</span></label></div>
+              <div class="opt"><input type="checkbox" name="cl-tela" id="ctl8" value="Organza"/><label for="ctl8"><span class="ico">🌬️</span><span class="lbl">Organza</span></label></div>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+
+          <!-- ═══ PASO 6: Tono de piel ═══ -->
+          <div class="step stepper__step" data-step="6">
+            <div class="step-head">
+              <div class="step-num">Paso 06 / 10 — Colorimetría</div>
+              <h3>¿Cuál es tu tono de piel?</h3>
+              <p>Usamos esto para recomendarte colores de tela que mejor realcen tu piel.</p>
+            </div>
+            <div class="opts" data-group="g-tono">
+              <div class="opt"><input type="radio" name="cl-tono" id="cto1" value="Piel clara"/><label for="cto1"><span class="ico">🌸</span><span class="lbl">Clara</span><span class="sub">Marfil, crema</span></label></div>
+              <!-- .sub: Subtexto descriptivo dentro del label. Texto secundario más pequeño. -->
+              <div class="opt"><input type="radio" name="cl-tono" id="cto2" value="Piel oliva / media"/><label for="cto2"><span class="ico">🌻</span><span class="lbl">Oliva / Media</span><span class="sub">Dorado, miel</span></label></div>
+              <div class="opt"><input type="radio" name="cl-tono" id="cto3" value="Piel morena / oscura"/><label for="cto3"><span class="ico">🌑</span><span class="lbl">Morena / Oscura</span><span class="sub">Café, ébano</span></label></div>
+              <div class="opt"><input type="radio" name="cl-tono" id="cto4" value="Prefiero no especificar"/><label for="cto4"><span class="ico">🎨</span><span class="lbl">Sin preferencia</span></label></div>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+
+          <!-- ═══ PASO 7: Presupuesto ★ MODIFICADO CON aplicarDescuento() ★ ═══ -->
+          <div class="step stepper__step" data-step="7">
+            <div class="step-head">
+              <div class="step-num">Paso 07 / 10 — Presupuesto</div>
+              <h3>¿Cuánto puedes invertir?</h3>
+              <p>Esto nos permite mostrarte sastres dentro de tu rango de precio.</p>
+            </div>
+
+            <div class="sf stepper__field">
+              <label>Presupuesto para la prenda completa (CLP)</label>
+
+              <div class="range-disp" id="cl-pres-display">$50.000</div>
+              <!-- Display del valor bruto del slider.
+                   initRange('cl-presupuesto','cl-pres-display') en JS lo actualiza
+                   en tiempo real con cada movimiento del slider. -->
+
+              <input type="range"
+                     id="cl-presupuesto"
+                     class="si stepper__input"
+                     min="20000"
+                     max="1000000"
+                     step="5000"
+                     value="50000"/>
+              <!-- type="range": Slider deslizante.
+                   min/max: Límites del rango numérico.
+                   step="5000": El slider salta de 5.000 en 5.000.
+                   value="50000": Valor inicial del slider.
+                   El evento 'input' se dispara en cada cambio (JS lo escucha). -->
+
+              <!-- ╔══════════════════════════════════════════════════════╗
+                   ║  ★ ELEMENTO NUEVO — AGREGADO PARA aplicarDescuento() ║
+                   ╚══════════════════════════════════════════════════════╝
+                   Este div NO existía en el HTML original.
+                   Se agrega para mostrar el resultado de la función
+                   aplicarDescuento(total) en tiempo real mientras el
+                   usuario mueve el slider.
+
+                   El JS (función initDescuentoDisplay()) lo actualiza:
+                   - Si total > $100 → "🏷 20% OFF — Con descuento: $X CLP"
+                   - Si total > $50  → "🏷 10% OFF — Con descuento: $X CLP"
+                   - Si total ≤ $50  → "Sin descuento aplicable (monto ≤ $50)"
+
+                   ESTILOS CSS SUGERIDOS (agregar a main.css):
+                   .descuento-info {
+                     margin-top: 0.5rem;
+                     font-size: 0.875rem;
+                     color: #666;
+                   }
+                   .descuento-badge {
+                     background: #e8f5e9;
+                     color: #2e7d32;
+                     padding: 2px 8px;
+                     border-radius: 12px;
+                     font-weight: 600;
+                     margin-right: 6px;
+                   }
+              -->
+              <div id="cl-pres-descuento" class="descuento-info">
+                <!-- Vacío al cargar. JS lo rellena con initDescuentoDisplay().
+                     Ejemplo del contenido que genera el JS:
+                     <span class="descuento-badge">🏷 10% OFF</span>
+                     Con descuento: <strong>$45.000 CLP</strong>
+                -->
+              </div>
+
+              <div class="range-lbl">
+              <!-- Etiquetas de los extremos del slider (mínimo y máximo). -->
+                <span>$20.000</span>
+                <span>$1.000.000+</span>
+              </div>
+            </div><!-- /.stepper__field -->
+
+            <div class="step-nav">
+              <button class="btn btn--outline" data-prev>← Atrás</button>
+              <button class="btn btn--indigo" data-next>Siguiente →</button>
+            </div>
+          </div><!-- /.stepper__step[data-step="7"] — PASO 7 FIN -->
+
+
+          <!-- ═══ PASO 8: Plazo ═══ -->
+          <div class="step stepper__step" data-step="8">
+            <div class="step-head">
+              <div class="step-num">Paso 08 / 10 — Plazo</div>
+              <h3>¿En cuánto tiempo la necesitas?</h3>
+              <p>El plazo afecta la disponibilidad de los sastres y el precio final.</p>
+            </div>
+            <div class="opts" data-group="g-plazo">
+              <div class="opt"><input type="radio" name="cl-plazo" id="cp1" value="Urgente: menos de 2 semanas"/><label for="cp1"><span class="ico">🚨</span><span class="lbl">Urgente</span><span class="sub">Menos de 2 semanas</span></label></div>
+              <div class="opt"><input type="radio" name="cl-plazo" id="cp2" value="Normal: 2 a 4 semanas"/><label for="cp2"><span class="ico">📅</span><span class="lbl">Normal</span><span class="sub">2 a 4 semanas</span></label></div>
+              <div class="opt"><input type="radio" name="cl-plazo" id="cp3" value="Sin apuro: 1 a 3 meses"/><label for="cp3"><span class="ico">🗓️</span><span class="lbl">Sin apuro</span><span class="sub">1 a 3 meses</span></label></div>
+              <div class="opt"><input type="radio" name="cl-plazo" id="cp4" value="Flexible"/><label for="cp4"><span class="ico">🤷</span><span class="lbl">Flexible</span><span class="sub">Sin fecha límite</span></label></div>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+
+          <!-- ═══ PASO 9: Disponibilidad ═══ -->
+          <div class="step stepper__step" data-step="9">
+            <div class="step-head">
+              <div class="step-num">Paso 09 / 10 — Disponibilidad</div>
+              <h3>¿Cuándo puedes reunirte?</h3>
+              <p>El sastre necesitará tomarte medidas al menos una vez presencialmente.</p>
+            </div>
+            <div class="opts" data-group="g-disp">
+              <div class="opt"><input type="radio" name="cl-disponibilidad" id="cd1" value="Días de semana (mañana)"/><label for="cd1"><span class="ico">🌅</span><span class="lbl">Lunes-Viernes</span><span class="sub">Mañana</span></label></div>
+              <div class="opt"><input type="radio" name="cl-disponibilidad" id="cd2" value="Días de semana (tarde)"/><label for="cd2"><span class="ico">🌆</span><span class="lbl">Lunes-Viernes</span><span class="sub">Tarde / noche</span></label></div>
+              <div class="opt"><input type="radio" name="cl-disponibilidad" id="cd3" value="Fines de semana"/><label for="cd3"><span class="ico">🏖️</span><span class="lbl">Fin de semana</span><span class="sub">Sábado / Domingo</span></label></div>
+              <div class="opt"><input type="radio" name="cl-disponibilidad" id="cd4" value="Flexible"/><label for="cd4"><span class="ico">🕐</span><span class="lbl">Flexible</span></label></div>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+
+          <!-- ═══ PASO 10: Descripción y referencia (ÚLTIMO PASO) ═══ -->
+          <div class="step stepper__step" data-step="10">
+            <div class="step-head">
+              <div class="step-num">Paso 10 / 10 — Descripción</div>
+              <h3>Cuéntanos más de tu proyecto</h3>
+              <p>Agrega detalles adicionales para que el sastre entienda bien tu visión.</p>
+            </div>
+
+            <div class="sf stepper__field">
+              <label for="cl-descripcion">Descripción del proyecto <span class="req">*</span></label>
+              <textarea id="cl-descripcion" class="si stepper__input si--ta"
+                placeholder="Describe la prenda: colores, estilo, detalles especiales... (mínimo 20 caracteres)">
+              </textarea>
+              <!-- <textarea>: Campo de texto multilínea.
+                   si--ta: Modificador de estilo para textareas.
+                   El JS valida: desc.length >= 20 caracteres mínimo. -->
+              <span class="err"></span>
+            </div>
+
+            <div class="sf stepper__field">
+              <label for="cl-referencia">Link de referencia visual (opcional)</label>
+              <input type="url" id="cl-referencia" class="si stepper__input" placeholder="https://pin.it/... o Instagram"/>
+              <!-- type="url": El navegador valida que sea URL válida.
+                   Sin .req → campo OPCIONAL (no hay validación en JS). -->
+              <small>Una imagen de Pinterest o Instagram nos ayuda mucho.</small>
+              <!-- <small>: Texto de ayuda contextual. No es error, siempre visible. -->
+            </div>
+
+            <div class="divider">Revisa y envía</div>
+            <!-- Separador visual con texto. Indica al usuario que es el último paso. -->
+
+            <div class="step-nav">
+              <button class="btn btn--outline" data-prev>← Atrás</button>
+              <button class="btn btn--terra btn--lg" data-submit>✅ Buscar mi sastre</button>
+              <!-- data-submit: El JS lo detecta con closest('[data-submit]') → submitFlow().
+                   btn--terra: Color terracota (botón de acción principal destacado).
+                   btn--lg: Tamaño grande para la llamada a la acción final. -->
+            </div>
+          </div><!-- /.stepper__step[data-step="10"] -->
+
+        </div><!-- /#client-form-wrap -->
+
+
+        <!-- === PANTALLA DE ÉXITO (cliente) === -->
+        <div class="sdone" id="client-done">
+        <!-- sdone = "stepper done". Oculto inicialmente (sin clase 'show').
+             El JS la muestra al enviar: resultEl.classList.add('show') -->
+          <div class="sdone-icon">🤝</div>
+          <h2>¡Solicitud enviada!</h2>
+          <p>Analizaremos tu perfil y te contactaremos en 24-48 horas con hasta 3 sastres recomendados en tu zona.</p>
+          <div class="s-summary">
+            <h4>Resumen de tu solicitud</h4>
+            <div id="client-summary"></div>
+            <!-- El JS rellena este div con populateSummary():
+                 itera clientData y genera filas clave-valor.
+                 summaryId: 'client-summary' en la config de createStepper(). -->
+          </div>
+          <a href="#" class="btn btn--terra btn--lg">Volver al inicio</a>
         </div>
+
+      </div><!-- /#flow-client -->
+
+
+      <!-- ════════════════════════════════════
+           FLUJO POSTULANTE — 11 pasos
+      ═════════════════════════════════════ -->
+
+      <div class="stepper__flow" id="flow-worker">
+      <!-- Sin 'active' → oculto al cargar. Se muestra al hacer clic en el tab "Postular". -->
+
+        <div class="stepper__progress">
+          <div class="bar-track"><div class="bar-fill stepper__bar-fill"></div></div>
+          <div class="prog-row stepper__progress-row">
+            <span>Paso 1 de 11</span>
+            <!-- 11 pasos (uno más que el flujo cliente). -->
+            <strong>0% completado</strong>
+          </div>
+          <div class="stepper__dots">
+            <button class="active">1</button><button>2</button><button>3</button>
+            <button>4</button><button>5</button><button>6</button>
+            <button>7</button><button>8</button><button>9</button>
+            <button>10</button><button>11</button>
+            <!-- 11 dots para los 11 pasos del postulante. -->
+          </div>
+        </div>
+
+        <div id="worker-form-wrap">
+
+          <!-- PASO 1: Datos personales del postulante -->
+          <div class="step stepper__step active" data-step="1">
+            <div class="step-head"><div class="step-num">Paso 01 / 11 — Datos personales</div><h3>Empecemos con tu identidad</h3><p>Necesitamos tus datos para registrar tu postulación formalmente.</p></div>
+            <div class="srow">
+              <div class="sf stepper__field"><label for="wk-nombre">Nombre <span class="req">*</span></label><input type="text" id="wk-nombre" class="si stepper__input" placeholder="Ej: Roberto"/><span class="err"></span></div>
+              <div class="sf stepper__field"><label for="wk-apellido">Apellido <span class="req">*</span></label><input type="text" id="wk-apellido" class="si stepper__input" placeholder="Ej: Paredes"/><span class="err"></span></div>
+            </div>
+            <div class="sf stepper__field">
+              <label for="wk-rut">RUT <span class="req">*</span></label>
+              <input type="text" id="wk-rut" class="si stepper__input" placeholder="12.345.678-9"/>
+              <small>Con puntos y guión.</small>
+              <!-- Ayuda contextual para el formato del RUT chileno. Siempre visible. -->
+              <span class="err"></span>
+            </div>
+            <div class="srow">
+              <div class="sf stepper__field"><label for="wk-correo">Correo <span class="req">*</span></label><input type="email" id="wk-correo" class="si stepper__input" placeholder="tu@correo.cl"/><span class="err"></span></div>
+              <div class="sf stepper__field"><label for="wk-tel">Teléfono <span class="req">*</span></label><input type="tel" id="wk-tel" class="si stepper__input" placeholder="+56 9 ..."/><span class="err"></span></div>
+            </div>
+            <div class="step-nav"><span></span><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+          <!-- PASO 2: Datos adicionales -->
+          <div class="step stepper__step" data-step="2">
+            <div class="step-head"><div class="step-num">Paso 02 / 11 — Datos adicionales</div><h3>Un poco más sobre ti</h3><p>Información complementaria para procesar tu candidatura.</p></div>
+            <div class="srow">
+              <div class="sf stepper__field">
+                <label for="wk-fnac">Fecha de nacimiento <span class="req">*</span></label>
+                <input type="date" id="wk-fnac" class="si stepper__input"/>
+                <!-- type="date": Input de fecha nativo. Muestra calendario en el navegador.
+                     Formato interno: YYYY-MM-DD (independiente del locale del usuario). -->
+                <span class="err"></span>
+              </div>
+              <div class="sf stepper__field">
+                <label for="wk-genero">Género <span class="req">*</span></label>
+                <select id="wk-genero" class="si stepper__input si--select">
+                  <option value="">— Seleccionar —</option>
+                  <option>Masculino</option>
+                  <option>Femenino</option>
+                  <option>No binario</option>
+                  <!-- Inclusivo de identidades no binarias. -->
+                  <option>Prefiero no indicar</option>
+                  <!-- Opción de privacidad (no fuerza a revelar género). -->
+                </select>
+                <span class="err"></span>
+              </div>
+            </div>
+            <div class="sf stepper__field">
+              <label for="wk-nac">Nacionalidad</label>
+              <!-- Sin .req → OPCIONAL. Sin validación en JS. -->
+              <input type="text" id="wk-nac" class="si stepper__input" placeholder="Ej: Chilena"/>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+          <!-- PASO 3: Ubicación del postulante -->
+          <div class="step stepper__step" data-step="3">
+            <div class="step-head"><div class="step-num">Paso 03 / 11 — Ubicación</div><h3>¿Dónde vives actualmente?</h3><p>Asignamos postulantes a tiendas según disponibilidad regional.</p></div>
+            <div class="sf stepper__field"><label for="wk-region">Región <span class="req">*</span></label>
+              <select id="wk-region" class="si stepper__input si--select">
+                <option value="">— Región —</option>
+                <option>Región Metropolitana de Santiago</option><option>Región de Valparaíso</option>
+                <option>Región del Biobío</option><option>Región de La Araucanía</option>
+                <option>Región de Los Lagos</option><option>Región de Antofagasta</option>
+                <option>Región de Coquimbo</option><option>Región del Maule</option>
+                <option>Región de Ñuble</option><option>Región de Los Ríos</option>
+                <option>Otra región</option>
+              </select><span class="err"></span></div>
+            <div class="srow">
+              <div class="sf stepper__field"><label for="wk-ciudad">Ciudad <span class="req">*</span></label><input type="text" id="wk-ciudad" class="si stepper__input" placeholder="Ej: Las Condes"/><span class="err"></span></div>
+              <div class="sf stepper__field"><label for="wk-dir">Dirección (opcional)</label><input type="text" id="wk-dir" class="si stepper__input" placeholder="Calle y número"/></div>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+          <!-- PASOS 4-11: Cargo, Educación, Experiencia, Especialidades,
+               Disponibilidad/Modalidad, Salario, Motivación, Referencias.
+               Todos siguen el mismo patrón documentado arriba:
+               data-step="N" / .step-head / .opts o .sf / .step-nav con data-prev y data-next -->
+
+          <div class="step stepper__step" data-step="4">
+            <div class="step-head"><div class="step-num">Paso 04 / 11 — Cargo</div><h3>¿A qué cargo postulas?</h3><p>Elige el rol que mejor describe tu perfil.</p></div>
+            <div class="opts" data-group="g-wk-cargo">
+              <div class="opt"><input type="radio" name="wk-cargo" id="wc1" value="Sastre / Modista"/><label for="wc1"><span class="ico">✂️</span><span class="lbl">Sastre / Modista</span><span class="sub">Confección a medida</span></label></div>
+              <div class="opt"><input type="radio" name="wk-cargo" id="wc2" value="Vendedor/a Textil"/><label for="wc2"><span class="ico">🏪</span><span class="lbl">Vendedor/a</span><span class="sub">Atención en tienda</span></label></div>
+              <div class="opt"><input type="radio" name="wk-cargo" id="wc3" value="Diseñador/a de Moda"/><label for="wc3"><span class="ico">👗</span><span class="lbl">Diseñador/a</span><span class="sub">Patrones y colecciones</span></label></div>
+              <div class="opt"><input type="radio" name="wk-cargo" id="wc4" value="Bordador/a"/><label for="wc4"><span class="ico">🧶</span><span class="lbl">Bordador/a</span><span class="sub">Arte textil manual</span></label></div>
+              <div class="opt"><input type="radio" name="wk-cargo" id="wc5" value="Encargado/a de Bodega"/><label for="wc5"><span class="ico">📦</span><span class="lbl">Bodega</span><span class="sub">Gestión de inventario</span></label></div>
+              <div class="opt"><input type="radio" name="wk-cargo" id="wc6" value="Otro perfil"/><label for="wc6"><span class="ico">💼</span><span class="lbl">Otro perfil</span></label></div>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+          <div class="step stepper__step" data-step="5">
+            <div class="step-head"><div class="step-num">Paso 05 / 11 — Formación</div><h3>¿Cuál es tu nivel educacional?</h3><p>Incluye formación formal o técnica en área textil.</p></div>
+            <div class="opts" data-group="g-wk-edu">
+              <div class="opt"><input type="radio" name="wk-edu" id="we1" value="Enseñanza Media completa"/><label for="we1"><span class="ico">🎒</span><span class="lbl">Enseñanza Media</span></label></div>
+              <div class="opt"><input type="radio" name="wk-edu" id="we2" value="Técnico de nivel superior"/><label for="we2"><span class="ico">📋</span><span class="lbl">Técnico Superior</span></label></div>
+              <div class="opt"><input type="radio" name="wk-edu" id="we3" value="Universitario (en curso o egresado)"/><label for="we3"><span class="ico">🎓</span><span class="lbl">Universitario</span></label></div>
+              <div class="opt"><input type="radio" name="wk-edu" id="we4" value="Curso o taller especializado"/><label for="we4"><span class="ico">📚</span><span class="lbl">Curso / Taller</span></label></div>
+              <div class="opt"><input type="radio" name="wk-edu" id="we5" value="Autodidacta"/><label for="we5"><span class="ico">🔧</span><span class="lbl">Autodidacta</span></label></div>
+            </div>
+            <div class="sf stepper__field sf--mt"><label for="wk-inst">Institución (opcional)</label><input type="text" id="wk-inst" class="si stepper__input" placeholder="Ej: INACAP, Duoc UC"/></div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+          <div class="step stepper__step" data-step="6">
+            <div class="step-head"><div class="step-num">Paso 06 / 11 — Experiencia</div><h3>¿Cuántos años de experiencia tienes?</h3></div>
+            <div class="opts" data-group="g-wk-exp">
+              <div class="opt"><input type="radio" name="wk-exp" id="wex1" value="Sin experiencia (postulante junior)"/><label for="wex1"><span class="ico">🌱</span><span class="lbl">Sin experiencia</span><span class="sub">Postulante junior</span></label></div>
+              <div class="opt"><input type="radio" name="wk-exp" id="wex2" value="Menos de 1 año"/><label for="wex2"><span class="ico">🌿</span><span class="lbl">Menos de 1 año</span></label></div>
+              <div class="opt"><input type="radio" name="wk-exp" id="wex3" value="1 a 3 años"/><label for="wex3"><span class="ico">📗</span><span class="lbl">1 – 3 años</span></label></div>
+              <div class="opt"><input type="radio" name="wk-exp" id="wex4" value="3 a 7 años"/><label for="wex4"><span class="ico">📘</span><span class="lbl">3 – 7 años</span></label></div>
+              <div class="opt"><input type="radio" name="wk-exp" id="wex5" value="Más de 7 años"/><label for="wex5"><span class="ico">🏆</span><span class="lbl">+7 años</span><span class="sub">Nivel experto</span></label></div>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+          <div class="step stepper__step" data-step="7">
+            <div class="step-head"><div class="step-num">Paso 07 / 11 — Especialidades</div><h3>¿En qué te especializas?</h3><p>Selecciona todas las que apliquen.</p></div>
+            <div class="opts opts--grid-md" data-group="g-wk-esp">
+            <!-- opts--grid-md: Grid mediano para 8 opciones con checkboxes. -->
+              <div class="opt"><input type="checkbox" name="wk-esp" id="wesp1" value="Ropa formal"/><label for="wesp1"><span class="ico">👔</span><span class="lbl">Formal</span></label></div>
+              <div class="opt"><input type="checkbox" name="wk-esp" id="wesp2" value="Moda casual"/><label for="wesp2"><span class="ico">👕</span><span class="lbl">Casual</span></label></div>
+              <div class="opt"><input type="checkbox" name="wk-esp" id="wesp3" value="Vestidos de novia"/><label for="wesp3"><span class="ico">👰</span><span class="lbl">Novia</span></label></div>
+              <div class="opt"><input type="checkbox" name="wk-esp" id="wesp4" value="Ropa infantil"/><label for="wesp4"><span class="ico">🧸</span><span class="lbl">Infantil</span></label></div>
+              <div class="opt"><input type="checkbox" name="wk-esp" id="wesp5" value="Uniformes"/><label for="wesp5"><span class="ico">🦺</span><span class="lbl">Uniformes</span></label></div>
+              <div class="opt"><input type="checkbox" name="wk-esp" id="wesp6" value="Textiles para el hogar"/><label for="wesp6"><span class="ico">🛋️</span><span class="lbl">Hogar</span></label></div>
+              <div class="opt"><input type="checkbox" name="wk-esp" id="wesp7" value="Moda sostenible"/><label for="wesp7"><span class="ico">🌿</span><span class="lbl">Eco-moda</span></label></div>
+              <div class="opt"><input type="checkbox" name="wk-esp" id="wesp8" value="Arte textil / Bordado"/><label for="wesp8"><span class="ico">🎨</span><span class="lbl">Arte textil</span></label></div>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+          <div class="step stepper__step" data-step="8">
+            <div class="step-head"><div class="step-num">Paso 08 / 11 — Disponibilidad</div><h3>¿Cómo te gustaría trabajar?</h3></div>
+            <div class="sf stepper__field"><label>Disponibilidad horaria <span class="req">*</span></label>
+              <div class="opts" data-group="g-wk-disp">
+                <div class="opt"><input type="radio" name="wk-disp" id="wd1" value="Jornada completa (45h/sem)"/><label for="wd1"><span class="ico">⏰</span><span class="lbl">Full time</span><span class="sub">45 hrs/semana</span></label></div>
+                <div class="opt"><input type="radio" name="wk-disp" id="wd2" value="Media jornada (25h/sem)"/><label for="wd2"><span class="ico">🕑</span><span class="lbl">Part time</span><span class="sub">25 hrs/semana</span></label></div>
+                <div class="opt"><input type="radio" name="wk-disp" id="wd3" value="Por proyecto (freelance)"/><label for="wd3"><span class="ico">🎯</span><span class="lbl">Freelance</span><span class="sub">Por proyecto</span></label></div>
+              </div>
+            </div>
+            <div class="sf stepper__field sf--mt"><label>Modalidad preferida <span class="req">*</span></label>
+              <div class="opts" data-group="g-wk-modal">
+                <div class="opt"><input type="radio" name="wk-modal" id="wm1" value="Presencial en tienda"/><label for="wm1"><span class="ico">🏬</span><span class="lbl">Presencial</span><span class="sub">En tienda</span></label></div>
+                <div class="opt"><input type="radio" name="wk-modal" id="wm2" value="Trabajo desde casa"/><label for="wm2"><span class="ico">🏠</span><span class="lbl">Remoto</span><span class="sub">Desde casa</span></label></div>
+                <div class="opt"><input type="radio" name="wk-modal" id="wm3" value="Híbrido"/><label for="wm3"><span class="ico">🔄</span><span class="lbl">Híbrido</span></label></div>
+              </div>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+          <div class="step stepper__step" data-step="9">
+            <div class="step-head"><div class="step-num">Paso 09 / 11 — Expectativa económica</div><h3>¿Cuánto esperas ganar?</h3></div>
+            <div class="sf stepper__field">
+              <label>Expectativa salarial mensual líquida (CLP)</label>
+              <div class="range-disp" id="wk-sal-display">$500.000</div>
+              <!-- initRange('wk-salario','wk-sal-display') actualiza este display en tiempo real. -->
+              <input type="range" id="wk-salario" class="si stepper__input" min="300000" max="3500000" step="50000" value="500000"/>
+              <!-- step="50000": Incrementos de $50.000 al deslizar. -->
+              <div class="range-lbl"><span>$300.000</span><span>$3.500.000+</span></div>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+          <div class="step stepper__step" data-step="10">
+            <div class="step-head"><div class="step-num">Paso 10 / 11 — Motivación</div><h3>¿Por qué Hilo &amp; Oficio?</h3><p>Cuéntanos tu historia y qué te motiva a unirte.</p></div>
+            <div class="sf stepper__field">
+              <label for="wk-motiv">Carta de motivación <span class="req">*</span></label>
+              <textarea id="wk-motiv" class="si stepper__input si--ta" placeholder="Escribe tu motivación... (mínimo 40 caracteres)"></textarea>
+              <!-- El JS valida: txt.length >= 40. Más exigente que el cliente (20 chars). -->
+              <span class="err"></span>
+            </div>
+            <div class="sf stepper__field">
+              <label for="wk-link">Portafolio, LinkedIn o Instagram (opcional)</label>
+              <input type="url" id="wk-link" class="si stepper__input" placeholder="https://linkedin.com/in/tu-perfil"/>
+              <small>Muéstranos tu trabajo. Aumenta significativamente tus posibilidades de ser seleccionado.</small>
+            </div>
+            <div class="step-nav"><button class="btn btn--outline" data-prev>← Atrás</button><button class="btn btn--indigo" data-next>Siguiente →</button></div>
+          </div>
+
+          <div class="step stepper__step" data-step="11">
+          <!-- Último paso del flujo postulante. -->
+            <div class="step-head">
+              <div class="step-num">Paso 11 / 11 — Referencias</div>
+              <h3>¡Último paso!</h3>
+              <p>Añade referencias laborales o personas que puedan dar cuenta de tu trayectoria.</p>
+            </div>
+            <div class="sf stepper__field">
+              <label for="wk-ref">Referencias (nombre, empresa y teléfono)</label>
+              <textarea id="wk-ref" class="si stepper__input si--ta si--ta-short"
+                placeholder="Ej: Juan Pérez — Telas El Águila — +56 9 8765 4321&#10;Ana López — Boutique Moderna — +56 9 1111 2222">
+              </textarea>
+              <!-- si--ta-short: Textarea más baja (menos líneas visibles).
+                   &#10;: Entidad HTML para salto de línea dentro del placeholder.
+                   Muestra dos filas de ejemplo. -->
+              <small>Opcional pero muy recomendado. Incluye al menos una referencia laboral.</small>
+            </div>
+            <div class="divider">Todo listo — envía tu postulación</div>
+            <div class="step-nav">
+              <button class="btn btn--outline" data-prev>← Atrás</button>
+              <button class="btn btn--terra btn--lg" data-submit>🚀 Enviar postulación</button>
+              <!-- data-submit → submitFlow() → oculta formulario, muestra worker-done. -->
+            </div>
+          </div>
+
+        </div><!-- /#worker-form-wrap -->
+
+        <!-- === PANTALLA DE ÉXITO (postulante) === -->
+        <div class="sdone" id="worker-done">
+          <div class="sdone-icon">🎉</div>
+          <h2>¡Postulación enviada!</h2>
+          <p>Revisaremos tu perfil y te contactaremos en los próximos 3 a 5 días hábiles.</p>
+          <div class="s-summary">
+            <h4>Resumen de tu postulación</h4>
+            <div id="worker-summary"></div>
+            <!-- summaryId: 'worker-summary'. populateSummary() lo rellena con workerData. -->
+          </div>
+          <a href="#" class="btn btn--indigo btn--lg">Volver al inicio</a>
+        </div>
+
+      </div><!-- /#flow-worker -->
+
+    </div><!-- /.form-inner -->
+  </div><!-- /.wrap -->
+</section><!-- /.sec--forms -->
+
+
+<!-- ═══════════════════════════
+     BANNER CTA
+════════════════════════════ -->
+
+<section class="sec sec--banner">
+<!-- sec--banner: Sección de cierre con CTA final. Fondo llamativo en CSS. -->
+  <div class="wrap">
+    <div class="banner-box fade-up">
+      <h2>¿Tienes talento textil?<br>Únete a la red.</h2>
+      <!-- <br>: Salto de línea controlado para equilibrio tipográfico. -->
+      <p>Más de 340 sastres ya forman parte de Hilo &amp; Oficio. Postula hoy y conecta con clientes de todo Chile.</p>
+      <!-- &amp;: Entidad HTML para &. Siempre usar &amp; en lugar de & solo en HTML. -->
+      <div class="banner-actions">
+        <a href="#formularios" class="btn btn--mustard btn--lg">Postular ahora</a>
+        <!-- Botón primario: color mostaza, tamaño grande. -->
+        <a href="#guia-color"  class="btn btn--outline-lt btn--lg">Ver guía de color</a>
+        <!-- Botón secundario: outline con texto claro (para fondos oscuros). -->
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
 
-  <!-- ═══════════════════════════════════════════════════════
+<!-- ═══════════════════════════
      FOOTER
      scss/layout/_footer.scss
-══════════════════════════════════════════════════════════ -->
-  <footer class="footer">
-    <div class="wrap">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <span class="footer-name">Hilo &amp; Oficio</span>
-          <p>La plataforma que conecta a clientes con los mejores artesanos textiles de Chile, desde Arica hasta Punta
-            Arenas.</p>
-          <div>
-            <span class="f-badge">🧵 Textil</span>
-            <span class="f-badge">✂️ Sastrería</span>
-            <span class="f-badge">🌿 Sostenible</span>
-            <span class="f-badge">🇨🇱 Nacional</span>
-          </div>
-        </div>
+════════════════════════════ -->
 
-        <div class="footer-col">
-          <h5>Plataforma</h5>
-          <ul>
-            <li><a href="#como-funciona">Cómo funciona</a></li>
-            <li><a href="#catalogo">Catálogo de telas</a></li>
-            <li><a href="#guia-color">Guía de color</a></li>
-            <li><a href="#sastres">Red de sastres</a></li>
-          </ul>
-        </div>
+<footer class="footer">
+<!-- <footer>: Elemento semántico HTML5 para el pie de página.
+     Más accesible que <div class="footer"> porque los lectores de pantalla
+     lo identifican automáticamente como zona de información secundaria. -->
 
-        <div class="footer-col">
-          <h5>Conectarse</h5>
-          <ul>
-            <li><a href="#formularios">Buscar un sastre</a></li>
-            <li><a href="#formularios">Postular como sastre</a></li>
-            <li><a href="#formularios">Ser vendedor textil</a></li>
-            <li><a href="#formularios">Requisitos</a></li>
-          </ul>
-        </div>
+  <div class="wrap">
+    <div class="footer-grid">
+    <!-- Grid de 4 columnas: branding + 3 listas de links.
+         En móvil colapsa a 1 o 2 columnas con media queries. -->
 
-        <div class="footer-col">
-          <h5>Empresa</h5>
-          <ul>
-            <li><a href="#">Sobre nosotros</a></li>
-            <li><a href="#">Blog textil</a></li>
-            <li><a href="#">Contacto</a></li>
-            <li><a href="#">Privacidad</a></li>
-          </ul>
+      <!-- Columna 1: Branding y descripción -->
+      <div class="footer-brand">
+        <span class="footer-name">Hilo &amp; Oficio</span>
+        <p>La plataforma que conecta a clientes con los mejores artesanos textiles de Chile, desde Arica hasta Punta Arenas.</p>
+        <div>
+          <span class="f-badge">🧵 Textil</span>
+          <span class="f-badge">✂️ Sastrería</span>
+          <span class="f-badge">🌿 Sostenible</span>
+          <span class="f-badge">🇨🇱 Nacional</span>
+          <!-- 🇨🇱: Emoji de bandera chilena (compuesto por dos code points Unicode).
+               f-badge: Cada badge es un span estilado como píldora en CSS. -->
         </div>
       </div>
 
-      <div class="footer-bottom">
-        <p>© 2025 Hilo &amp; Oficio SpA — Todos los derechos reservados — Hecho con 🧵 en Chile</p>
-        <div class="f-socials">
-          <a href="#" aria-label="Instagram">📸</a>
-          <a href="#" aria-label="Facebook">📘</a>
-          <a href="#" aria-label="TikTok">🎵</a>
-          <a href="#" aria-label="LinkedIn">💼</a>
-        </div>
+      <!-- Columna 2: Links de plataforma -->
+      <div class="footer-col">
+        <h5>Plataforma</h5>
+        <!-- <h5>: Quinto nivel. Apropiado para títulos de columnas en el footer
+             (varios niveles debajo del h1 principal de la página). -->
+        <ul>
+        <!-- <ul>: Lista no ordenada. Semánticamente correcta para listas de links. -->
+          <li><a href="#como-funciona">Cómo funciona</a></li>
+          <!-- <li>: Cada link en su propio elemento de lista. -->
+          <li><a href="#catalogo">Catálogo de telas</a></li>
+          <li><a href="#guia-color">Guía de color</a></li>
+          <li><a href="#sastres">Red de sastres</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Links de conexión -->
+      <div class="footer-col">
+        <h5>Conectarse</h5>
+        <ul>
+          <li><a href="#formularios">Buscar un sastre</a></li>
+          <li><a href="#formularios">Postular como sastre</a></li>
+          <li><a href="#formularios">Ser vendedor textil</a></li>
+          <li><a href="#formularios">Requisitos</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 4: Links de empresa -->
+      <div class="footer-col">
+        <h5>Empresa</h5>
+        <ul>
+          <li><a href="#">Sobre nosotros</a></li>
+          <li><a href="#">Blog textil</a></li>
+          <li><a href="#">Contacto</a></li>
+          <li><a href="#">Privacidad</a></li>
+          <!-- href="#": Links sin destino real (páginas pendientes de crear). -->
+        </ul>
+      </div>
+
+    </div><!-- /.footer-grid -->
+
+    <div class="footer-bottom">
+    <!-- Barra inferior: copyright + redes sociales. -->
+
+      <p>© 2025 Hilo &amp; Oficio SpA — Todos los derechos reservados — Hecho con 🧵 en Chile</p>
+      <!-- ©: Símbolo de copyright. Puede escribirse directamente en UTF-8.
+           SpA: Sociedad por Acciones (forma jurídica empresarial chilena). -->
+
+      <div class="f-socials">
+        <a href="#" aria-label="Instagram">📸</a>
+        <!-- aria-label: Imprescindible para accesibilidad. Sin él, el lector de pantalla
+             solo diría "emoji de cámara". Con él dice "Instagram". -->
+        <a href="#" aria-label="Facebook">📘</a>
+        <a href="#" aria-label="TikTok">🎵</a>
+        <a href="#" aria-label="LinkedIn">💼</a>
       </div>
     </div>
-  </footer>
 
-  <!-- Scroll to top -->
-  <button class="scroll-top" aria-label="Ir arriba">↑</button>
-
+  </div><!-- /.wrap -->
+</footer>
 
 
+<!-- Botón flotante "ir arriba" -->
+<button class="scroll-top" aria-label="Ir arriba">↑</button>
+<!-- Posicionado fijo en esquina inferior derecha (CSS position:fixed).
+     Sin clase 'on' inicialmente → oculto (opacity:0 o display:none en CSS).
+     El JS (initScrollTop) agrega 'on' cuando scrollY > 400px.
+     ↑: Flecha Unicode hacia arriba. -->
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- JS principal del proyecto (js/main.js) -->
-  <script src="js/main.js"></script>
 
+<!-- ═══════════════════════════
+     SCRIPTS
+     (al final del body)
+════════════════════════════ -->
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JavaScript (incluye Popper.js integrado → bundle).
+     CDN: Servidor externo → probablemente ya en caché del navegador.
+     Se coloca AL FINAL del <body> por dos razones fundamentales:
+     1) No bloquea la carga del HTML: el navegador parsea el HTML de arriba
+        a abajo y pausa cuando encuentra un <script>. Al final del body,
+        el HTML ya está completamente renderizado.
+     2) El DOM ya está disponible: si estuviera en el <head>,
+        getElementById/querySelector devolverían null porque los elementos
+        aún no habrían sido creados. -->
+
+<script src="js/main.js"></script>
+<!-- Script propio del proyecto.
+     DEBE ir DESPUÉS de Bootstrap para poder usarlo.
+     DEBE ir al final del <body> por las mismas razones:
+     - El DOM ya está completo → getElementById('nav') encuentra el nav.
+     - No bloquea la primera renderización de la página.
+     js/main.js: Ruta relativa desde donde está este HTML.
+                 El archivo está en la subcarpeta js/. -->
 
 </body>
+<!-- Fin del <body>. No debe haber contenido visible después. -->
 
 </html>
+<!-- Fin del documento HTML.
+     Buena práctica: cerrar siempre todos los tags abiertos.
+     El navegador tolera HTML mal formado, pero el código limpio
+     es más fácil de mantener y menos propenso a errores. -->
