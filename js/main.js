@@ -74,6 +74,7 @@
   // main.js
 
 // Array para almacenar los productos del carrito
+// Cada elemento tendrá: {id,nombre,precio,imgHtml,cantidad}
 let carritoItems = [];
 
 // Función para agregar productos al carrito
@@ -83,17 +84,28 @@ function agregarAlCarrito(boton) {
   const id = tarjeta.dataset.id;
   const nombre = tarjeta.dataset.name;
   const precio = Number(tarjeta.dataset.price);
+  const imgHtml = tarjeta.querySelector('.fc-img')?.outerHTML || '';
 
   if (!id || !nombre || isNaN(precio)) return;
 
-  carritoItems.push({ id, nombre, precio });
+  // Si el producto ya existe en el carrito, incrementa cantidad
+  const existing = carritoItems.find(i => i.id === id);
+  if (existing) {
+    existing.cantidad += 1;
+  } else {
+    carritoItems.push({ id, nombre, precio, imgHtml, cantidad: 1 });
+  }
   actualizarCarrito();
 }
 
 // Función para actualizar el carrito en pantalla
 function actualizarCarrito() {
   const contador = document.getElementById('cart-count');
-  if (contador) contador.textContent = carritoItems.length;
+  if (contador) {
+    // mostrar suma de todas las cantidades (no solo número de renglones)
+    const totalUnits = carritoItems.reduce((sum, i) => sum + (i.cantidad || 0), 0);
+    contador.textContent = totalUnits;
+  }
 
   const container = document.getElementById('cart-items');
   if (!container) return;
@@ -110,15 +122,50 @@ function actualizarCarrito() {
 
   carritoItems.forEach(item => {
     html += `
-      <div class="cart-item">
-        <span>${item.nombre}</span>
-        <span>$${item.precio}</span>
+      <div class="cart-item" data-id="${item.id}">
+        <div class="cart-item__img">${item.imgHtml || ''}</div>
+        <div class="cart-item__info">
+          <span>${item.nombre}</span>
+          <span>$${item.precio}</span>
+        </div>
+        <div class="cart-item__qty">
+          <button class="cart-item__dec" aria-label="Disminuir">−</button>
+          <span class="cart-item__count">${item.cantidad}</span>
+          <button class="cart-item__inc" aria-label="Aumentar">+</button>
+        </div>
       </div>
     `;
   });
 
+  // añadir total al final
   html += `<p class="cart-total"><strong>Total: $${total}</strong></p>`;
+
   container.innerHTML = html;
+
+  // after injecting, add listeners for qty buttons
+  container.querySelectorAll('.cart-item__inc').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pid = btn.closest('.cart-item').dataset.id;
+      changeCantidad(pid, 1);
+    });
+  });
+  container.querySelectorAll('.cart-item__dec').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pid = btn.closest('.cart-item').dataset.id;
+      changeCantidad(pid, -1);
+    });
+  });
+}
+
+// Ajusta la cantidad de un producto en el carrito
+function changeCantidad(id, delta) {
+  const item = carritoItems.find(i => i.id === id);
+  if (!item) return;
+  item.cantidad = (item.cantidad || 1) + delta;
+  if (item.cantidad <= 0) {
+    carritoItems = carritoItems.filter(i => i.id !== id);
+  }
+  actualizarCarrito();
 }
 
   // ========================================

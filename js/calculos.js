@@ -5,7 +5,8 @@ function calcularTotalCarrito(items) {
   let total = 0;
 
   items.forEach(item => {
-    total += item.precio;
+    const qty = item.cantidad || 1;
+    total += item.precio * qty;
   });
 
   return total;
