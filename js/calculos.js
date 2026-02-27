@@ -1,6 +1,6 @@
 // calculos.js
 
-// Función que calcula el total del carrito a partir de los productos agregados
+// 2. Función que calcula el total del carrito a partir de los productos agregados
 function calcularTotalCarrito(items) {
   let total = 0;
 
@@ -8,11 +8,12 @@ function calcularTotalCarrito(items) {
     total += item.precio;
   });
 
-  const resultado = aplicarDescuento(total); return resultado;
+  const resultado = aplicarDescuento(total); // con esto se carga el descuento
+
+  return resultado;
 }
 
 
-// 
 // 3. Aplicando descuentos con funciones anidadas
 /***
  @param {number} total  // Es el dato que se asigna a la función
@@ -22,51 +23,19 @@ function calcularTotalCarrito(items) {
 
 function aplicarDescuento(total) {
 
-  let descuentoPct = 0;
-  // Variable para guardar el porcentaje de descuento aplicado.
-  // 'let' porque su valor cambiará según las condiciones.
-  // Inicializa en 0: sin descuento por defecto.
+  let descuentoPct = 0;  // Variable para guardar el porcentaje de descuento aplicado.
 
   if (total > 100) {
-    // CONDICIÓN 1 — Compra mayor a $100: aplica 20% de descuento.
-    // Esta condición se evalúa PRIMERO porque es la más restrictiva.
-    // Ejemplo: total = 150 → entra aquí, obtiene 20%.
     descuentoPct = 20;
-    // Registra que se aplicó 20%.
-
   } else if (total > 50) {
-    // CONDICIÓN 2 — Compra mayor a $50 pero ≤ $100: aplica 10% de descuento.
-    // 'else if' garantiza que solo corre si la condición anterior fue false.
-    // Ejemplo: total = 80 → no entra en if (80 < 100), sí entra aquí.
-    // Ejemplo: total = 150 → ya entró en el if anterior, nunca llega aquí.
     descuentoPct = 10;
-    // Registra que se aplicó 10%.
-
   }
-  // Si total ≤ 50: ningún bloque se ejecutó, descuentoPct permanece en 0.
-  // Ejemplo: total = 30 → sin descuento.
 
   const multiplicador = 1 - (descuentoPct / 100);
-  // Convierte el porcentaje en factor multiplicador para calcular el precio final:
-  //   20% de descuento → 1 - 0.20 = 0.80  (el cliente paga el 80% del total)
-  //   10% de descuento → 1 - 0.10 = 0.90  (el cliente paga el 90% del total)
-  //    0% de descuento → 1 - 0.00 = 1.00  (el cliente paga el 100%, sin descuento)
-
   const precioFinal = parseFloat((total * multiplicador).toFixed(2));
-  // Calcula el precio con descuento multiplicando por el factor.
-  // .toFixed(2) convierte a string con exactamente 2 decimales.
-  // Esto evita problemas de punto flotante de JavaScript:
-  //   sin .toFixed: 80 * 0.80 podría dar 63.99999999999 en vez de 64.
-  // parseFloat() convierte de vuelta a número para operar sobre él.
-
   const ahorro = parseFloat((total - precioFinal).toFixed(2));
-  // Cuánto dinero se ahorra: total original menos el precio con descuento.
-  // También se redondea a 2 decimales para consistencia.
 
   return { precioFinal, descuentoPct, ahorro };
-  // Retorna un objeto con los tres valores relevantes.
-  // Shorthand ES6: { precioFinal } es azúcar sintáctica de { precioFinal: precioFinal }.
-  // Quien llame a esta función puede desestructurar: const { precioFinal } = aplicarDescuento(total);
 }
 
 
@@ -180,3 +149,4 @@ function realizarPedido(pedido) {
   console.log("Ahorro:", resultado.ahorro);
   console.log("✅ Pedido confirmado. ¡Gracias por tu compra!");
 }
+
