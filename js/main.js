@@ -200,6 +200,19 @@
     // Cerrar carrito al hacer clic en ✕ o en el overlay
     cartClose.addEventListener("click", cerrarCarrito);
     cartOverlay.addEventListener("click", cerrarCarrito);
+
+    // ---- Binding de botones 'Añadir al carro' ----
+    document.querySelectorAll('.fc-btn').forEach(boton => {
+      boton.addEventListener('click', () => {
+        try {
+          agregarAlCarrito(boton);
+          localStorage.setItem('carrito', JSON.stringify(carritoItems));
+          console.log('🛒 Carrito actualizado:', JSON.parse(localStorage.getItem('carrito')));
+        } catch (err) {
+          console.error('Error al añadir al carrito:', err);
+        }
+      });
+    });
   }
 
 })();
