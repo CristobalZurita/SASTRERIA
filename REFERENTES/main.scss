@@ -1,0 +1,55 @@
+// =============================================================================
+// SCSS / MAIN.SCSS
+// Punto de entrada único. Importa todos los parciales en orden correcto.
+//
+// ORDEN CRÍTICO:
+//  1. abstracts → Herramientas (sin output CSS propio, excepto :root vars)
+//  2. base      → Reset y tipografía base
+//  3. layout    → Estructura de página
+//  4. components→ Partes reutilizables
+//  5. pages     → Estilos específicos de vistas
+//
+// TEMA SYSTEM:
+//  _variables.scss emite :root con CSS vars del tema original.
+//  _themes.scss    emite body.theme--* con overrides de esas vars.
+//  Todos los demás parciales idealmente usan var(--clr-*) para que
+//  el cambio de tema en runtime funcione sin recompilar.
+// =============================================================================
+
+
+// ─── 1. ABSTRACTS ────────────────────────────────────────────────────────────
+//    Sin output CSS (excepto :root vars y body.theme--*).
+
+@use 'abstracts/variables'  as *;   // SCSS vars + :root CSS vars
+@use 'abstracts/functions'  as *;   // Funciones helpers
+@use 'abstracts/mixins'     as *;   // Mixins reutilizables
+@use 'abstracts/themes'     as *;   // ← NUEVO: temas noche + esmeralda
+
+
+// ─── 2. BASE ─────────────────────────────────────────────────────────────────
+//    Reset y estilos de elementos HTML sin clase.
+
+@use 'base/reset';
+@use 'base/typography';
+
+
+// ─── 3. LAYOUT ───────────────────────────────────────────────────────────────
+//    Estructura macro: navbar, hero, footer.
+
+@use 'layout/navbar';
+@use 'layout/hero';
+@use 'layout/footer';
+
+
+// ─── 4. COMPONENTS ───────────────────────────────────────────────────────────
+//    Partes de UI reutilizables en múltiples páginas.
+
+@use 'components/buttons';
+@use 'components/cards';
+@use 'components/stepper';
+
+
+// ─── 5. PAGES ────────────────────────────────────────────────────────────────
+//    Estilos de página específicos.
+
+@use 'pages/home';

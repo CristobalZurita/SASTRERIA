@@ -1,0 +1,144 @@
+// =============================================================================
+// ABSTRACTS / VARIABLES
+// Sistema de tokens con CSS Custom Properties para theming dinámico.
+//
+// CÓMO FUNCIONA:
+//  1. Cada color se declara como SCSS var ($) → usado en compilación.
+//  2. Cada color se emite como CSS var (--) en :root → usado en runtime.
+//  3. _themes.scss sobreescribe SOLO las CSS vars en body.theme--* → el
+//     navegador recalcula todos los valores sin recompilar.
+//
+// TEMAS DISPONIBLES (ver scss/abstracts/_themes.scss):
+//   • original   → cálido tierra / índigo / terracota (default)
+//   • noche      → oscuro carbón / crema / carmín
+//   • esmeralda  → bosque verde / marfil / champán dorado
+// =============================================================================
+
+
+// ─── PALETA BASE (Tema Original) ─────────────────────────────────────────────
+
+// Fondos
+$clr-bg         : #F2EBE0;
+$clr-surface    : #FFFDF9;
+$clr-surface-alt: #FAF7F3;
+
+// Tipografía
+$clr-heading    : #2D3A6B;
+$clr-body       : #6B4226;
+$clr-muted      : #9C6E50;
+$clr-p          : #9C6E50;
+
+// Marca / Acento
+$clr-primary    : #2D3A6B;   // Índigo profundo
+$clr-accent     : #C45C3A;   // Terracota
+$clr-accent-dark: #A04428;   // Terracota oscura (hover)
+$clr-gold       : #D4922A;   // Mostaza / oro
+$clr-gold-lt    : #E8A98E;   // Terracota claro (eyebrow en sec--dark)
+
+// Bordes
+$clr-border     : #D9CEBC;
+$clr-border-lt  : #E0D5C5;
+
+// Dark section
+$clr-dark-bg    : #2D3A6B;
+
+// Estado
+$clr-success    : #5E8C6A;
+$clr-error      : #C45C3A;
+$clr-info       : #D4922A;
+
+// Navbar
+$clr-nav-bg     : rgba(250, 247, 243, 0.94);
+$clr-nav-scrolled: rgba(250, 247, 243, 0.98);
+
+
+// ─── TIPOGRAFÍA ──────────────────────────────────────────────────────────────
+
+$font-serif  : "Cormorant Garamond", "Georgia", serif;
+$font-sans   : "Jost", "Helvetica Neue", sans-serif;
+$font-mono   : "Courier Prime", "Courier New", monospace;
+
+$fs-base     : 1rem;
+$lh-base     : 1.6;
+
+
+// ─── ESPACIADO ───────────────────────────────────────────────────────────────
+
+$space-xs    : 0.25rem;
+$space-sm    : 0.5rem;
+$space-md    : 1rem;
+$space-lg    : 2rem;
+$space-xl    : 4rem;
+$space-2xl   : 6rem;
+
+
+// ─── RADIOS ──────────────────────────────────────────────────────────────────
+
+$radius-pill : 9999px;
+$radius-card : 48px;
+$radius-sm   : 12px;
+$radius-md   : 20px;
+
+
+// ─── TRANSICIÓN BASE ─────────────────────────────────────────────────────────
+
+$transition-base   : 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-spring : 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+$transition-slow   : 0.65s cubic-bezier(0, 0, 0.2, 1);
+
+
+// ─── BREAKPOINTS ─────────────────────────────────────────────────────────────
+
+$bp-sm   : 640px;
+$bp-md   : 768px;
+$bp-lg   : 1024px;
+$bp-xl   : 1320px;
+
+
+// =============================================================================
+// CSS CUSTOM PROPERTIES — :root
+// Define los tokens del tema original como CSS vars.
+// Los temas alternativos sobreescriben SOLO estas propiedades en _themes.scss.
+// =============================================================================
+
+:root {
+  // Fondos
+  --clr-bg          : #{$clr-bg};
+  --clr-surface     : #{$clr-surface};
+  --clr-surface-alt : #{$clr-surface-alt};
+
+  // Tipografía
+  --clr-heading     : #{$clr-heading};
+  --clr-body        : #{$clr-body};
+  --clr-muted       : #{$clr-muted};
+  --clr-p           : #{$clr-p};
+
+  // Marca
+  --clr-primary     : #{$clr-primary};
+  --clr-accent      : #{$clr-accent};
+  --clr-accent-dark : #{$clr-accent-dark};
+  --clr-gold        : #{$clr-gold};
+  --clr-gold-lt     : #{$clr-gold-lt};
+
+  // Bordes
+  --clr-border      : #{$clr-border};
+  --clr-border-lt   : #{$clr-border-lt};
+
+  // Dark section
+  --clr-dark-bg     : #{$clr-dark-bg};
+
+  // Estados
+  --clr-success     : #{$clr-success};
+  --clr-error       : #{$clr-error};
+  --clr-info        : #{$clr-info};
+
+  // Navbar
+  --clr-nav-bg      : #{$clr-nav-bg};
+  --clr-nav-scrolled: #{$clr-nav-scrolled};
+
+  // Transición del tema (para suavizar el cambio)
+  --theme-transition: background-color #{$transition-base},
+                      color            #{$transition-base},
+                      border-color     #{$transition-base},
+                      box-shadow       #{$transition-base};
+}
