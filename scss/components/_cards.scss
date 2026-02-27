@@ -320,8 +320,8 @@
   box-shadow: v.$shadow-xl;
 }
 
-.sastre-card:hover .sc-img {
-  transform: scale(1.1);
+.sastre-card:hover .sc-img--main {
+  transform: scale(1.02);
 }
 
 .sc-cover {
@@ -331,17 +331,35 @@
 }
 
 .sc-img {
-  width: fit-content;
-  height: fit-content;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   display: block;
-  object-fit: cover;
   transition: transform v.$ease-slow;
+}
+
+.sc-img--bg {
+  object-fit: cover;
+  object-position: center 24%;
+  filter: blur(12px) brightness(0.82);
+  transform: scale(1.08);
+}
+
+.sc-img--main {
+  inset: 42px v.$sp-4 0;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center top;
+  z-index: 1;
 }
 
 .sc-badge {
   position: absolute;
   top: v.$sp-3;
   right: v.$sp-3;
+  z-index: 2;
   padding: v.$sp-1 v.$sp-3;
   border-radius: v.$r-full;
   background: v.$c-mustard;
@@ -356,6 +374,7 @@
   position: absolute;
   top: v.$sp-3;
   left: v.$sp-3;
+  z-index: 2;
   padding: v.$sp-1 v.$sp-3;
   border-radius: v.$r-full;
   background: rgba(v.$c-sage, 0.92);
