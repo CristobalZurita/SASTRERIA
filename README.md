@@ -1,116 +1,163 @@
 # Hilo & Oficio
 
-**Plataforma textil nacional que conecta clientes con sastres artesanales de Chile.**
+Plataforma textil nacional orientada a conectar clientes con sastres artesanales de Chile, mostrar un catalogo visual de telas y centralizar la experiencia de seleccion, cotizacion y contacto en una sola pagina.
 
----
+## Estado actual
 
-## ¿Qué es Hilo & Oficio?
+La version vigente en este repositorio integra trabajo propio sobre `CZ_sastre` y una absorcion aditiva de aportes utiles de otras ramas del equipo. La base actual conserva la arquitectura del proyecto y extiende funcionalidades sin rehacer la estructura principal.
 
-Es una plataforma web que permite a mujeres y hombres encontrar sastres artesanales personalizados en cualquier región de Chile. El usuario selecciona su tela ideal, descubre qué colores le favorecen según su tono de piel, y se conecta con un sastre especializado en su zona.
+## Funcionalidades implementadas
 
----
+### Hero editorial
 
-## Características principales
+- Hero principal con video ambiental de fondo desde `assets/video.mp4`
+- Cajas flotantes con muestras textiles reales
+- Contenido frontal preservado: titular, CTA y KPIs
 
-### 1. Guía de color personalizada
+### Guia de color
 
-Sistema de colorimetría que recomienda telas y colores según el tono de piel del usuario: clara, oliva o morena. Cada piel tiene una paleta única de colores que la favorecen.
+- Tres tarjetas de tono de piel con paletas recomendadas y colores a evitar
+- Interaccion visual para destacar la tarjeta activa
 
-### 2. Catálogo de telas
+### Catalogo de telas
 
-Más de 80 materiales disponibles con filtros por tipo: naturales, sintéticos, mezclas y premium. Cada tela muestra precio por metro, disponibilidad y descripción detallada.
+- Catalogo visual con fotos reales desde `assets/images`
+- Filtros por categoria: natural, sintetico, mezcla y premium
+- Carrusel horizontal con flechas laterales
+- Navegacion por teclado en el carrusel
+- Loop visual continuo en el desplazamiento lateral
 
-### 3. Calculadora de tela con descuentos
+### Modal tecnico de telas
 
-Herramienta que calcula el costo total según metros requeridos. **Aplica descuentos por volumen:**
+- Vista ampliada de la tela
+- Material, ancho util, gramaje, acabado y uso recomendado
+- Calculo por metros
+- Ofertas por cantidad
+- Seleccion de envio dentro del modal
+- Total estimado con descuento y envio
 
-- Compras mayores a $50.000: **10% de descuento**
-- Compras mayores a $100.000: **20% de descuento**
+### Carrito de compras
 
-### 4. Buscador de sastres
+- Drawer lateral con contador de unidades reales
+- Miniaturas por item
+- Aumento y disminucion de cantidades
+- Persistencia en `localStorage`
+- Resumen con subtotal, descuento, envio y total
+- Checkout conectado a la logica comun de `js/calculos.js`
 
-Red de más de 340 sastres activos en las 16 regiones de Chile. El usuario puede filtrar por tipo de prenda, ocasión y disponibilidad geográfica.
+### Sastres destacados
 
-### 5. Formulario dual
+- Tarjetas destacadas con imagen, tags, rating y metrica
+- Popup tipo directorio con 10 sastres ficticios a nivel nacional
+- Modal de biografia individual al pinchar la foto de cada sastre
 
-Dos flujos separados en un mismo formulario:
+### Formularios duales
 
-- **Cliente:** 10 pasos para buscar un sastre (datos, ubicación, tipo de prenda, ocasión, telas preferidas, presupuesto, plazo)
-- **Postulante:** 11 pasos para trabajar en la tienda (datos personales, experiencia, especialidades, disponibilidad, motivación)
+- Flujo cliente de 10 pasos
+- Flujo postulante de 11 pasos
+- Barra de progreso, validacion y resumen final
 
-### 6. Carrito de compras
+### Extras de interfaz
 
-Panel lateral donde el usuario puede agregar telas seleccionadas, ver el total y proceder al checkout.
+- Boton flotante para volver arriba
+- Toasts de confirmacion y error
+- Scroll suave para anclas internas
+- Navbar responsive con drawer movil
 
----
+## Falso backend
 
-## Tecnologías utilizadas
+Este proyecto no usa backend real. La persistencia de carrito y envio funciona en frontend mediante `localStorage`.
 
-| Tecnología                  | Uso                                    |
-| ---------------------------- | -------------------------------------- |
-| **HTML5**              | Estructura semántica del sitio        |
-| **CSS3**               | Estilos y animaciones                  |
-| **SASS/SCSS**          | Preprocesador CSS con arquitectura 7-1 |
-| **JavaScript Vanilla** | Interactividad sin librerías          |
-| **Bootstrap 5**        | Sistema de grillas y utilitarios       |
-| **Git / GitHub**       | Control de versiones y colaboración   |
+Puntos relevantes:
 
----
+- El carrito guarda productos, cantidades e imagenes
+- El envio seleccionado se persiste en navegador
+- La logica de descuento se calcula en cliente
 
-## Estructura del proyecto
+## Tecnologias
 
-```
+- HTML5
+- SCSS con arquitectura tipo 7-1
+- JavaScript vanilla
+- Bootstrap 5
+- Git y GitHub
+- Playwright instalado como dependencia del repo
+
+## Estructura principal
+
+```text
 SASTRERIA/
-├── index.html              # Página principal
+├── index.html
+├── assets/
+│   ├── images/
+│   └── video.mp4
 ├── css/
-│   └── main.css          # CSS compilado
-├── scss/                  # Código fuente SASS
-│   ├── abstracts/        # Variables, mixins, funciones
-│   ├── base/             # Reset y tipografía
-│   ├── components/       # Botones, cards, stepper
-│   ├── layout/           # Navbar, hero, footer
-│   └── pages/            # Estilos específicos de home
+│   ├── main.css
+│   └── main.css.map
 ├── js/
-│   └── main.js           # Lógica JavaScript completa
-└── ARCHIVOS_PRUEBA/      # Documentación y versiones de referencia
+│   ├── calculos.js
+│   └── main.js
+├── scss/
+│   ├── abstracts/
+│   ├── base/
+│   ├── components/
+│   ├── layout/
+│   └── pages/
+├── package.json
+└── playwright_test.js
 ```
 
----
+## Archivos clave
 
-## Cómo ejecutar el proyecto
+- `index.html`: pagina principal completa
+- `js/main.js`: interacciones del sitio, carrito, carrusel, modales y steppers
+- `js/calculos.js`: descuentos, calculo del carrito y apoyo a la calculadora
+- `scss/layout/_hero.scss`: hero principal y video de fondo
+- `scss/layout/_navbar.scss`: navbar, drawer y carrito
+- `scss/components/_cards.scss`: tarjetas de telas y sastres
+- `scss/pages/_home.scss`: carrusel, directorio, modales y ajustes de pagina
 
-### Instalación de dependencias
+## Como ejecutar
+
+### Opcion simple
+
+Abrir `index.html` en navegador.
+
+### Compilar SCSS manualmente
+
+```bash
+npx sass scss/main.scss css/main.css
+```
+
+### Modo watch para estilos
+
+```bash
+npx sass --watch scss/main.scss:css/main.css
+```
+
+### Validar sintaxis de JavaScript
+
+```bash
+node --check js/main.js
+node --check js/calculos.js
+```
+
+## Dependencias
+
+Instalacion base:
 
 ```bash
 npm install
 ```
 
-### Desarrollo (con watch)
+Nota: `package.json` actualmente no define scripts de `build` ni `watch`; la compilacion se hace con `npx sass`.
 
-```bash
-npm run watch
-```
+## Colaboracion
 
-### Producción (build)
+La rama de trabajo usada para consolidar esta version fue `CZ_sastre`. La integracion se realizo de forma aditiva, conservando la base funcional vigente y adaptando aportes utiles del equipo sin rehacer la arquitectura existente.
 
-```bash
-npm run build
-```
+## Creditos
 
----
-
-## Equipo
-
-- **Cristobal Zurita** - Desarrollo principal
-- **Amara Tripaiñán** - Funcionalidad del carrito
-- **Maria Cosio** - Mejoras y optimización
-
----
-
-## Estado del proyecto
-
-✅ **En producción** - Rama principal: `main`
-✅ **Comentarios exhaustivos** - Todo el código documentado
-✅ **Carrito de compras** - UI completa, lógica en desarrollo
-✅ **Formularios dual** - 10+11 pasos funcionando
-✅ **Calculadora de descuentos** - Implementada y conectada
+- Cristobal Zurita
+- Amara
+- Maria
