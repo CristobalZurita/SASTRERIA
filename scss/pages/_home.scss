@@ -589,6 +589,169 @@
 }
 
 // ================================================================
+// Modal Biografía de Sastres
+// ================================================================
+.modal-sastre-bio {
+  position: fixed;
+  inset: 0;
+  z-index: v.$z-modal;
+  padding: v.$sp-6;
+  background: rgba(v.$c-umber, 0.82);
+  opacity: 0;
+  visibility: hidden;
+  transition: all v.$ease-base;
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+
+    .modal-sastre-bio__dialog {
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+.modal-sastre-bio__dialog {
+  position: relative;
+  width: min(980px, 100%);
+  max-height: calc(100vh - #{v.$sp-12});
+  margin: 0 auto;
+  overflow: auto;
+  border-radius: v.$r-xl;
+  background: v.$c-white;
+  box-shadow: v.$shadow-xl;
+  transform: translateY(18px) scale(0.97);
+  transition: transform v.$ease-spring;
+}
+
+.modal-sastre-bio__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.95fr);
+  min-height: min(680px, calc(100vh - #{v.$sp-12}));
+}
+
+.modal-sastre-bio__close {
+  position: absolute;
+  top: v.$sp-4;
+  right: v.$sp-4;
+  z-index: v.$z-up;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: v.$c-white;
+  color: v.$c-umber;
+  font-size: v.$fs-18;
+  cursor: pointer;
+  transition: all v.$ease-base;
+  @include m.flex-center;
+
+  &:hover {
+    background: v.$c-terra;
+    color: #fff;
+    transform: rotate(90deg);
+  }
+}
+
+.modal-sastre-bio__content {
+  padding: v.$sp-6;
+  background:
+    radial-gradient(circle at top left, rgba(v.$c-mustard, 0.16), transparent 42%),
+    linear-gradient(135deg, rgba(v.$c-sand, 0.96), rgba(v.$c-sand-light, 0.98));
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: v.$r-lg;
+    box-shadow: v.$shadow-lg;
+  }
+}
+
+.modal-sastre-bio__panel {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-5;
+  padding: v.$sp-6;
+}
+
+.modal-sastre-bio__head {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-2;
+
+  h3 {
+    margin: 0;
+    color: v.$c-indigo;
+    font-family: v.$font-serif;
+    font-size: clamp(2rem, 2.8vw, 2.6rem);
+  }
+}
+
+.modal-sastre-bio__eyebrow {
+  margin: 0;
+  font-family: v.$font-mono;
+  font-size: v.$fs-11;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$c-umber-soft;
+}
+
+.modal-sastre-bio__lead {
+  margin: 0;
+  color: v.$c-terra;
+  font-size: v.$fs-13;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.modal-sastre-bio__section {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-3;
+
+  h4 {
+    margin: 0;
+    color: v.$c-indigo;
+    font-size: v.$fs-18;
+    font-family: v.$font-body;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  p {
+    margin: 0;
+    color: v.$c-umber;
+    line-height: 1.7;
+  }
+}
+
+.modal-sastre-bio__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.$sp-2;
+}
+
+.modal-sastre-bio__rating {
+  display: flex;
+  align-items: center;
+  gap: v.$sp-2;
+  flex-wrap: wrap;
+}
+
+.modal-sastre-bio__meta {
+  .sc-meta {
+    padding-top: v.$sp-4;
+    margin-top: 0;
+    background: transparent;
+  }
+}
+
+// ================================================================
 // Modal Galería de Telas
 // ================================================================
 .modal-galeria {
@@ -1026,6 +1189,14 @@
     align-items: flex-start;
     flex-direction: column;
   }
+
+  .modal-sastre-bio__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-sastre-bio__content img {
+    min-height: 320px;
+  }
 }
 
 @media (max-width: v.$bp-sm) {
@@ -1065,6 +1236,15 @@
   .modal-sastres__footer {
     padding-left: v.$sp-4;
     padding-right: v.$sp-4;
+  }
+
+  .modal-sastre-bio {
+    padding: v.$sp-3;
+  }
+
+  .modal-sastre-bio__content,
+  .modal-sastre-bio__panel {
+    padding: v.$sp-4;
   }
 
   .form-inner {

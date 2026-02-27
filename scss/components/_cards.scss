@@ -328,6 +328,12 @@
   position: relative;
   height: 190px;
   overflow: hidden;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 3px solid rgba(v.$c-mustard, 0.9);
+    outline-offset: -3px;
+  }
 }
 
 .sc-img {

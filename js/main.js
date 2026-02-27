@@ -1565,6 +1565,86 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
 
 // ============================================================
+// 11.2 BIOGRAFÍAS DE SASTRES
+// Popup visual para ampliar la foto y mostrar una biografía breve.
+// ============================================================
+(function initSastresBio() {
+  const modal = document.getElementById('modal-sastre-bio');
+  if (!modal) return;
+
+  const dialog = modal.querySelector('.modal-sastre-bio__dialog');
+  const close = document.getElementById('modal-sastre-bio-close');
+  const modalImg = document.getElementById('modal-sastre-bio-img');
+  const modalEyebrow = document.getElementById('modal-sastre-bio-eyebrow');
+  const modalTitle = document.getElementById('modal-sastre-bio-titulo');
+  const modalLead = document.getElementById('modal-sastre-bio-lead');
+  const modalCopy = document.getElementById('modal-sastre-bio-copy');
+  const modalTags = document.getElementById('modal-sastre-bio-tags');
+  const modalRating = document.getElementById('modal-sastre-bio-rating');
+  const modalMeta = document.getElementById('modal-sastre-bio-meta');
+  const cards = Array.from(document.querySelectorAll('.sastre-card'));
+
+  if (!dialog || !close || !modalImg || !modalEyebrow || !modalTitle || !modalLead || !modalCopy || !modalTags || !modalRating || !modalMeta || !cards.length) {
+    return;
+  }
+
+  function abrir(card) {
+    const image = card.querySelector('.sc-img--main, .sc-img');
+    const name = card.querySelector('.sc-name')?.textContent?.trim() || 'Sastre destacado';
+    const role = card.querySelector('.sc-role')?.textContent?.trim() || '';
+    const verified = card.querySelector('.sc-verified')?.textContent?.trim() || '';
+    const badge = card.querySelector('.sc-badge')?.textContent?.trim() || '';
+
+    modalImg.src = image?.getAttribute('src') || '';
+    modalImg.alt = image?.getAttribute('alt') || name;
+    modalEyebrow.textContent = [verified, badge].filter(Boolean).join(' · ');
+    modalTitle.textContent = name;
+    modalLead.textContent = role;
+    modalCopy.textContent = card.dataset.bio || 'Biografía no disponible.';
+    modalTags.innerHTML = card.querySelector('.sc-tags')?.innerHTML || '';
+    modalRating.innerHTML = card.querySelector('.sc-rating')?.innerHTML || '';
+    modalMeta.innerHTML = card.querySelector('.sc-meta')?.innerHTML || '';
+
+    modal.classList.add('active');
+    document.body.classList.add('body--lock');
+  }
+
+  function cerrar() {
+    modal.classList.remove('active');
+    document.body.classList.remove('body--lock');
+  }
+
+  cards.forEach((card) => {
+    const trigger = card.querySelector('.sc-cover');
+    if (!trigger) return;
+
+    trigger.addEventListener('click', () => abrir(card));
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      abrir(card);
+    });
+  });
+
+  close.addEventListener('click', cerrar);
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) cerrar();
+  });
+
+  dialog.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      cerrar();
+    }
+  });
+})();
+
+
+// ============================================================
 // 12. HELPERS — Funciones utilitarias reutilizadas en todo el archivo
 // ============================================================
 

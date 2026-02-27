@@ -917,8 +917,8 @@
     <div class="sc-grid">
 
       <!-- ====== Sastre 1: María González ====== -->
-      <div class="sastre-card fade-up delay-1">
-        <div class="sc-cover">
+      <div class="sastre-card fade-up delay-1" data-bio="María lidera un taller boutique en Santiago donde combina alta costura, patronaje fino y pruebas personalizadas para novias, vestidos de ceremonia y colecciones a medida. Su trabajo destaca por terminaciones impecables, selección textil cuidadosa y una relación cercana con cada clienta durante todo el proceso.">
+        <div class="sc-cover" role="button" tabindex="0" aria-label="Ver biografía de María González">
           <img class="sc-img sc-img--bg" src="assets/images/Mar%C3%ADa%20Gonz%C3%A1lez.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
           <img class="sc-img sc-img--main" src="assets/images/Mar%C3%ADa%20Gonz%C3%A1lez.webp" alt="María González en su taller de alta costura" loading="lazy" decoding="async"/>
           <div class="sc-badge">⭐ Top Sastre</div>
@@ -957,8 +957,8 @@
       </div><!-- /.sastre-card (María) -->
 
       <!-- ====== Sastre 2: Carlos Riquelme ====== -->
-      <div class="sastre-card fade-up delay-2">
-        <div class="sc-cover">
+      <div class="sastre-card fade-up delay-2" data-bio="Carlos trabaja desde Valparaíso en sastrería clásica masculina, con foco en trajes, chaquetas y uniformes de alto uso. Su sello está en la estructura, el calce preciso y la lectura tradicional del oficio, adaptada a clientes ejecutivos y proyectos institucionales.">
+        <div class="sc-cover" role="button" tabindex="0" aria-label="Ver biografía de Carlos Riquelme">
           <img class="sc-img sc-img--bg" src="assets/images/Carlos%20Riquelme.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
           <img class="sc-img sc-img--main" src="assets/images/Carlos%20Riquelme.webp" alt="Carlos Riquelme especialista en sastrería clásica" loading="lazy" decoding="async"/>
           <div class="sc-badge">🏆 Favorito</div>
@@ -981,8 +981,8 @@
       </div>
 
       <!-- ====== Sastre 3: Ana Fuentes ====== -->
-      <div class="sastre-card fade-up delay-3">
-        <div class="sc-cover">
+      <div class="sastre-card fade-up delay-3" data-bio="Ana desarrolla moda sostenible en Concepción, integrando confección consciente, ajustes finos y materiales con mejor trazabilidad. Su experiencia cruza líneas femeninas, prendas infantiles y cápsulas eco-textiles pensadas para durar más y producirse con menor desperdicio.">
+        <div class="sc-cover" role="button" tabindex="0" aria-label="Ver biografía de Ana Fuentes">
           <img class="sc-img sc-img--bg" src="assets/images/Ana%20Fuentes.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
           <img class="sc-img sc-img--main" src="assets/images/Ana%20Fuentes.webp" alt="Ana Fuentes dedicada a la moda sostenible" loading="lazy" decoding="async"/>
           <div class="sc-badge">🌿 Eco-Textil</div>
@@ -1940,6 +1940,44 @@
 
   </div><!-- /.wrap -->
 </footer>
+
+
+<!-- ═══════════════════════════
+     MODAL BIOGRAFÍA SASTRES
+══════════════════════════════ -->
+<div class="modal-sastre-bio" id="modal-sastre-bio">
+  <div class="modal-sastre-bio__dialog" role="dialog" aria-modal="true" aria-labelledby="modal-sastre-bio-titulo">
+    <button class="modal-sastre-bio__close" id="modal-sastre-bio-close" aria-label="Cerrar biografía">✕</button>
+    <div class="modal-sastre-bio__layout">
+      <div class="modal-sastre-bio__content">
+        <img src="" alt="" id="modal-sastre-bio-img">
+      </div>
+      <div class="modal-sastre-bio__panel">
+        <div class="modal-sastre-bio__head">
+          <p class="modal-sastre-bio__eyebrow" id="modal-sastre-bio-eyebrow"></p>
+          <h3 id="modal-sastre-bio-titulo"></h3>
+          <p class="modal-sastre-bio__lead" id="modal-sastre-bio-lead"></p>
+        </div>
+        <div class="modal-sastre-bio__section">
+          <h4>Biografía</h4>
+          <p id="modal-sastre-bio-copy"></p>
+        </div>
+        <div class="modal-sastre-bio__section">
+          <h4>Especialidades</h4>
+          <div class="modal-sastre-bio__tags" id="modal-sastre-bio-tags"></div>
+        </div>
+        <div class="modal-sastre-bio__section">
+          <h4>Reputación</h4>
+          <div class="modal-sastre-bio__rating" id="modal-sastre-bio-rating"></div>
+        </div>
+        <div class="modal-sastre-bio__section">
+          <h4>Trayectoria</h4>
+          <div class="modal-sastre-bio__meta" id="modal-sastre-bio-meta"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <!-- ═══════════════════════════

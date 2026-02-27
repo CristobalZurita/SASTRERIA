@@ -1585,6 +1585,11 @@ strong {
   position: relative;
   height: 190px;
   overflow: hidden;
+  cursor: pointer;
+}
+.sc-cover:focus-visible {
+  outline: 3px solid rgba(212, 146, 42, 0.9);
+  outline-offset: -3px;
 }
 
 .sc-img {
@@ -2977,6 +2982,157 @@ strong {
   background: rgba(255, 255, 255, 0.96);
 }
 
+.modal-sastre-bio {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  padding: 1.5rem;
+  background: rgba(107, 66, 38, 0.82);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.modal-sastre-bio.active {
+  opacity: 1;
+  visibility: visible;
+}
+.modal-sastre-bio.active .modal-sastre-bio__dialog {
+  transform: translateY(0) scale(1);
+}
+
+.modal-sastre-bio__dialog {
+  position: relative;
+  width: min(980px, 100%);
+  max-height: calc(100vh - 3rem);
+  margin: 0 auto;
+  overflow: auto;
+  border-radius: 32px;
+  background: #FFFDF9;
+  box-shadow: 0 32px 80px rgba(107, 66, 38, 0.18);
+  transform: translateY(18px) scale(0.97);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-sastre-bio__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.95fr);
+  min-height: min(680px, 100vh - 3rem);
+}
+
+.modal-sastre-bio__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: #FFFDF9;
+  color: #6B4226;
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-sastre-bio__close:hover {
+  background: #C45C3A;
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.modal-sastre-bio__content {
+  padding: 1.5rem;
+  background: radial-gradient(circle at top left, rgba(212, 146, 42, 0.16), transparent 42%), linear-gradient(135deg, rgba(242, 235, 224, 0.96), rgba(250, 247, 243, 0.98));
+}
+.modal-sastre-bio__content img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 20px;
+  box-shadow: 0 16px 56px rgba(107, 66, 38, 0.14);
+}
+
+.modal-sastre-bio__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+}
+
+.modal-sastre-bio__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.modal-sastre-bio__head h3 {
+  margin: 0;
+  color: #2D3A6B;
+  font-family: "Cormorant Garamond", "Georgia", serif;
+  font-size: clamp(2rem, 2.8vw, 2.6rem);
+}
+
+.modal-sastre-bio__eyebrow {
+  margin: 0;
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9C6E50;
+}
+
+.modal-sastre-bio__lead {
+  margin: 0;
+  color: #C45C3A;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.modal-sastre-bio__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.modal-sastre-bio__section h4 {
+  margin: 0;
+  color: #2D3A6B;
+  font-size: 1.125rem;
+  font-family: "Jost", "Helvetica Neue", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.modal-sastre-bio__section p {
+  margin: 0;
+  color: #6B4226;
+  line-height: 1.7;
+}
+
+.modal-sastre-bio__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.modal-sastre-bio__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.modal-sastre-bio__meta .sc-meta {
+  padding-top: 1rem;
+  margin-top: 0;
+  background: transparent;
+}
+
 .modal-galeria {
   position: fixed;
   inset: 0;
@@ -3393,6 +3549,12 @@ strong {
     align-items: flex-start;
     flex-direction: column;
   }
+  .modal-sastre-bio__layout {
+    grid-template-columns: 1fr;
+  }
+  .modal-sastre-bio__content img {
+    min-height: 320px;
+  }
 }
 @media (max-width: 640px) {
   .wrap {
@@ -3425,6 +3587,13 @@ strong {
   .modal-sastres__footer {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+  .modal-sastre-bio {
+    padding: 0.75rem;
+  }
+  .modal-sastre-bio__content,
+  .modal-sastre-bio__panel {
+    padding: 1rem;
   }
   .form-inner {
     padding: 2rem 1.25rem;
