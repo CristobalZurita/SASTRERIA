@@ -277,91 +277,48 @@
     </div><!-- /.hero__content -->
 
     <div class="hero__visual">
-    <!-- Columna derecha: muestras de tela decorativas creadas con SVG. -->
+    <!-- Columna derecha: muestras de tela con fotos reales de assets/images. -->
 
       <div class="hero__swatch hero__swatch--a">
       <!-- "Swatch" = muestra de tela.
            --a / --b / --c: Modificadores BEM para posición y tamaño distintos. -->
-
-        <svg viewBox="0 0 255 335" xmlns="http://www.w3.org/2000/svg" class="hero-swatch-svg">
-        <!-- <svg>: Scalable Vector Graphics. No pierde calidad al escalar.
-             viewBox="0 0 255 335": Sistema de coordenadas interno del SVG.
-               (0 0 = origen, 255 335 = ancho y alto del área de dibujo)
-             xmlns: Namespace XML requerido para compatibilidad. -->
-
-          <defs>
-          <!-- <defs>: Define elementos reutilizables (patterns, gradients).
-               No se renderizan directamente, se referencian con url(#id). -->
-
-            <pattern id="lino" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-            <!-- <pattern>: Patrón repetible (como un "tile" de fondo).
-                 id="lino": Referenciado con fill="url(#lino)".
-                 width="8" height="8": Tamaño de cada baldosa del patrón.
-                 patternUnits="userSpaceOnUse": Coordenadas en píxeles del usuario. -->
-
-              <rect width="8" height="8" fill="#D4B896"/>
-              <!-- Fondo de cada tile: color lino natural. -->
-              <line x1="0" y1="0" x2="0" y2="8" stroke="#BF9B6E" stroke-width=".9" opacity=".55"/>
-              <!-- Hilo vertical (urdimbre): línea de (0,0) a (0,8). -->
-              <line x1="4" y1="0" x2="4" y2="8" stroke="#E0C4A4" stroke-width=".5" opacity=".35"/>
-              <!-- Segunda línea vertical, más clara → textura variada. -->
-              <line x1="0" y1="0" x2="8" y2="0" stroke="#C2976A" stroke-width=".7" opacity=".5"/>
-              <!-- Hilo horizontal (trama). -->
-              <line x1="0" y1="4" x2="8" y2="4" stroke="#D8B88A" stroke-width=".4" opacity=".38"/>
-              <!-- Segunda línea horizontal intermedia. -->
-            </pattern>
-          </defs>
-
-          <rect width="255" height="335" fill="url(#lino)"/>
-          <!-- Rellena todo el SVG con el patrón "lino". url(#lino) referencia el <pattern>. -->
-          <rect width="255" height="335" fill="url(#lino)" transform="rotate(90 127 167)" opacity=".35"/>
-          <!-- Segunda capa del patrón rotada 90°. Crea el efecto de entrelazado de hilo.
-               rotate(90 127 167): gira 90° alrededor del centro del rect (127,167). -->
-        </svg>
+        <img
+          src="assets/images/linoBlancoinvierno.webp"
+          alt="Muestra de lino claro"
+          class="hero-swatch-svg"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
 
         <div class="swatch-label">
-          <strong>Lino Natural</strong><span>Colección 2025</span>
-          <!-- Etiqueta superpuesta sobre el SVG (position:absolute en CSS). -->
+          <strong>Lino Claro</strong><span>Colección 2025</span>
+          <!-- Etiqueta superpuesta sobre la foto (position:absolute en CSS). -->
         </div>
       </div><!-- /.hero__swatch--a -->
 
       <div class="hero__swatch hero__swatch--b">
       <!-- Segunda muestra: Seda Índigo (azul marino). -->
-        <svg viewBox="0 0 182 245" xmlns="http://www.w3.org/2000/svg" class="hero-swatch-svg">
-          <defs>
-            <pattern id="seda" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
-              <rect width="7" height="7" fill="#2D3A6B"/>
-              <!-- Azul índigo oscuro como base. -->
-              <line x1="0" y1="0" x2="7" y2="7" stroke="#4A5A9C" stroke-width=".6" opacity=".55"/>
-              <!-- Diagonal ↘ simula el tejido en diagonal de la seda. -->
-              <line x1="7" y1="0" x2="0" y2="7" stroke="#1B2648" stroke-width=".4" opacity=".45"/>
-              <!-- Diagonal ↙ crea el patrón cruzado característico. -->
-            </pattern>
-          </defs>
-          <rect width="182" height="245" fill="url(#seda)"/>
-          <rect width="182" height="245" fill="rgba(255,255,255,.04)"/>
-          <!-- Blanco muy transparente (4% opacidad) → simula el lustre de la seda. -->
-        </svg>
+        <img
+          src="assets/images/sedaAzul.webp"
+          alt="Muestra de seda azul índigo"
+          class="hero-swatch-svg"
+          loading="eager"
+          decoding="async"
+        />
         <div class="swatch-label"><strong>Seda Índigo</strong><span>Premium</span></div>
       </div>
 
       <div class="hero__swatch hero__swatch--c">
-      <!-- Tercera muestra: Popelín Terracota (rojo/naranja tierra). -->
-        <svg viewBox="0 0 158 208" xmlns="http://www.w3.org/2000/svg" class="hero-swatch-svg">
-          <defs>
-            <pattern id="terra-p" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-              <rect width="10" height="10" fill="#C45C3A"/>
-              <!-- Terracota base. -->
-              <rect x="0" y="0" width="5" height="5" fill="#D06B47" opacity=".4"/>
-              <!-- Cuadrante superior izquierdo más claro. -->
-              <rect x="5" y="5" width="5" height="5" fill="#A04428" opacity=".32"/>
-              <!-- Cuadrante inferior derecho más oscuro.
-                   Los dos cuadrantes alternados simulan la textura del popelín. -->
-            </pattern>
-          </defs>
-          <rect width="158" height="208" fill="url(#terra-p)"/>
-        </svg>
-        <div class="swatch-label"><strong>Popelín Terra</strong><span>Temporada</span></div>
+      <!-- Tercera muestra: tono terracota aproximado con tela real disponible. -->
+        <img
+          src="assets/images/linoRojo03.webp"
+          alt="Muestra de lino en tono terracota"
+          class="hero-swatch-svg"
+          loading="eager"
+          decoding="async"
+        />
+        <div class="swatch-label"><strong>Lino Terracota</strong><span>Temporada</span></div>
       </div>
 
     </div><!-- /.hero__visual -->
@@ -1043,8 +1000,8 @@
 
     </div><!-- /.sc-grid -->
 
-    <div class="text-center mt-5 fade-up">
-    <!-- text-center: Bootstrap → text-align:center.
+    <div class="d-flex justify-content-center mt-5 fade-up">
+    <!-- d-flex justify-content-center: centra el botón aunque .btn use display:flex.
          mt-5: Bootstrap → margin-top grande (3rem). -->
       <button type="button" class="btn btn--outline btn--lg" data-bs-toggle="modal" data-bs-target="#modal-sastres-directorio">
         Ver todos los sastres →
