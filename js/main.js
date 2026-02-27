@@ -237,12 +237,6 @@
       actualizarCarrito();
     });
 
-
-    setTimeout(() => {
-      t.classList.remove('show');
-      setTimeout(() => t.remove(), 400);
-    }, 4000); // 👈 ESTA LÍNEA — cambia 4000 por 8000
-
   }
 
   // ---- Binding de botones 'Añadir al carro' ----
