@@ -170,3 +170,13 @@ function aplicarDescuento(total) {
   selectTela.addEventListener('change', calcularYMostrar);
   // Recalcula inmediatamente cuando el usuario cambia la tela seleccionada.
 })();
+
+
+// 4. Mensaje de confirmación de pedido
+function realizarPedido(pedido) {
+  const resultado = calcularTotalCarrito(pedido);
+  console.log("Total con descuento:", resultado.precioFinal);
+  console.log("Descuento aplicado:", resultado.descuentoPct + "%");
+  console.log("Ahorro:", resultado.ahorro);
+  console.log("✅ Pedido confirmado. ¡Gracias por tu compra!");
+}
