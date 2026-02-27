@@ -1199,6 +1199,5 @@ function mostrarCatalogo() {
     console.log(producto + " - $" + catalogo[producto]);
   }
 }
-
 mostrarCatalogo();
 

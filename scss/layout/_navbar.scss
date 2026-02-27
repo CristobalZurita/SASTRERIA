@@ -136,7 +136,8 @@
   box-shadow: 0 8px 20px rgba(v.$c-terra, 0.42);
 }
 
-.nav__burger {
+// FIX 1: Mayor especificidad para ganar a Bootstrap
+.nav .nav__burger {
   display: none;
   width: 38px;
   height: 38px;
@@ -174,6 +175,11 @@
   background: v.$c-sand-light;
   @include m.flex(column, center, center, v.$sp-8);
   transition: opacity v.$ease-base;
+
+  // FIX 2: En desktop nunca se muestra, aunque JS agregue .open
+  @media (min-width: calc(v.$bp-lg + 1px)) {
+    display: none !important;
+  }
 }
 
 .nav__drawer.open {
@@ -206,6 +212,7 @@
   color: v.$c-terra;
 }
 
+// FIX 3: Selector más específico en mobile para ganar a Bootstrap
 @media (max-width: v.$bp-lg) {
   .nav__links {
     display: none;
@@ -215,7 +222,7 @@
     display: none;
   }
 
-  .nav__burger {
+  .nav .nav__burger {
     display: flex;
   }
 
@@ -229,28 +236,27 @@
 // Carrito moderno — solo colores con variables
 // ============================================================
 
-// Botón carrito en la navbar
 #cart {
   cursor: pointer;
   font-size: 1.25rem;
-  color: #2D3A6B; // $c-indigo
+  color: #2D3A6B;
   padding: 6px 12px;
-  border-radius: 9999px; // estilo pill
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   gap: 6px;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  background: rgba(45, 58, 107, 0); // transparente inicial
+  background: rgba(45, 58, 107, 0);
 }
 
 #cart:hover {
-  background: rgba(45, 58, 107, 0.07); // efecto leve de hover
+  background: rgba(45, 58, 107, 0.07);
 }
 
 .cart-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(45, 58, 107, 0.5); // color de superposición
+  background: rgba(45, 58, 107, 0.5);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease;
@@ -268,7 +274,7 @@
   right: 0;
   width: 320px;
   height: 100vh;
-  background: #FFFDF9; // color blanco cálido
+  background: #FFFDF9;
   box-shadow: 0 6px 28px rgba(108, 66, 38, 0.12);
   transform: translateX(100%);
   transition: transform 0.35s cubic-bezier(0.0, 0, 0.2, 1);
@@ -302,7 +308,7 @@
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #C45C3A; // terracota
+  color: #C45C3A;
 }
 
 .cart-body {
@@ -326,25 +332,24 @@
 .cart-footer button {
   width: 100%;
   padding: 12px;
-  background-color: #C45C3A; // terracota
-  color: #FFFDF9; // blanco cálido
+  background-color: #C45C3A;
+  color: #FFFDF9;
   font-family: 'Jost', sans-serif;
   font-size: 1rem;
   font-weight: 600;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); // igual que nav btn
-  box-shadow: 0 4px 14px rgba(196, 92, 58, 0.3); // sombra inicial
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px rgba(196, 92, 58, 0.3);
 }
 
 .cart-footer button:hover {
-  background-color: #A04428; // terracota oscuro
-  transform: translateY(-2px); // pequeño levantamiento
-  box-shadow: 0 8px 20px rgba(196, 92, 58, 0.42); // sombra más intensa
+  background-color: #A04428;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(196, 92, 58, 0.42);
 }
 
-/* Scrollbar simple */
 .cart-body::-webkit-scrollbar {
   width: 8px;
 }

@@ -50,7 +50,7 @@ function realizarPedido(pedido) {
   console.log("Descuento aplicado:", resultado.descuentoPct + "%");
   console.log("Ahorro:", resultado.ahorro);
 
-  console.log("✅ Pedido confirmado. ¡Gracias por tu compra!");
+  console.log("✅ Pedido confirmado. Revisa tu correo electrónico para ver los detalles ¡Gracias por tu compra!");
 }
 
 
