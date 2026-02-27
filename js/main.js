@@ -28,6 +28,51 @@
 // Esto previene errores silenciosos, prohíbe variables no declaradas,
 // y hace el código más predecible y seguro. Siempre debe ir al inicio.
 
+const ENVIO_STORAGE_KEY = 'hilo-oficio-shipping';
+
+function normalizarEnvio(envio) {
+  if (!envio) return null;
+
+  const nombre = typeof envio.nombre === 'string' ? envio.nombre.trim() : '';
+  const detalle = typeof envio.detalle === 'string' ? envio.detalle.trim() : '';
+  const icono = typeof envio.icono === 'string' ? envio.icono.trim() : '';
+  const precio = Number(envio.precio);
+
+  if (!nombre && !Number.isFinite(precio)) return null;
+
+  return {
+    nombre: nombre || 'Sin envío seleccionado',
+    detalle,
+    icono,
+    precio: Number.isFinite(precio) ? Math.max(0, Math.round(precio)) : 0
+  };
+}
+
+function leerEnvioSeleccionado() {
+  try {
+    return normalizarEnvio(JSON.parse(localStorage.getItem(ENVIO_STORAGE_KEY) || 'null'));
+  } catch (err) {
+    console.error('No se pudo leer el envío guardado:', err);
+    return null;
+  }
+}
+
+function guardarEnvioSeleccionado(envio) {
+  try {
+    const envioNormalizado = normalizarEnvio(envio);
+
+    if (!envioNormalizado) {
+      localStorage.removeItem(ENVIO_STORAGE_KEY);
+    } else {
+      localStorage.setItem(ENVIO_STORAGE_KEY, JSON.stringify(envioNormalizado));
+    }
+
+    window.dispatchEvent(new Event('hilo-oficio:shipping-updated'));
+  } catch (err) {
+    console.error('No se pudo guardar el envío seleccionado:', err);
+  }
+}
+
 
 // ============================================================
 // 1. NAVBAR + CARRITO
@@ -69,11 +114,69 @@
   // Al hacer clic, cierra el carrito.
 
   const cartClose = document.getElementById("cart-close");
+  const cartItemsContainer = document.getElementById("cart-items");
+  const cartCounter = document.getElementById("cart-count");
+  const cartCheckout = document.getElementById("cart-checkout");
 
   // ========================================
   // ---- Lógica del Carrito de Compras ----
   // ========================================
-  let carritoItems = [];
+  function formatCLP(value) {
+    return `$${Number(value).toLocaleString('es-CL')}`;
+  }
+
+  function extraerImagenLegacy(imgHtml) {
+    if (typeof imgHtml !== "string") return "";
+    const match = imgHtml.match(/src="([^"]+)"/i);
+    return match ? match[1] : "";
+  }
+
+  function normalizarItemCarrito(item) {
+    if (!item || !item.id || !item.nombre || isNaN(Number(item.precio))) return null;
+
+    return {
+      id: String(item.id),
+      nombre: String(item.nombre),
+      precio: Number(item.precio),
+      image: item.image || extraerImagenLegacy(item.imgHtml) || "",
+      cantidad: Math.max(1, parseInt(item.cantidad, 10) || 1)
+    };
+  }
+
+  function cargarCarritoGuardado() {
+    try {
+      const raw = JSON.parse(localStorage.getItem("carrito") || "[]");
+      if (!Array.isArray(raw)) return [];
+
+      return raw.reduce((acc, entry) => {
+        const item = normalizarItemCarrito(entry);
+        if (!item) return acc;
+
+        const existente = acc.find((candidate) => candidate.id === item.id);
+        if (existente) {
+          existente.cantidad += item.cantidad;
+          if (!existente.image && item.image) existente.image = item.image;
+          return acc;
+        }
+
+        acc.push(item);
+        return acc;
+      }, []);
+    } catch (err) {
+      console.error("No se pudo leer el carrito guardado:", err);
+      return [];
+    }
+  }
+
+  let carritoItems = cargarCarritoGuardado();
+
+  function persistirCarrito() {
+    try {
+      localStorage.setItem("carrito", JSON.stringify(carritoItems));
+    } catch (err) {
+      console.error("No se pudo guardar el carrito:", err);
+    }
+  }
 
   function agregarAlCarrito(boton) {
     const tarjeta = boton.closest(".fabric-card");
@@ -81,43 +184,132 @@
     const id = tarjeta.dataset.id;
     const nombre = tarjeta.dataset.name;
     const precio = Number(tarjeta.dataset.price);
+    const image = tarjeta.dataset.image || tarjeta.querySelector(".fc-img")?.getAttribute("src") || "";
     if (!id || !nombre || isNaN(precio)) return;
-    const yaExiste = carritoItems.some(item => item.id === id);
-    if (yaExiste) { showToast("Este producto ya está en el carrito", "inf"); return; }
-    carritoItems.push({ id, nombre, precio });
+
+    const existente = carritoItems.find((item) => item.id === id);
+    if (existente) {
+      existente.cantidad += 1;
+      if (!existente.image && image) existente.image = image;
+      actualizarCarrito();
+      showToast(nombre + " sumó una unidad más", "ok");
+      return;
+    }
+
+    carritoItems.push({ id, nombre, precio, image, cantidad: 1 });
     actualizarCarrito();
     showToast(nombre + " añadido al carrito", "ok");
   }
 
-  function actualizarCarrito() {
-    const contador = document.getElementById("cart-count");
-    if (contador) contador.textContent = carritoItems.length;
-    const container = document.getElementById("cart-items");
-    if (!container) return;
-    if (carritoItems.length === 0) {
-      container.innerHTML = "<p class=\"cart-empty\">Tu carrito está vacío.</p>";
+  function removerDelCarrito(target) {
+    if (typeof target === "number") {
+      if (target < 0 || target >= carritoItems.length) return;
+      carritoItems.splice(target, 1);
+      actualizarCarrito();
       return;
     }
-    let html = "";
-    const resultado = calcularTotalCarrito(carritoItems);
-    carritoItems.forEach((item, index) => {
-      html += `<div class=\"cart-item\"><span>${item.nombre}</span><span>$${item.precio}</span><button class=\"cart-item-remove\" onclick=\"removerDelCarrito(${index})\">✕</button></div>`;
-    });
-    html += `<div class=\"cart-summary\"><p><strong>Total: $${resultado.precioFinal} CLP</strong></p></div>`;
-    container.innerHTML = html;
-  }
 
-  function removerDelCarrito(index) {
-    if (index >= 0 && index < carritoItems.length) {
-      const item = carritoItems[index];
-      carritoItems.splice(index, 1);
-      actualizarCarrito();
-    }
+    carritoItems = carritoItems.filter((item) => item.id !== target);
+    actualizarCarrito();
   }
   window.removerDelCarrito = removerDelCarrito;
 
-  function realizarPedido(items) { console.log("Pedido:", items); }
-  // Botón ✕ dentro del carrito para cerrarlo.
+  function changeCantidad(id, delta) {
+    const item = carritoItems.find((entry) => entry.id === id);
+    if (!item) return;
+
+    item.cantidad = Math.max(0, (parseInt(item.cantidad, 10) || 1) + delta);
+    if (item.cantidad === 0) {
+      removerDelCarrito(id);
+      return;
+    }
+
+    actualizarCarrito();
+  }
+
+  function actualizarCarrito() {
+    const envio = leerEnvioSeleccionado();
+    const precioEnvio = envio?.precio || 0;
+
+    if (cartCounter) {
+      const totalUnidades = carritoItems.reduce((sum, item) => sum + (parseInt(item.cantidad, 10) || 1), 0);
+      cartCounter.textContent = totalUnidades;
+    }
+
+    if (!cartItemsContainer) return;
+
+    if (carritoItems.length === 0) {
+      cartItemsContainer.innerHTML = "<p class=\"cart-empty\">Tu carrito está vacío.</p>";
+      persistirCarrito();
+      return;
+    }
+
+    let html = "";
+    const resultado = calcularTotalCarrito(carritoItems);
+    const subtotal = carritoItems.reduce((sum, item) => sum + (item.precio * (parseInt(item.cantidad, 10) || 1)), 0);
+    const totalFinal = resultado.precioFinal + precioEnvio;
+
+    carritoItems.forEach((item) => {
+      const qty = parseInt(item.cantidad, 10) || 1;
+      const subtotalItem = item.precio * qty;
+
+      html += `
+        <div class="cart-item" data-cart-id="${item.id}">
+          <div class="cart-item__img">
+            ${item.image ? `<img src="${item.image}" alt="${item.nombre}">` : '<span>🧵</span>'}
+          </div>
+          <div class="cart-item__info">
+            <span class="cart-item__name">${item.nombre}</span>
+            <span class="cart-item__price">${formatCLP(item.precio)} c/u · ${formatCLP(subtotalItem)} subtotal</span>
+          </div>
+          <div class="cart-item__qty">
+            <button type="button" data-cart-action="dec" aria-label="Disminuir cantidad">−</button>
+            <span class="cart-item__count">${qty}</span>
+            <button type="button" data-cart-action="inc" aria-label="Aumentar cantidad">+</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+      <div class="cart-summary">
+        <div class="cart-summary__line">
+          <span>Subtotal</span>
+          <strong>${formatCLP(subtotal)}</strong>
+        </div>
+        <div class="cart-summary__line">
+          <span>Descuento</span>
+          <strong>${resultado.descuentoPct > 0 ? `${resultado.descuentoPct}% · ${formatCLP(resultado.ahorro)}` : 'No aplica'}</strong>
+        </div>
+        <div class="cart-summary__line">
+          <span>Envío</span>
+          <strong>${envio ? (precioEnvio === 0 ? 'Gratis' : formatCLP(precioEnvio)) : 'Selecciona una zona'}</strong>
+        </div>
+        <div class="cart-summary__meta">${envio ? envio.nombre : 'Abre una tela para elegir costo de envío.'}</div>
+        <div class="cart-summary__line cart-summary__line--final">
+          <span>Total</span>
+          <strong>${formatCLP(totalFinal)}</strong>
+        </div>
+      </div>
+    `;
+
+    cartItemsContainer.innerHTML = html;
+    cartItemsContainer.querySelectorAll("[data-cart-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const item = button.closest(".cart-item");
+        const id = item?.dataset.cartId;
+        if (!id) return;
+
+        if (button.dataset.cartAction === "inc") {
+          changeCantidad(id, 1);
+        } else {
+          changeCantidad(id, -1);
+        }
+      });
+    });
+
+    persistirCarrito();
+  }
 
   // ========================================
   // ---- Comportamiento del Navbar al hacer scroll ----
@@ -201,6 +393,26 @@
     cartClose.addEventListener("click", cerrarCarrito);
     cartOverlay.addEventListener("click", cerrarCarrito);
 
+    cartCheckout?.addEventListener("click", () => {
+      if (carritoItems.length === 0) {
+        showToast("Tu carrito está vacío.", "err");
+        return;
+      }
+
+      const resultado = calcularTotalCarrito(carritoItems);
+      const envio = leerEnvioSeleccionado();
+      const totalFinal = resultado.precioFinal + (envio?.precio || 0);
+      window.realizarPedido?.(carritoItems);
+      showToast(
+        `Pedido confirmado · Total ${formatCLP(totalFinal)} · ${envio ? envio.nombre : 'Envío pendiente'}`,
+        "ok"
+      );
+
+      carritoItems = [];
+      actualizarCarrito();
+      cerrarCarrito();
+    });
+
     // ---- Binding delegado de botones 'Añadir al carro' ----
     document.addEventListener('click', (e) => {
       const boton = e.target.closest('.fc-btn');
@@ -208,13 +420,15 @@
 
       try {
         agregarAlCarrito(boton);
-        localStorage.setItem('carrito', JSON.stringify(carritoItems));
-        console.log('🛒 Carrito actualizado:', JSON.parse(localStorage.getItem('carrito')));
       } catch (err) {
         console.error('Error al añadir al carrito:', err);
       }
     });
+
+    window.addEventListener('hilo-oficio:shipping-updated', actualizarCarrito);
   }
+
+  actualizarCarrito();
 
 })();
 // El () final invoca inmediatamente la función declarada arriba.
@@ -1643,6 +1857,8 @@ function aplicarDescuento(total) {
   // Seleccionar todas las tarjetas de tela
   const tarjetas = document.querySelectorAll('.fabric-card');
   let tarjetaActiva = null;
+  let envioActivo = null;
+  let envioExpandido = '';
 
   const zonasEnvio = [
     {
@@ -1774,7 +1990,9 @@ function aplicarDescuento(total) {
   }
 
   function renderEnvios() {
-    modalEnvios.innerHTML = zonasEnvio.map((zona) => {
+    modalEnvios.innerHTML = zonasEnvio.map((zona, index) => {
+      const seleccionada = envioActivo?.nombre === zona.nombre;
+      const expandida = envioExpandido === zona.nombre;
       const filas = zona.breakdown.map(([label, valor]) => `
         <div class="modal-shipping__row">
           <span>${label}</span>
@@ -1783,18 +2001,51 @@ function aplicarDescuento(total) {
       `).join('');
 
       return `
-        <div class="modal-shipping">
-          <div class="modal-shipping__head">
-            <div class="modal-shipping__title">
-              <strong>${zona.icono} ${zona.nombre}</strong>
-              <span>${zona.detalle}</span>
+        <div class="modal-shipping ${seleccionada ? 'is-selected' : ''} ${expandida ? 'is-expanded' : ''}" data-shipping-index="${index}">
+          <button class="modal-shipping__summary" type="button" aria-expanded="${expandida ? 'true' : 'false'}">
+            <div class="modal-shipping__head">
+              <div class="modal-shipping__title">
+                <strong>${zona.icono} ${zona.nombre}</strong>
+                <span>${zona.detalle}</span>
+              </div>
+              <strong class="modal-shipping__price">${zona.precio === 0 ? 'Gratis' : formatCLP(zona.precio)}</strong>
             </div>
-            <strong class="modal-shipping__price">${zona.precio === 0 ? 'Gratis' : formatCLP(zona.precio)}</strong>
+          </button>
+          <div class="modal-shipping__details">
+            ${filas}
+            <button class="modal-shipping__select" type="button">
+              ${seleccionada ? 'Envío seleccionado' : 'Seleccionar este envío'}
+            </button>
           </div>
-          ${filas}
         </div>
       `;
     }).join('');
+
+    modalEnvios.querySelectorAll('.modal-shipping__summary').forEach((button) => {
+      button.addEventListener('click', () => {
+        const wrap = button.closest('.modal-shipping');
+        const zona = zonasEnvio[Number(wrap?.dataset.shippingIndex)];
+        if (!zona) return;
+
+        envioExpandido = envioExpandido === zona.nombre ? '' : zona.nombre;
+        renderEnvios();
+      });
+    });
+
+    modalEnvios.querySelectorAll('.modal-shipping__select').forEach((button) => {
+      button.addEventListener('click', () => {
+        const wrap = button.closest('.modal-shipping');
+        const zona = zonasEnvio[Number(wrap?.dataset.shippingIndex)];
+        if (!zona) return;
+
+        envioActivo = normalizarEnvio(zona);
+        envioExpandido = zona.nombre;
+        guardarEnvioSeleccionado(envioActivo);
+        renderEnvios();
+        renderTotal(tarjetaActiva);
+        showToast(`📦 ${zona.nombre} seleccionado`, 'inf');
+      });
+    });
   }
 
   function renderTotal(card) {
@@ -1806,6 +2057,8 @@ function aplicarDescuento(total) {
     const resultado = aplicarDescuento(subtotal / 1000);
     const total = Math.round(resultado.precioFinal * 1000);
     const ahorro = Math.round(resultado.ahorro * 1000);
+    const precioEnvio = envioActivo?.precio || 0;
+    const totalConEnvio = total + precioEnvio;
 
     modalMetros.value = String(metros);
     modalTotal.innerHTML = `
@@ -1817,9 +2070,13 @@ function aplicarDescuento(total) {
         <span>Descuento por volumen</span>
         <strong>${resultado.descuentoPct > 0 ? `${resultado.descuentoPct}% · ${formatCLP(ahorro)}` : 'No aplica'}</strong>
       </div>
+      <div class="modal-galeria__total-line">
+        <span>Envío</span>
+        <strong>${envioActivo ? `${envioActivo.nombre} · ${precioEnvio === 0 ? 'Gratis' : formatCLP(precioEnvio)}` : 'Selecciona una zona'}</strong>
+      </div>
       <div class="modal-galeria__total-line modal-galeria__total-line--final">
         <span>Total estimado</span>
-        <strong>${formatCLP(total)}</strong>
+        <strong>${formatCLP(totalConEnvio)}</strong>
       </div>
     `;
   }
@@ -1834,6 +2091,9 @@ function aplicarDescuento(total) {
     if (!imagen) return;
     
     tarjetaActiva = card;
+    const envioGuardado = leerEnvioSeleccionado();
+    envioActivo = zonasEnvio.find((zona) => zona.nombre === envioGuardado?.nombre) || null;
+    envioExpandido = envioActivo?.nombre || zonasEnvio[0]?.nombre || '';
     modalImg.src = imagen;
     modalImg.alt = nombre + ' - Detalle de tela';
     modalTitulo.textContent = nombre;
@@ -1871,6 +2131,15 @@ function aplicarDescuento(total) {
 
   modalMetros?.addEventListener('input', () => {
     renderTotal(tarjetaActiva);
+  });
+
+  window.addEventListener('hilo-oficio:shipping-updated', () => {
+    const envioGuardado = leerEnvioSeleccionado();
+    envioActivo = zonasEnvio.find((zona) => zona.nombre === envioGuardado?.nombre) || null;
+    if (tarjetaActiva) {
+      renderEnvios();
+      renderTotal(tarjetaActiva);
+    }
   });
   
   // Cerrar con botón X

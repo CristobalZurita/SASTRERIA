@@ -7,7 +7,8 @@ function calcularTotalCarrito(items) {
   items.forEach(item => {
     // Los precios en el carrito están en valores completos (ej: 4200 = $4.200)
     // Convertir a miles para aplicarDescuento (ej: 4.2)
-    total += item.precio / 1000;
+    const cantidad = Math.max(1, parseInt(item.cantidad, 10) || 1);
+    total += (item.precio * cantidad) / 1000;
   });
 
   // aplicarDescuento devuelve precios en miles, convertir de vuelta a completos
@@ -157,7 +158,7 @@ function realizarPedido(pedido) {
   console.log("Total con descuento:", resultado.precioFinal);
   console.log("Descuento aplicado:", resultado.descuentoPct + "%");
   console.log("Ahorro:", resultado.ahorro);
-  console.log("✅ Pedido confirmado. ¡Gracias por tu compra!");
+  console.log("✅ Pedido confirmado. Revisa tu correo electrónico para ver los detalles. ¡Gracias por tu compra!");
 }
 
 // Exponer funciones globalmente para uso desde main.js

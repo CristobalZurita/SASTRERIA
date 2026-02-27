@@ -824,6 +824,22 @@
   background: rgba(v.$c-sand-light, 0.94);
 }
 
+.modal-shipping {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-3;
+  transition: border-color v.$ease-base, box-shadow v.$ease-base, transform v.$ease-base;
+}
+
+.modal-shipping.is-selected {
+  border-color: rgba(v.$c-terra, 0.55);
+  box-shadow: 0 10px 24px rgba(v.$c-terra, 0.12);
+}
+
+.modal-shipping.is-expanded {
+  transform: translateY(-1px);
+}
+
 .modal-spec {
   display: flex;
   align-items: center;
@@ -891,8 +907,17 @@
   gap: v.$sp-3;
 }
 
+.modal-shipping__summary {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
 .modal-shipping__head {
-  margin-bottom: v.$sp-2;
+  margin-bottom: 0;
 }
 
 .modal-shipping__title {
@@ -916,6 +941,20 @@
   font-size: v.$fs-18;
 }
 
+.modal-shipping__details {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: max-height v.$ease-slow, opacity v.$ease-base;
+}
+
+.modal-shipping.is-expanded .modal-shipping__details {
+  max-height: 320px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .modal-shipping__row {
   padding-top: v.$sp-2;
   border-top: 1px dashed rgba(v.$c-linen, 0.9);
@@ -923,6 +962,31 @@
 
 .modal-shipping__row strong {
   color: v.$c-indigo;
+}
+
+.modal-shipping__select {
+  width: 100%;
+  margin-top: v.$sp-3;
+  padding: v.$sp-2 v.$sp-4;
+  border: 0;
+  border-radius: v.$r-full;
+  background: v.$c-indigo;
+  color: v.$c-white;
+  cursor: pointer;
+  font-size: v.$fs-12;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background v.$ease-base, transform v.$ease-base;
+}
+
+.modal-shipping__select:hover {
+  background: v.$c-indigo2;
+  transform: translateY(-1px);
+}
+
+.modal-shipping.is-selected .modal-shipping__select {
+  background: v.$c-terra;
 }
 
 // ================================================================
@@ -1034,5 +1098,20 @@
   .modal-shipping__row {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .modal-galeria__total-line {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .modal-shipping__price {
+    font-size: v.$fs-16;
+  }
+
+  .modal-shipping__select {
+    padding-left: v.$sp-3;
+    padding-right: v.$sp-3;
+    font-size: v.$fs-11;
   }
 }
