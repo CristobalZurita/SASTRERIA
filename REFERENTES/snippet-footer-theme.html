@@ -1,0 +1,43 @@
+<!-- ═══════════════════════════════════════════════════════
+     THEME SWITCHER — Agregar DENTRO del footer, antes del
+     cierre de .footer-bottom o como sección propia.
+
+     Ubicación sugerida: justo ANTES del </footer>
+     o dentro de .footer-bottom entre el copyright y las redes.
+══════════════════════════════════════════════════════════ -->
+
+<!-- Separador de tema (dentro de .footer-bottom o justo arriba) -->
+<div class="theme-switcher" role="group" aria-label="Cambiar tema de color">
+  <span class="theme-switcher__label">Tema:</span>
+
+  <!-- Tema Original (cálido tierra / índigo) -->
+  <button
+    class="theme-chip"
+    data-theme="original"
+    aria-pressed="true"
+    title="Tema original — cálido tierra"
+  >✦ Original</button>
+
+  <!-- Tema Noche (carbón / crema / carmín) -->
+  <button
+    class="theme-chip"
+    data-theme="noche"
+    aria-pressed="false"
+    title="Tema noche — oscuro y elegante"
+  >◆ Noche</button>
+
+  <!-- Tema Esmeralda (verde bosque / champán dorado) -->
+  <button
+    class="theme-chip"
+    data-theme="esmeralda"
+    aria-pressed="false"
+    title="Tema esmeralda — bosque y oro"
+  >◈ Esmeralda</button>
+
+</div><!-- /.theme-switcher -->
+
+<!--
+  IMPORTANTE: Los botones usan data-theme y aria-pressed.
+  El JS busca estos atributos con querySelectorAll('.theme-chip').
+  Ver snippet-theme.js para la lógica completa.
+-->

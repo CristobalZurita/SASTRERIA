@@ -1,73 +1,51 @@
 // calculos.js
 
-// Función que calcula el total del carrito a partir de los productos agregados
+// 2. Función que calcula el total del carrito a partir de los productos agregados
 function calcularTotalCarrito(items) {
   let total = 0;
 
   items.forEach(item => {
-    const qty = item.cantidad || 1;
-    total += item.precio * qty;
+    // Los precios en el carrito están en valores completos (ej: 4200 = $4.200)
+    // Convertir a miles para aplicarDescuento (ej: 4.2)
+    const cantidad = Math.max(1, parseInt(item.cantidad, 10) || 1);
+    total += (item.precio * cantidad) / 1000;
   });
 
-  return total;
+  // aplicarDescuento devuelve precios en miles, convertir de vuelta a completos
+  const resultado = aplicarDescuento(total); 
+  
+  return {
+    precioFinal: Math.round(resultado.precioFinal * 1000),
+    descuentoPct: resultado.descuentoPct,
+    ahorro: Math.round(resultado.ahorro * 1000)
+  };
 }
 
 
-// 
 // 3. Aplicando descuentos con funciones anidadas
 /***
- @param {number} total  // Es el dato que se asigna a la función
+ @param {number} total  // Es el dato que se asigna a la función (en miles de CLP: 4.2 = $4.200)
  @returns {{ precioFinal: number, descuentoPct: number, ahorro: number }} // Esta función devuelve un número.
  ***/
 
 
 function aplicarDescuento(total) {
-
-  let descuentoPct = 0;
-  // Variable para guardar el porcentaje de descuento aplicado.
-  // 'let' porque su valor cambiará según las condiciones.
-  // Inicializa en 0: sin descuento por defecto.
+  // El total llega en miles de CLP (ej: 4.2 = $4.200)
+  // Umbrales: > 100 miles = > $100.000, > 50 miles = > $50.000
+  
+  let descuentoPct = 0;  // Variable para guardar el porcentaje de descuento aplicado.
 
   if (total > 100) {
-    // CONDICIÓN 1 — Compra mayor a $100: aplica 20% de descuento.
-    // Esta condición se evalúa PRIMERO porque es la más restrictiva.
-    // Ejemplo: total = 150 → entra aquí, obtiene 20%.
     descuentoPct = 20;
-    // Registra que se aplicó 20%.
-
   } else if (total > 50) {
-    // CONDICIÓN 2 — Compra mayor a $50 pero ≤ $100: aplica 10% de descuento.
-    // 'else if' garantiza que solo corre si la condición anterior fue false.
-    // Ejemplo: total = 80 → no entra en if (80 < 100), sí entra aquí.
-    // Ejemplo: total = 150 → ya entró en el if anterior, nunca llega aquí.
     descuentoPct = 10;
-    // Registra que se aplicó 10%.
-
   }
-  // Si total ≤ 50: ningún bloque se ejecutó, descuentoPct permanece en 0.
-  // Ejemplo: total = 30 → sin descuento.
 
   const multiplicador = 1 - (descuentoPct / 100);
-  // Convierte el porcentaje en factor multiplicador para calcular el precio final:
-  //   20% de descuento → 1 - 0.20 = 0.80  (el cliente paga el 80% del total)
-  //   10% de descuento → 1 - 0.10 = 0.90  (el cliente paga el 90% del total)
-  //    0% de descuento → 1 - 0.00 = 1.00  (el cliente paga el 100%, sin descuento)
-
   const precioFinal = parseFloat((total * multiplicador).toFixed(2));
-  // Calcula el precio con descuento multiplicando por el factor.
-  // .toFixed(2) convierte a string con exactamente 2 decimales.
-  // Esto evita problemas de punto flotante de JavaScript:
-  //   sin .toFixed: 80 * 0.80 podría dar 63.99999999999 en vez de 64.
-  // parseFloat() convierte de vuelta a número para operar sobre él.
-
   const ahorro = parseFloat((total - precioFinal).toFixed(2));
-  // Cuánto dinero se ahorra: total original menos el precio con descuento.
-  // También se redondea a 2 decimales para consistencia.
 
   return { precioFinal, descuentoPct, ahorro };
-  // Retorna un objeto con los tres valores relevantes.
-  // Shorthand ES6: { precioFinal } es azúcar sintáctica de { precioFinal: precioFinal }.
-  // Quien llame a esta función puede desestructurar: const { precioFinal } = aplicarDescuento(total);
 }
 
 
@@ -84,14 +62,15 @@ function aplicarDescuento(total) {
   // IIFE: encapsula la lógica y evita variables globales innecesarias.
 
   // ---- Precios base de las telas (en miles de CLP) ----
-  const preciosBase = {
-    // Precios por metro en miles de CLP (para que la función de descuento
-    // reciba números en rango $50-$200 usando cantidades normales de metros).
-    'lino': 4.2,    // $4.200 / metro
-    'seda': 12.8,   // $12.800 / metro
-    'algodon': 2.8,    // $2.800 / metro
-    'gabardina': 3.5,  // $3.500 / metro
-  };
+  const preciosBase = {};
+  // El catálogo visible es la fuente de verdad: extraemos precios por metro desde las tarjetas.
+  document.querySelectorAll('.fabric-card:not([data-carousel-clone])').forEach((card) => {
+    const id = card.dataset.id;
+    const precio = Number(card.dataset.price);
+
+    if (!id || isNaN(precio)) return;
+    preciosBase[id] = precio / 1000;
+  });
 
   // ---- Selección de elementos del DOM ----
   const inputMetros = document.getElementById('calc-metros');
@@ -171,3 +150,18 @@ function aplicarDescuento(total) {
   selectTela.addEventListener('change', calcularYMostrar);
   // Recalcula inmediatamente cuando el usuario cambia la tela seleccionada.
 })();
+
+
+// 4. Mensaje de confirmación de pedido
+function realizarPedido(pedido) {
+  const resultado = calcularTotalCarrito(pedido);
+  console.log("Total con descuento:", resultado.precioFinal);
+  console.log("Descuento aplicado:", resultado.descuentoPct + "%");
+  console.log("Ahorro:", resultado.ahorro);
+  console.log("✅ Pedido confirmado. Revisa tu correo electrónico para ver los detalles. ¡Gracias por tu compra!");
+}
+
+// Exponer funciones globalmente para uso desde main.js
+window.calcularTotalCarrito = calcularTotalCarrito;
+window.aplicarDescuento = aplicarDescuento;
+window.realizarPedido = realizarPedido;

@@ -94,10 +94,75 @@
   gap: v.$sp-6;
 }
 
+.cat-carousel {
+  position: relative;
+  padding: 0 v.$sp-12;
+}
+
+.cat-carousel__viewport {
+  overflow-x: auto;
+  padding: v.$sp-2 0 v.$sp-4;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  @include m.focus-ring(v.$c-mustard);
+}
+
+.cat-carousel__viewport--teleport {
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}
+
+.cat-carousel__viewport::-webkit-scrollbar {
+  display: none;
+}
+
 .cat-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
   gap: v.$sp-4;
+  width: max-content;
+}
+
+.cat-carousel__arrow {
+  @include m.btn-reset;
+  position: absolute;
+  top: 50%;
+  z-index: v.$z-up;
+  width: 52px;
+  height: 52px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  background: rgba(v.$c-indigo, 0.92);
+  color: #fff;
+  box-shadow: v.$shadow-md;
+  font-size: v.$fs-20;
+  transform: translateY(-50%);
+  transition: transform v.$ease-base, background v.$ease-base, opacity v.$ease-base;
+  @include m.flex-center;
+
+  &:hover:not(:disabled) {
+    background: v.$c-terra;
+    transform: translateY(-50%) scale(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+}
+
+.cat-carousel__arrow--prev {
+  left: 0;
+}
+
+.cat-carousel__arrow--next {
+  right: 0;
+}
+
+.cat-grid .fabric-card {
+  flex: 0 0 min(280px, calc(100vw - 6rem));
+  max-width: 280px;
+  scroll-snap-align: start;
 }
 
 .sc-grid {
@@ -363,7 +428,7 @@
   height: 42px;
   border: 0;
   border-radius: 50%;
-  background: v.$c-indigo;
+  background: v.$c-indigo2;
   color: #fff;
   font-size: v.$fs-16;
   box-shadow: v.$shadow-md;
@@ -384,15 +449,753 @@
   transform: translateY(-2px);
 }
 
+// ================================================================
+// Modal Directorio de Sastres
+// ================================================================
+.modal-sastres {
+  .modal-content {
+    border: 1px solid rgba(v.$c-linen, 0.9);
+    border-radius: v.$r-xl;
+    background: v.$c-white;
+    box-shadow: v.$shadow-xl;
+    overflow: hidden;
+  }
+}
+
+.modal-sastres__header,
+.modal-sastres__footer {
+  border-color: rgba(v.$c-linen, 0.85);
+}
+
+.modal-sastres__header {
+  align-items: flex-start;
+  gap: v.$sp-4;
+  padding: v.$sp-5 v.$sp-6;
+  background:
+    radial-gradient(circle at top left, rgba(v.$c-mustard, 0.18), transparent 42%),
+    linear-gradient(135deg, rgba(v.$c-sand, 0.98), rgba(v.$c-sand-light, 0.96));
+
+  .modal-title {
+    color: v.$c-indigo;
+    font-family: v.$font-serif;
+    font-size: clamp(2rem, 2.7vw, 2.4rem);
+  }
+}
+
+.modal-sastres__eyebrow {
+  color: v.$c-umber-soft;
+  font-family: v.$font-mono;
+  font-size: v.$fs-11;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.modal-sastres__lead {
+  color: v.$c-umber-soft;
+  font-size: v.$fs-14;
+  line-height: 1.6;
+}
+
+.modal-sastres__body {
+  padding: v.$sp-5 v.$sp-6;
+  background: rgba(v.$c-sand-light, 0.72);
+}
+
+.modal-sastres__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.$sp-4;
+  margin-bottom: v.$sp-4;
+  padding: v.$sp-3 v.$sp-4;
+  border: 1px solid rgba(v.$c-linen, 0.9);
+  border-radius: v.$r-lg;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.modal-sastres__summary-copy {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-1;
+
+  strong {
+    color: v.$c-indigo;
+  }
+
+  span {
+    color: v.$c-umber-soft;
+    font-size: v.$fs-14;
+  }
+}
+
+.modal-sastres__count {
+  flex-shrink: 0;
+  font-size: v.$fs-12;
+  letter-spacing: 0.04em;
+}
+
+.modal-sastres__sheet {
+  border: 1px solid rgba(v.$c-linen, 0.95);
+  border-radius: v.$r-lg;
+  background: #fff;
+  box-shadow: v.$shadow-sm;
+}
+
+.modal-sastres__sheet table {
+  margin-bottom: 0;
+}
+
+.modal-sastres__sheet thead th {
+  color: v.$c-indigo;
+  font-size: v.$fs-12;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.modal-sastres__sheet tbody td {
+  color: v.$c-umber;
+  font-size: v.$fs-14;
+  vertical-align: middle;
+}
+
+.sastres-directorio__row {
+  cursor: pointer;
+  transition: background-color v.$ease-base, transform v.$ease-base;
+
+  &:focus-visible {
+    outline: 2px solid v.$c-mustard;
+    outline-offset: -2px;
+  }
+
+  &.is-active td {
+    background: rgba(v.$c-mustard, 0.12);
+  }
+}
+
+.sastres-directorio__phone {
+  color: v.$c-indigo;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    color: v.$c-terra;
+  }
+}
+
+.modal-sastres__footer {
+  padding: v.$sp-4 v.$sp-6;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+// ================================================================
+// Modal Biografía de Sastres
+// ================================================================
+.modal-sastre-bio {
+  position: fixed;
+  inset: 0;
+  z-index: v.$z-modal;
+  padding: v.$sp-6;
+  background: rgba(v.$c-umber, 0.82);
+  opacity: 0;
+  visibility: hidden;
+  transition: all v.$ease-base;
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+
+    .modal-sastre-bio__dialog {
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+.modal-sastre-bio__dialog {
+  position: relative;
+  width: min(980px, 100%);
+  max-height: calc(100vh - #{v.$sp-12});
+  margin: 0 auto;
+  overflow: auto;
+  border-radius: v.$r-xl;
+  background: v.$c-white;
+  box-shadow: v.$shadow-xl;
+  transform: translateY(18px) scale(0.97);
+  transition: transform v.$ease-spring;
+}
+
+.modal-sastre-bio__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.95fr);
+  min-height: min(680px, calc(100vh - #{v.$sp-12}));
+}
+
+.modal-sastre-bio__close {
+  position: absolute;
+  top: v.$sp-4;
+  right: v.$sp-4;
+  z-index: v.$z-up;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: v.$c-white;
+  color: v.$c-umber;
+  font-size: v.$fs-18;
+  cursor: pointer;
+  transition: all v.$ease-base;
+  @include m.flex-center;
+
+  &:hover {
+    background: v.$c-terra;
+    color: #fff;
+    transform: rotate(90deg);
+  }
+}
+
+.modal-sastre-bio__content {
+  padding: v.$sp-6;
+  background:
+    radial-gradient(circle at top left, rgba(v.$c-mustard, 0.16), transparent 42%),
+    linear-gradient(135deg, rgba(v.$c-sand, 0.96), rgba(v.$c-sand-light, 0.98));
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: v.$r-lg;
+    box-shadow: v.$shadow-lg;
+  }
+}
+
+.modal-sastre-bio__panel {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-5;
+  padding: v.$sp-6;
+}
+
+.modal-sastre-bio__head {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-2;
+
+  h3 {
+    margin: 0;
+    color: v.$c-indigo;
+    font-family: v.$font-serif;
+    font-size: clamp(2rem, 2.8vw, 2.6rem);
+  }
+}
+
+.modal-sastre-bio__eyebrow {
+  margin: 0;
+  font-family: v.$font-mono;
+  font-size: v.$fs-11;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$c-umber-soft;
+}
+
+.modal-sastre-bio__lead {
+  margin: 0;
+  color: v.$c-terra;
+  font-size: v.$fs-13;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.modal-sastre-bio__section {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-3;
+
+  h4 {
+    margin: 0;
+    color: v.$c-indigo;
+    font-size: v.$fs-18;
+    font-family: v.$font-body;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  p {
+    margin: 0;
+    color: v.$c-umber;
+    line-height: 1.7;
+  }
+}
+
+.modal-sastre-bio__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.$sp-2;
+}
+
+.modal-sastre-bio__rating {
+  display: flex;
+  align-items: center;
+  gap: v.$sp-2;
+  flex-wrap: wrap;
+}
+
+.modal-sastre-bio__meta {
+  .sc-meta {
+    padding-top: v.$sp-4;
+    margin-top: 0;
+    background: transparent;
+  }
+}
+
+// ================================================================
+// Modal Galería de Telas
+// ================================================================
+.modal-galeria {
+  position: fixed;
+  inset: 0;
+  z-index: v.$z-modal;
+  padding: v.$sp-6;
+  background: rgba(v.$c-umber, 0.85);
+  opacity: 0;
+  visibility: hidden;
+  transition: all v.$ease-base;
+  
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    
+    .modal-galeria__dialog {
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+.modal-galeria__dialog {
+  position: relative;
+  width: min(1100px, 100%);
+  max-height: calc(100vh - #{v.$sp-12});
+  margin: 0 auto;
+  overflow: auto;
+  border-radius: v.$r-xl;
+  background: v.$c-white;
+  box-shadow: v.$shadow-xl;
+  transform: translateY(18px) scale(0.97);
+  transition: transform v.$ease-spring;
+}
+
+.modal-galeria__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  min-height: min(720px, calc(100vh - #{v.$sp-12}));
+}
+
+.modal-galeria__close {
+  position: absolute;
+  top: v.$sp-4;
+  right: v.$sp-4;
+  z-index: v.$z-up;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: v.$c-white;
+  color: v.$c-umber;
+  font-size: v.$fs-18;
+  cursor: pointer;
+  transition: all v.$ease-base;
+  @include m.flex-center;
+  
+  &:hover {
+    background: v.$c-terra;
+    color: #fff;
+    transform: rotate(90deg);
+  }
+}
+
+.modal-galeria__content {
+  padding: v.$sp-6;
+  background:
+    radial-gradient(circle at top left, rgba(v.$c-mustard, 0.18), transparent 46%),
+    linear-gradient(135deg, rgba(v.$c-sand, 0.96), rgba(v.$c-sand-light, 0.98));
+  
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    object-fit: cover;
+    border-radius: v.$r-lg;
+    box-shadow: v.$shadow-lg;
+  }
+}
+
+.modal-galeria__panel {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-5;
+  padding: v.$sp-6;
+}
+
+.modal-galeria__head {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-2;
+}
+
+.modal-galeria__head h3 {
+  margin: 0;
+  color: v.$c-indigo;
+  font-family: v.$font-serif;
+  font-size: clamp(2rem, 2.8vw, 2.6rem);
+}
+
+.modal-galeria__eyebrow {
+  margin: 0;
+  font-family: v.$font-mono;
+  font-size: v.$fs-11;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$c-umber-soft;
+}
+
+.modal-galeria__lead {
+  margin: 0;
+  color: v.$c-umber-soft;
+  font-size: v.$fs-16;
+  line-height: 1.6;
+}
+
+.modal-galeria__pricebox {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: v.$sp-4;
+  padding: v.$sp-4;
+  border: 1px solid rgba(v.$c-linen, 0.95);
+  border-radius: v.$r-lg;
+  background: rgba(v.$c-sand-light, 0.96);
+}
+
+.modal-galeria__pricecopy {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-1;
+
+  span {
+    font-size: v.$fs-12;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: v.$c-umber-soft;
+  }
+
+  strong {
+    font-size: v.$fs-28;
+    color: v.$c-terra;
+  }
+}
+
+.modal-galeria__meters {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-2;
+  min-width: 110px;
+
+  span {
+    font-size: v.$fs-12;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: v.$c-umber-soft;
+  }
+
+  input {
+    width: 100%;
+    padding: v.$sp-2 v.$sp-3;
+    border: 1px solid v.$c-linen;
+    border-radius: v.$r-md;
+    background: #fff;
+    color: v.$c-indigo;
+    font-weight: 600;
+  }
+}
+
+.modal-galeria__total {
+  grid-column: 1 / -1;
+  padding-top: v.$sp-3;
+  border-top: 1px solid rgba(v.$c-linen, 0.8);
+}
+
+.modal-galeria__total-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.$sp-3;
+  margin-bottom: v.$sp-2;
+  font-size: v.$fs-14;
+  color: v.$c-umber;
+}
+
+.modal-galeria__total-line:last-child {
+  margin-bottom: 0;
+}
+
+.modal-galeria__total-line strong {
+  color: v.$c-indigo;
+}
+
+.modal-galeria__total-line--final strong {
+  color: v.$c-terra;
+  font-size: v.$fs-20;
+}
+
+.modal-galeria__section {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-3;
+
+  h4 {
+    margin: 0;
+    color: v.$c-indigo;
+    font-size: v.$fs-18;
+    font-family: v.$font-body;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  p {
+    margin: 0;
+    color: v.$c-umber;
+    line-height: 1.6;
+  }
+}
+
+.modal-galeria__specs,
+.modal-galeria__offers,
+.modal-galeria__shipping {
+  display: grid;
+  gap: v.$sp-3;
+}
+
+.modal-spec,
+.modal-offer,
+.modal-shipping {
+  padding: v.$sp-3 v.$sp-4;
+  border: 1px solid rgba(v.$c-linen, 0.9);
+  border-radius: v.$r-md;
+  background: rgba(v.$c-sand-light, 0.94);
+}
+
+.modal-shipping {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-3;
+  transition: border-color v.$ease-base, box-shadow v.$ease-base, transform v.$ease-base;
+}
+
+.modal-shipping.is-selected {
+  border-color: rgba(v.$c-terra, 0.55);
+  box-shadow: 0 10px 24px rgba(v.$c-terra, 0.12);
+}
+
+.modal-shipping.is-expanded {
+  transform: translateY(-1px);
+}
+
+.modal-spec {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.$sp-3;
+}
+
+.modal-spec span {
+  font-size: v.$fs-12;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: v.$c-umber-soft;
+}
+
+.modal-spec strong {
+  color: v.$c-indigo;
+  text-align: right;
+}
+
+.modal-offer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.$sp-4;
+}
+
+.modal-offer__label {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-1;
+}
+
+.modal-offer__label span {
+  font-size: v.$fs-12;
+  color: v.$c-umber-soft;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.modal-offer__label strong {
+  color: v.$c-indigo;
+}
+
+.modal-offer__price {
+  text-align: right;
+}
+
+.modal-offer__price strong {
+  color: v.$c-terra;
+  font-size: v.$fs-18;
+}
+
+.modal-offer__price span {
+  display: block;
+  margin-top: v.$sp-1;
+  font-size: v.$fs-12;
+  color: v.$c-umber-soft;
+}
+
+.modal-shipping__head,
+.modal-shipping__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.$sp-3;
+}
+
+.modal-shipping__summary {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.modal-shipping__head {
+  margin-bottom: 0;
+}
+
+.modal-shipping__title {
+  display: flex;
+  flex-direction: column;
+  gap: v.$sp-1;
+}
+
+.modal-shipping__title strong {
+  color: v.$c-indigo;
+}
+
+.modal-shipping__title span,
+.modal-shipping__row span {
+  color: v.$c-umber-soft;
+  font-size: v.$fs-13;
+}
+
+.modal-shipping__price {
+  color: v.$c-terra;
+  font-size: v.$fs-18;
+}
+
+.modal-shipping__details {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: max-height v.$ease-slow, opacity v.$ease-base;
+}
+
+.modal-shipping.is-expanded .modal-shipping__details {
+  max-height: 320px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-shipping__row {
+  padding-top: v.$sp-2;
+  border-top: 1px dashed rgba(v.$c-linen, 0.9);
+}
+
+.modal-shipping__row strong {
+  color: v.$c-indigo;
+}
+
+.modal-shipping__select {
+  width: 100%;
+  margin-top: v.$sp-3;
+  padding: v.$sp-2 v.$sp-4;
+  border: 0;
+  border-radius: v.$r-full;
+  background: v.$c-indigo;
+  color: v.$c-white;
+  cursor: pointer;
+  font-size: v.$fs-12;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background v.$ease-base, transform v.$ease-base;
+}
+
+.modal-shipping__select:hover {
+  background: v.$c-indigo2;
+  transform: translateY(-1px);
+}
+
+.modal-shipping.is-selected .modal-shipping__select {
+  background: v.$c-terra;
+}
+
+// ================================================================
+// Fabric Card - Click para galería
+// ================================================================
+.fabric-card {
+  cursor: pointer;
+  
+  &:hover .fc-wrap {
+    box-shadow: 0 0 0 3px v.$c-terra;
+  }
+}
+
 @media (max-width: v.$bp-lg) {
-  .how-grid,
-  .cat-grid {
+  .how-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
   .skin-grid,
   .sc-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cat-carousel {
+    padding: 0 v.$sp-10;
+  }
+
+  .modal-galeria__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-galeria__content img {
+    min-height: 320px;
+  }
+
+  .modal-sastres__summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .modal-sastre-bio__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-sastre-bio__content img {
+    min-height: 320px;
   }
 }
 
@@ -409,9 +1212,39 @@
 
   .how-grid,
   .skin-grid,
-  .cat-grid,
   .sc-grid {
     grid-template-columns: 1fr;
+  }
+
+  .cat-carousel {
+    padding: 0 v.$sp-8;
+  }
+
+  .cat-carousel__arrow {
+    width: 42px;
+    height: 42px;
+    font-size: v.$fs-16;
+  }
+
+  .cat-grid .fabric-card {
+    flex-basis: min(250px, calc(100vw - 5.5rem));
+    max-width: 250px;
+  }
+
+  .modal-sastres__header,
+  .modal-sastres__body,
+  .modal-sastres__footer {
+    padding-left: v.$sp-4;
+    padding-right: v.$sp-4;
+  }
+
+  .modal-sastre-bio {
+    padding: v.$sp-3;
+  }
+
+  .modal-sastre-bio__content,
+  .modal-sastre-bio__panel {
+    padding: v.$sp-4;
   }
 
   .form-inner {
@@ -420,5 +1253,45 @@
 
   .banner-box {
     padding: v.$sp-12 v.$sp-5;
+  }
+
+  .modal-galeria {
+    padding: v.$sp-3;
+  }
+
+  .modal-galeria__content,
+  .modal-galeria__panel {
+    padding: v.$sp-4;
+  }
+
+  .modal-galeria__pricebox {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-galeria__meters {
+    min-width: 0;
+  }
+
+  .modal-spec,
+  .modal-offer,
+  .modal-shipping__head,
+  .modal-shipping__row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .modal-galeria__total-line {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .modal-shipping__price {
+    font-size: v.$fs-16;
+  }
+
+  .modal-shipping__select {
+    padding-left: v.$sp-3;
+    padding-right: v.$sp-3;
+    font-size: v.$fs-11;
   }
 }

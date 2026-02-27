@@ -28,6 +28,65 @@
 // Esto previene errores silenciosos, prohíbe variables no declaradas,
 // y hace el código más predecible y seguro. Siempre debe ir al inicio.
 
+const ENVIO_STORAGE_KEY = 'hilo-oficio-shipping';
+
+function normalizarEnvio(envio) {
+  if (!envio) return null;
+
+  const nombre = typeof envio.nombre === 'string' ? envio.nombre.trim() : '';
+  const detalle = typeof envio.detalle === 'string' ? envio.detalle.trim() : '';
+  const icono = typeof envio.icono === 'string' ? envio.icono.trim() : '';
+  const precio = Number(envio.precio);
+
+  if (!nombre && !Number.isFinite(precio)) return null;
+
+  return {
+    nombre: nombre || 'Sin envío seleccionado',
+    detalle,
+    icono,
+    precio: Number.isFinite(precio) ? Math.max(0, Math.round(precio)) : 0
+  };
+}
+
+function leerEnvioSeleccionado() {
+  try {
+    return normalizarEnvio(JSON.parse(localStorage.getItem(ENVIO_STORAGE_KEY) || 'null'));
+  } catch (err) {
+    console.error('No se pudo leer el envío guardado:', err);
+    return null;
+  }
+}
+
+function guardarEnvioSeleccionado(envio) {
+  try {
+    const envioNormalizado = normalizarEnvio(envio);
+
+    if (!envioNormalizado) {
+      localStorage.removeItem(ENVIO_STORAGE_KEY);
+    } else {
+      localStorage.setItem(ENVIO_STORAGE_KEY, JSON.stringify(envioNormalizado));
+    }
+
+    window.dispatchEvent(new Event('hilo-oficio:shipping-updated'));
+  } catch (err) {
+    console.error('No se pudo guardar el envío seleccionado:', err);
+  }
+}
+
+(function initHeroVideo() {
+  const heroVideo = document.querySelector('.hero__bg-video');
+  if (!heroVideo) return;
+
+  const syncPlayback = () => {
+    heroVideo.defaultPlaybackRate = 0.72;
+    heroVideo.playbackRate = 0.72;
+  };
+
+  syncPlayback();
+  heroVideo.addEventListener('loadedmetadata', syncPlayback);
+  heroVideo.addEventListener('play', syncPlayback);
+})();
+
 
 // ============================================================
 // 1. NAVBAR + CARRITO
@@ -69,104 +128,202 @@
   // Al hacer clic, cierra el carrito.
 
   const cartClose = document.getElementById("cart-close");
-  // Botón ✕ dentro del carrito para cerrarlo.
+  const cartItemsContainer = document.getElementById("cart-items");
+  const cartCounter = document.getElementById("cart-count");
+  const cartCheckout = document.getElementById("cart-checkout");
 
-  // main.js
-
-// Array para almacenar los productos del carrito
-// Cada elemento tendrá: {id,nombre,precio,imgHtml,cantidad}
-let carritoItems = [];
-
-// Función para agregar productos al carrito
-function agregarAlCarrito(boton) {
-  const tarjeta = boton.closest('.fabric-card');
-
-  const id = tarjeta.dataset.id;
-  const nombre = tarjeta.dataset.name;
-  const precio = Number(tarjeta.dataset.price);
-  const imgHtml = tarjeta.querySelector('.fc-img')?.outerHTML || '';
-
-  if (!id || !nombre || isNaN(precio)) return;
-
-  // Si el producto ya existe en el carrito, incrementa cantidad
-  const existing = carritoItems.find(i => i.id === id);
-  if (existing) {
-    existing.cantidad += 1;
-  } else {
-    carritoItems.push({ id, nombre, precio, imgHtml, cantidad: 1 });
-  }
-  actualizarCarrito();
-}
-
-// Función para actualizar el carrito en pantalla
-function actualizarCarrito() {
-  const contador = document.getElementById('cart-count');
-  if (contador) {
-    // mostrar suma de todas las cantidades (no solo número de renglones)
-    const totalUnits = carritoItems.reduce((sum, i) => sum + (i.cantidad || 0), 0);
-    contador.textContent = totalUnits;
+  // ========================================
+  // ---- Lógica del Carrito de Compras ----
+  // ========================================
+  function formatCLP(value) {
+    return `$${Number(value).toLocaleString('es-CL')}`;
   }
 
-  const container = document.getElementById('cart-items');
-  if (!container) return;
-
-  if (carritoItems.length === 0) {
-    container.innerHTML = '<p>Tu carrito está vacío.</p>';
-    return;
+  function extraerImagenLegacy(imgHtml) {
+    if (typeof imgHtml !== "string") return "";
+    const match = imgHtml.match(/src="([^"]+)"/i);
+    return match ? match[1] : "";
   }
 
-  let html = '';
+  function normalizarItemCarrito(item) {
+    if (!item || !item.id || !item.nombre || isNaN(Number(item.precio))) return null;
 
-  // 👉 EL TOTAL SE CALCULA USANDO LA FUNCIÓN DE calculos.js
-  const total = calcularTotalCarrito(carritoItems);
+    return {
+      id: String(item.id),
+      nombre: String(item.nombre),
+      precio: Number(item.precio),
+      image: item.image || extraerImagenLegacy(item.imgHtml) || "",
+      cantidad: Math.max(1, parseInt(item.cantidad, 10) || 1)
+    };
+  }
 
-  carritoItems.forEach(item => {
-    html += `
-      <div class="cart-item" data-id="${item.id}">
-        <div class="cart-item__img">${item.imgHtml || ''}</div>
-        <div class="cart-item__info">
-          <span>${item.nombre}</span>
-          <span>$${item.precio}</span>
+  function cargarCarritoGuardado() {
+    try {
+      const raw = JSON.parse(localStorage.getItem("carrito") || "[]");
+      if (!Array.isArray(raw)) return [];
+
+      return raw.reduce((acc, entry) => {
+        const item = normalizarItemCarrito(entry);
+        if (!item) return acc;
+
+        const existente = acc.find((candidate) => candidate.id === item.id);
+        if (existente) {
+          existente.cantidad += item.cantidad;
+          if (!existente.image && item.image) existente.image = item.image;
+          return acc;
+        }
+
+        acc.push(item);
+        return acc;
+      }, []);
+    } catch (err) {
+      console.error("No se pudo leer el carrito guardado:", err);
+      return [];
+    }
+  }
+
+  let carritoItems = cargarCarritoGuardado();
+
+  function persistirCarrito() {
+    try {
+      localStorage.setItem("carrito", JSON.stringify(carritoItems));
+    } catch (err) {
+      console.error("No se pudo guardar el carrito:", err);
+    }
+  }
+
+  function agregarAlCarrito(boton) {
+    const tarjeta = boton.closest(".fabric-card");
+    if (!tarjeta) return;
+    const id = tarjeta.dataset.id;
+    const nombre = tarjeta.dataset.name;
+    const precio = Number(tarjeta.dataset.price);
+    const image = tarjeta.dataset.image || tarjeta.querySelector(".fc-img")?.getAttribute("src") || "";
+    if (!id || !nombre || isNaN(precio)) return;
+
+    const existente = carritoItems.find((item) => item.id === id);
+    if (existente) {
+      existente.cantidad += 1;
+      if (!existente.image && image) existente.image = image;
+      actualizarCarrito();
+      showToast(nombre + " sumó una unidad más", "ok");
+      return;
+    }
+
+    carritoItems.push({ id, nombre, precio, image, cantidad: 1 });
+    actualizarCarrito();
+    showToast(nombre + " añadido al carrito", "ok");
+  }
+
+  function removerDelCarrito(target) {
+    if (typeof target === "number") {
+      if (target < 0 || target >= carritoItems.length) return;
+      carritoItems.splice(target, 1);
+      actualizarCarrito();
+      return;
+    }
+
+    carritoItems = carritoItems.filter((item) => item.id !== target);
+    actualizarCarrito();
+  }
+  window.removerDelCarrito = removerDelCarrito;
+
+  function changeCantidad(id, delta) {
+    const item = carritoItems.find((entry) => entry.id === id);
+    if (!item) return;
+
+    item.cantidad = Math.max(0, (parseInt(item.cantidad, 10) || 1) + delta);
+    if (item.cantidad === 0) {
+      removerDelCarrito(id);
+      return;
+    }
+
+    actualizarCarrito();
+  }
+
+  function actualizarCarrito() {
+    const envio = leerEnvioSeleccionado();
+    const precioEnvio = envio?.precio || 0;
+
+    if (cartCounter) {
+      const totalUnidades = carritoItems.reduce((sum, item) => sum + (parseInt(item.cantidad, 10) || 1), 0);
+      cartCounter.textContent = totalUnidades;
+    }
+
+    if (!cartItemsContainer) return;
+
+    if (carritoItems.length === 0) {
+      cartItemsContainer.innerHTML = "<p class=\"cart-empty\">Tu carrito está vacío.</p>";
+      persistirCarrito();
+      return;
+    }
+
+    let html = "";
+    const resultado = calcularTotalCarrito(carritoItems);
+    const subtotal = carritoItems.reduce((sum, item) => sum + (item.precio * (parseInt(item.cantidad, 10) || 1)), 0);
+    const totalFinal = resultado.precioFinal + precioEnvio;
+
+    carritoItems.forEach((item) => {
+      const qty = parseInt(item.cantidad, 10) || 1;
+      const subtotalItem = item.precio * qty;
+
+      html += `
+        <div class="cart-item" data-cart-id="${item.id}">
+          <div class="cart-item__img">
+            ${item.image ? `<img src="${item.image}" alt="${item.nombre}">` : '<span>🧵</span>'}
+          </div>
+          <div class="cart-item__info">
+            <span class="cart-item__name">${item.nombre}</span>
+            <span class="cart-item__price">${formatCLP(item.precio)} c/u · ${formatCLP(subtotalItem)} subtotal</span>
+          </div>
+          <div class="cart-item__qty">
+            <button type="button" data-cart-action="dec" aria-label="Disminuir cantidad">−</button>
+            <span class="cart-item__count">${qty}</span>
+            <button type="button" data-cart-action="inc" aria-label="Aumentar cantidad">+</button>
+          </div>
         </div>
-        <div class="cart-item__qty">
-          <button class="cart-item__dec" aria-label="Disminuir">−</button>
-          <span class="cart-item__count">${item.cantidad}</span>
-          <button class="cart-item__inc" aria-label="Aumentar">+</button>
+      `;
+    });
+
+    html += `
+      <div class="cart-summary">
+        <div class="cart-summary__line">
+          <span>Subtotal</span>
+          <strong>${formatCLP(subtotal)}</strong>
+        </div>
+        <div class="cart-summary__line">
+          <span>Descuento</span>
+          <strong>${resultado.descuentoPct > 0 ? `${resultado.descuentoPct}% · ${formatCLP(resultado.ahorro)}` : 'No aplica'}</strong>
+        </div>
+        <div class="cart-summary__line">
+          <span>Envío</span>
+          <strong>${envio ? (precioEnvio === 0 ? 'Gratis' : formatCLP(precioEnvio)) : 'Selecciona una zona'}</strong>
+        </div>
+        <div class="cart-summary__meta">${envio ? envio.nombre : 'Abre una tela para elegir costo de envío.'}</div>
+        <div class="cart-summary__line cart-summary__line--final">
+          <span>Total</span>
+          <strong>${formatCLP(totalFinal)}</strong>
         </div>
       </div>
     `;
-  });
 
-  // añadir total al final
-  html += `<p class="cart-total"><strong>Total: $${total}</strong></p>`;
+    cartItemsContainer.innerHTML = html;
+    cartItemsContainer.querySelectorAll("[data-cart-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const item = button.closest(".cart-item");
+        const id = item?.dataset.cartId;
+        if (!id) return;
 
-  container.innerHTML = html;
-
-  // after injecting, add listeners for qty buttons
-  container.querySelectorAll('.cart-item__inc').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const pid = btn.closest('.cart-item').dataset.id;
-      changeCantidad(pid, 1);
+        if (button.dataset.cartAction === "inc") {
+          changeCantidad(id, 1);
+        } else {
+          changeCantidad(id, -1);
+        }
+      });
     });
-  });
-  container.querySelectorAll('.cart-item__dec').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const pid = btn.closest('.cart-item').dataset.id;
-      changeCantidad(pid, -1);
-    });
-  });
-}
 
-// Ajusta la cantidad de un producto en el carrito
-function changeCantidad(id, delta) {
-  const item = carritoItems.find(i => i.id === id);
-  if (!item) return;
-  item.cantidad = (item.cantidad || 1) + delta;
-  if (item.cantidad <= 0) {
-    carritoItems = carritoItems.filter(i => i.id !== id);
+    persistirCarrito();
   }
-  actualizarCarrito();
-}
 
   // ========================================
   // ---- Comportamiento del Navbar al hacer scroll ----
@@ -249,21 +406,43 @@ function changeCantidad(id, delta) {
     // Cerrar carrito al hacer clic en ✕ o en el overlay
     cartClose.addEventListener("click", cerrarCarrito);
     cartOverlay.addEventListener("click", cerrarCarrito);
-  }
 
-  // ---- Binding de botones 'Añadir al carro' ----
-  // Añade listeners a cada botón de las tarjetas para invocar la función
-  // `agregarAlCarrito` que está definida en este mismo IIFE.
-  document.querySelectorAll('.fc-btn').forEach(boton => {
-    boton.addEventListener('click', () => {
+    cartCheckout?.addEventListener("click", () => {
+      if (carritoItems.length === 0) {
+        showToast("Tu carrito está vacío.", "err");
+        return;
+      }
+
+      const resultado = calcularTotalCarrito(carritoItems);
+      const envio = leerEnvioSeleccionado();
+      const totalFinal = resultado.precioFinal + (envio?.precio || 0);
+      window.realizarPedido?.(carritoItems);
+      showToast(
+        `Pedido confirmado · Total ${formatCLP(totalFinal)} · ${envio ? envio.nombre : 'Envío pendiente'}`,
+        "ok"
+      );
+
+      carritoItems = [];
+      actualizarCarrito();
+      cerrarCarrito();
+    });
+
+    // ---- Binding delegado de botones 'Añadir al carro' ----
+    document.addEventListener('click', (e) => {
+      const boton = e.target.closest('.fc-btn');
+      if (!boton) return;
+
       try {
         agregarAlCarrito(boton);
       } catch (err) {
-        // No interfiere con el flujo si algo falla; lo registramos para depuración.
         console.error('Error al añadir al carrito:', err);
       }
     });
-  });
+
+    window.addEventListener('hilo-oficio:shipping-updated', actualizarCarrito);
+  }
+
+  actualizarCarrito();
 
 })();
 // El () final invoca inmediatamente la función declarada arriba.
@@ -328,9 +507,8 @@ function changeCantidad(id, delta) {
   // Selecciona todos los botones de filtro (Todos, Naturales, Sintéticos, etc.).
   // Cada botón tiene data-filter="all|natural|sintetico|mezcla|premium".
 
-  const cards = document.querySelectorAll('.fabric-card');
-  // Selecciona todas las tarjetas de tela del catálogo.
-  // Cada card tiene data-type="natural|premium|mezcla|etc.".
+  const getCards = () => Array.from(document.querySelectorAll('.fabric-card'));
+  // El carrousel puede clonar tarjetas en los extremos; consultamos el DOM en tiempo real.
 
   btns.forEach(btn => btn.addEventListener('click', () => {
     // Para cada botón, agrega un listener de clic.
@@ -349,6 +527,8 @@ function changeCantidad(id, delta) {
     // btn.dataset.filter es equivalente a btn.getAttribute('data-filter').
     // Ejemplo: si se clicó "Naturales", f = "natural".
 
+    const cards = getCards();
+
     cards.forEach(c => {
       // Itera sobre cada tarjeta del catálogo.
       const match = f === 'all' || c.dataset.type === f;
@@ -359,7 +539,179 @@ function changeCantidad(id, delta) {
       // Si NO hay match: añade 'fabric-card--dimmed' (atenúa la card).
       // Si SÍ hay match: quita 'fabric-card--dimmed' (card visible y clara).
     });
+
+    const firstMatch = cards.find(c => !c.dataset.carouselClone && (f === 'all' || c.dataset.type === f));
+    firstMatch?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
   }));
+})();
+
+
+// ============================================================
+// 3.1 CATALOG CAROUSEL
+// Navegación horizontal del catálogo con flechas y teclado.
+// ============================================================
+(function initCatalogCarousel() {
+  const carousel = document.getElementById('catalogo-carousel');
+  if (!carousel) return;
+
+  const viewport = carousel.querySelector('.cat-carousel__viewport');
+  const track = carousel.querySelector('.cat-grid');
+  const prevBtn = carousel.querySelector('[data-cat-nav="prev"]');
+  const nextBtn = carousel.querySelector('[data-cat-nav="next"]');
+  const originals = Array.from(track?.querySelectorAll('.fabric-card') || []);
+
+  if (!viewport || !track || !prevBtn || !nextBtn || !originals.length) return;
+
+  let keyboardActive = false;
+  let loopTimer = null;
+  let isNormalizing = false;
+  let teleportTimer = null;
+
+  function buildLoopClones() {
+    if (originals.length <= 1) return { prepended: [], appended: [] };
+
+    const decorateClone = (card, side) => {
+      const clone = card.cloneNode(true);
+      clone.dataset.carouselClone = side;
+      clone.classList.remove('fade-up', 'delay-1', 'delay-2', 'delay-3', 'delay-4');
+      clone.classList.add('in');
+      return clone;
+    };
+
+    const prepended = originals.map(card => decorateClone(card, 'prepend'));
+    const appended = originals.map(card => decorateClone(card, 'append'));
+
+    prepended.slice().reverse().forEach(clone => track.insertBefore(clone, track.firstChild));
+    appended.forEach(clone => track.appendChild(clone));
+
+    return { prepended, appended };
+  }
+
+  const { prepended, appended } = buildLoopClones();
+
+  function stepSize() {
+    const firstCard = originals[0];
+    if (!firstCard) return viewport.clientWidth * 0.8;
+
+    const gap = parseFloat(window.getComputedStyle(track).gap || '0');
+    return firstCard.getBoundingClientRect().width + gap;
+  }
+
+  function cycleWidth() {
+    if (!appended.length || !originals.length) return 0;
+    return appended[0].offsetLeft - originals[0].offsetLeft;
+  }
+
+  function initialOffset() {
+    return originals[0]?.offsetLeft || 0;
+  }
+
+  function moveCarousel(direction) {
+    viewport.scrollBy({
+      left: direction * stepSize(),
+      behavior: 'smooth'
+    });
+  }
+
+  function applyTeleport(target) {
+    if (teleportTimer) clearTimeout(teleportTimer);
+
+    viewport.classList.add('cat-carousel__viewport--teleport');
+    viewport.scrollLeft = target;
+    updateArrows();
+
+    teleportTimer = window.setTimeout(() => {
+      viewport.classList.remove('cat-carousel__viewport--teleport');
+      teleportTimer = null;
+    }, 48);
+  }
+
+  function scheduleLoopNormalization() {
+    if (loopTimer) clearTimeout(loopTimer);
+    loopTimer = window.setTimeout(normalizeLoopPosition, 110);
+  }
+
+  function normalizeLoopPosition() {
+    if (isNormalizing || originals.length <= 1 || !prepended.length || !appended.length) return;
+
+    const start = initialOffset();
+    const end = appended[0].offsetLeft;
+    const cycle = cycleWidth();
+    const threshold = stepSize() * 0.45;
+
+    if (!cycle) return;
+
+    if (viewport.scrollLeft < start - threshold) {
+      isNormalizing = true;
+      applyTeleport(viewport.scrollLeft + cycle);
+      isNormalizing = false;
+      return;
+    }
+
+    if (viewport.scrollLeft >= end - threshold) {
+      isNormalizing = true;
+      applyTeleport(viewport.scrollLeft - cycle);
+      isNormalizing = false;
+    }
+  }
+
+  function updateArrows() {
+    const canScroll = viewport.scrollWidth - viewport.clientWidth > 2;
+    prevBtn.disabled = !canScroll;
+    nextBtn.disabled = !canScroll;
+  }
+
+  prevBtn.addEventListener('click', () => moveCarousel(-1));
+  nextBtn.addEventListener('click', () => moveCarousel(1));
+
+  viewport.addEventListener('scroll', () => {
+    updateArrows();
+    scheduleLoopNormalization();
+  }, { passive: true });
+
+  viewport.addEventListener('scrollend', normalizeLoopPosition);
+
+  window.addEventListener('resize', () => {
+    applyTeleport(initialOffset());
+    updateArrows();
+  }, { passive: true });
+
+  carousel.addEventListener('mouseenter', () => {
+    keyboardActive = true;
+  });
+
+  carousel.addEventListener('mouseleave', () => {
+    keyboardActive = false;
+  });
+
+  carousel.addEventListener('focusin', () => {
+    keyboardActive = true;
+  });
+
+  carousel.addEventListener('focusout', () => {
+    if (!carousel.contains(document.activeElement)) keyboardActive = false;
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const modalActiva = document.getElementById('modal-galeria')?.classList.contains('active');
+    if (!keyboardActive || modalActiva) return;
+
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      moveCarousel(-1);
+    }
+
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      moveCarousel(1);
+    }
+  });
+
+  viewport.scrollLeft = initialOffset();
+  requestAnimationFrame(() => {
+    applyTeleport(initialOffset());
+    updateArrows();
+  });
 })();
 
 
@@ -1137,6 +1489,162 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
 
 // ============================================================
+// 11.1 DIRECTORIO DE SASTRES
+// Popup tabular con listado ficticio nacional.
+// ============================================================
+(function initSastresDirectorio() {
+  const modal = document.getElementById('modal-sastres-directorio');
+  const body = document.getElementById('sastres-directorio-body');
+  const count = document.getElementById('sastres-directorio-count');
+  const note = document.getElementById('sastres-directorio-note');
+
+  if (!modal || !body || !count || !note) return;
+
+  const sastres = [
+    { nombre: 'Tomás Valdés', especialidad: 'Trajes clásicos', region: 'Arica y Parinacota', direccion: 'Pasaje Las Brisas 184, Arica', telefono: '+56 9 4312 1884', referencia: 'Frente al Mercado Artesanal' },
+    { nombre: 'Isidora Mena', especialidad: 'Vestidos de fiesta', region: 'Tarapacá', direccion: 'Calle Sotomayor 921, Iquique', telefono: '+56 9 5521 7093', referencia: 'Galería textil del centro' },
+    { nombre: 'Benjamín Rojas', especialidad: 'Uniformes y camisería', region: 'Antofagasta', direccion: 'Avenida Brasil 1430, Antofagasta', telefono: '+56 9 6614 2831', referencia: 'Segundo piso, local interior 7' },
+    { nombre: 'Florencia Arancibia', especialidad: 'Alta costura femenina', region: 'Coquimbo', direccion: 'Pasaje Los Naranjos 55, La Serena', telefono: '+56 9 7488 1192', referencia: 'A media cuadra de la Recova' },
+    { nombre: 'Vicente Olguín', especialidad: 'Sastrería ejecutiva', region: 'Valparaíso', direccion: 'Subida Ecuador 408, Valparaíso', telefono: '+56 9 3905 6418', referencia: 'Casa azul con portón de madera' },
+    { nombre: 'Josefa Cárdenas', especialidad: 'Novias y ceremonia', region: 'Metropolitana de Santiago', direccion: 'Avenida Italia 1775, Ñuñoa', telefono: '+56 9 8127 5504', referencia: 'Taller interior, patio central' },
+    { nombre: 'Matías Sanhueza', especialidad: 'Pantalonería a medida', region: "Libertador General Bernardo O'Higgins", direccion: 'Calle Estado 612, Rancagua', telefono: '+56 9 6234 2087', referencia: 'Entre plaza y correo central' },
+    { nombre: 'Antonia Pizarro', especialidad: 'Moda sostenible', region: 'Biobío', direccion: 'Avenida Chacabuco 980, Concepción', telefono: '+56 9 5742 9661', referencia: 'Edificio esquina, oficina 304' },
+    { nombre: 'Gabriel Jara', especialidad: 'Abrigos y paños', region: 'Los Lagos', direccion: 'Calle Urmeneta 320, Puerto Montt', telefono: '+56 9 6839 4725', referencia: 'Junto a la feria de diseño local' },
+    { nombre: 'Amalia Soto', especialidad: 'Arreglos premium', region: 'Magallanes y de la Antártica Chilena', direccion: 'Avenida Colón 1147, Punta Arenas', telefono: '+56 9 7976 1350', referencia: 'Local con vitrina mostaza frente a la plaza' }
+  ];
+
+  function renderRows() {
+    body.innerHTML = sastres.map((sastre, index) => `
+      <tr class="sastres-directorio__row" data-sastre-index="${index}" tabindex="0">
+        <td><strong>${sastre.nombre}</strong></td>
+        <td><span class="badge text-bg-light border">${sastre.especialidad}</span></td>
+        <td>${sastre.region}</td>
+        <td>${sastre.direccion}</td>
+        <td><a href="tel:${sastre.telefono.replace(/\s+/g, '')}" class="sastres-directorio__phone">${sastre.telefono}</a></td>
+        <td>${sastre.referencia}</td>
+      </tr>
+    `).join('');
+
+    count.textContent = `${sastres.length} registros`;
+  }
+
+  function setActiveRow(index) {
+    const sastre = sastres[index];
+    if (!sastre) return;
+
+    body.querySelectorAll('.sastres-directorio__row').forEach((row, rowIndex) => {
+      row.classList.toggle('table-active', rowIndex === index);
+      row.classList.toggle('is-active', rowIndex === index);
+    });
+
+    note.textContent = `Seleccionado: ${sastre.nombre} · ${sastre.region} · Referencia: ${sastre.referencia}.`;
+  }
+
+  function activateFromTarget(target) {
+    const row = target.closest('.sastres-directorio__row');
+    if (!row) return;
+
+    setActiveRow(Number(row.dataset.sastreIndex));
+  }
+
+  modal.addEventListener('show.bs.modal', () => {
+    if (!body.children.length) renderRows();
+    setActiveRow(0);
+  });
+
+  body.addEventListener('click', (e) => {
+    activateFromTarget(e.target);
+  });
+
+  body.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    activateFromTarget(e.target);
+  });
+})();
+
+
+// ============================================================
+// 11.2 BIOGRAFÍAS DE SASTRES
+// Popup visual para ampliar la foto y mostrar una biografía breve.
+// ============================================================
+(function initSastresBio() {
+  const modal = document.getElementById('modal-sastre-bio');
+  if (!modal) return;
+
+  const dialog = modal.querySelector('.modal-sastre-bio__dialog');
+  const close = document.getElementById('modal-sastre-bio-close');
+  const modalImg = document.getElementById('modal-sastre-bio-img');
+  const modalEyebrow = document.getElementById('modal-sastre-bio-eyebrow');
+  const modalTitle = document.getElementById('modal-sastre-bio-titulo');
+  const modalLead = document.getElementById('modal-sastre-bio-lead');
+  const modalCopy = document.getElementById('modal-sastre-bio-copy');
+  const modalTags = document.getElementById('modal-sastre-bio-tags');
+  const modalRating = document.getElementById('modal-sastre-bio-rating');
+  const modalMeta = document.getElementById('modal-sastre-bio-meta');
+  const cards = Array.from(document.querySelectorAll('.sastre-card'));
+
+  if (!dialog || !close || !modalImg || !modalEyebrow || !modalTitle || !modalLead || !modalCopy || !modalTags || !modalRating || !modalMeta || !cards.length) {
+    return;
+  }
+
+  function abrir(card) {
+    const image = card.querySelector('.sc-img--main, .sc-img');
+    const name = card.querySelector('.sc-name')?.textContent?.trim() || 'Sastre destacado';
+    const role = card.querySelector('.sc-role')?.textContent?.trim() || '';
+    const verified = card.querySelector('.sc-verified')?.textContent?.trim() || '';
+    const badge = card.querySelector('.sc-badge')?.textContent?.trim() || '';
+
+    modalImg.src = image?.getAttribute('src') || '';
+    modalImg.alt = image?.getAttribute('alt') || name;
+    modalEyebrow.textContent = [verified, badge].filter(Boolean).join(' · ');
+    modalTitle.textContent = name;
+    modalLead.textContent = role;
+    modalCopy.textContent = card.dataset.bio || 'Biografía no disponible.';
+    modalTags.innerHTML = card.querySelector('.sc-tags')?.innerHTML || '';
+    modalRating.innerHTML = card.querySelector('.sc-rating')?.innerHTML || '';
+    modalMeta.innerHTML = card.querySelector('.sc-meta')?.innerHTML || '';
+
+    modal.classList.add('active');
+    document.body.classList.add('body--lock');
+  }
+
+  function cerrar() {
+    modal.classList.remove('active');
+    document.body.classList.remove('body--lock');
+  }
+
+  cards.forEach((card) => {
+    const trigger = card.querySelector('.sc-cover');
+    if (!trigger) return;
+
+    trigger.addEventListener('click', () => abrir(card));
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      abrir(card);
+    });
+  });
+
+  close.addEventListener('click', cerrar);
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) cerrar();
+  });
+
+  dialog.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      cerrar();
+    }
+  });
+})();
+
+
+// ============================================================
 // 12. HELPERS — Funciones utilitarias reutilizadas en todo el archivo
 // ============================================================
 
@@ -1187,24 +1695,563 @@ function checkVals(name) {
 // ============================================================
 
 const catalogo = {};
+// Objeto vacío para almacenar el catálogo de telas.
+// key: ID de la tela, value: datos base para ficha y precio
 
 // Selecciona todas las tarjetas de tela y extrae sus datos
-document.querySelectorAll('.fabric-card').forEach(card => {
+document.querySelectorAll('.fabric-card:not([data-carousel-clone])').forEach(card => {
   const id = card.dataset.id;
+  // data-id de la tarjeta (ej: 'lino', 'seda', 'algodon', 'gabardina')
   const price = Number(card.dataset.price);
+  // data-price de la tarjeta (número)
 
-  catalogo[id] = price;
-  // Guarda en el objeto: { lino: 4200, seda: 12800, ... }
+  if (!id || isNaN(price)) return;
+
+  catalogo[id] = {
+    id,
+    price,
+    type: card.dataset.type || '',
+    name: card.dataset.name || '',
+    image: card.dataset.image || '',
+    material: card.dataset.material || '',
+    width: card.dataset.width || '',
+    weight: card.dataset.weight || '',
+    finish: card.dataset.finish || '',
+    use: card.dataset.use || '',
+  };
+  // Guarda en el objeto la ficha mínima del catálogo.
 });
 
-
+/**
+ * Muestra el catálogo de telas en la consola del navegador.
+ * Útil para depuración y desarrollo.
+ */
 function mostrarCatalogo() {
   console.log("Catálogo disponible:");
 
   for (let producto in catalogo) {
-    console.log(producto + " - $" + catalogo[producto]);
+    console.log(producto + " - $" + catalogo[producto].price + " - " + catalogo[producto].type);
   }
 }
 
+// Ejecutar al cargar para verificar en consola
 mostrarCatalogo();
+window.catalogoTelas = catalogo;
 
+
+// ============================================================
+// 14. ★ APLICAR DESCUENTO — Función de descuento por volumen
+// ============================================================
+/**
+ * ═══════════════════════════════════════════════════════════
+ * ★ FUNCIÓN NUEVA: aplicarDescuento(total)
+ *
+ * DÓNDE VIVE: al final del archivo, fuera de cualquier IIFE.
+ * Está expuesta globalmente para ser llamada desde la consola o desde otros scripts.
+ *
+ * PROPÓSITO: calcular el precio final de una compra de telas
+ * aplicando descuento por volumen según el total.
+ *
+ * REGLAS DE NEGOCIO:
+ *   - Total > $100  →  20% de descuento (paga el 80%)
+ *   - Total > $50   →  10% de descuento (paga el 90%)
+ *   - Total ≤ $50   →  sin descuento    (paga el 100%)
+ *
+ * ⚠ EL ORDEN DE LAS CONDICIONES ES CRÍTICO:
+ *   Si evaluamos primero "> $50", un total de $150 también
+ *   cumpliría esa condición y obtendría solo 10% en vez de 20%.
+ *   Por eso SIEMPRE se evalúa primero la condición más fuerte (> $100).
+ * ═══════════════════════════════════════════════════════════
+ *
+ * @param {number} total - El total de la compra (en miles de CLP para este proyecto).
+ * @returns {{ precioFinal: number, descuentoPct: number, ahorro: number }}
+ *
+ * Ejemplos de uso en consola:
+ *   aplicarDescuento(120)  → { precioFinal: 96,  descuentoPct: 20, ahorro: 24 }
+ *   aplicarDescuento(80)   → { precioFinal: 72,  descuentoPct: 10, ahorro: 8  }
+ *   aplicarDescuento(30)   → { precioFinal: 30,  descuentoPct: 0,  ahorro: 0  }
+ */
+function aplicarDescuento(total) {
+  // Parámetro 'total': el monto de la compra antes de aplicar descuento.
+  // En el contexto de Hilo & Oficio: precio en miles de CLP (4.2 = $4.200 CLP).
+
+  let descuentoPct = 0;
+  // Variable para guardar el porcentaje de descuento aplicado.
+  // 'let' porque su valor cambiará según las condiciones.
+  // Inicializa en 0: sin descuento por defecto.
+
+  if (total > 100) {
+    // CONDICIÓN 1 — Compra mayor a $100: aplica 20% de descuento.
+    // Esta condición se evalúa PRIMERO porque es la más restrictiva.
+    // Ejemplo: total = 150 → entra aquí, obtiene 20%.
+    descuentoPct = 20;
+    // Registra que se aplicó 20%.
+
+  } else if (total > 50) {
+    // CONDICIÓN 2 — Compra mayor a $50 pero ≤ $100: aplica 10% de descuento.
+    // 'else if' garantiza que solo corre si la condición anterior fue false.
+    // Ejemplo: total = 80 → no entra en if (80 < 100), sí entra aquí.
+    // Ejemplo: total = 150 → ya entró en el if anterior, nunca llega aquí.
+    descuentoPct = 10;
+    // Registra que se aplicó 10%.
+
+  }
+  // Si total ≤ 50: ningún bloque se ejecutó, descuentoPct permanece en 0.
+  // Ejemplo: total = 30 → sin descuento.
+
+  const multiplicador = 1 - (descuentoPct / 100);
+  // Convierte el porcentaje en factor multiplicador para calcular el precio final:
+  //   20% de descuento → 1 - 0.20 = 0.80  (el cliente paga el 80% del total)
+  //   10% de descuento → 1 - 0.10 = 0.90  (el cliente paga el 90% del total)
+  //    0% de descuento → 1 - 0.00 = 1.00  (el cliente paga el 100%, sin descuento)
+
+  const precioFinal = parseFloat((total * multiplicador).toFixed(2));
+  // Calcula el precio con descuento multiplicando por el factor.
+  // .toFixed(2) convierte a string con exactamente 2 decimales.
+  // Esto evita problemas de punto flotante de JavaScript:
+  //   sin .toFixed: 80 * 0.80 podría dar 63.99999999999 en vez de 64.
+  // parseFloat() convierte de vuelta a número para operar sobre él.
+
+  const ahorro = parseFloat((total - precioFinal).toFixed(2));
+  // Cuánto dinero se ahorra: total original menos el precio con descuento.
+  // También se redondea a 2 decimales para consistencia.
+
+  return { precioFinal, descuentoPct, ahorro };
+  // Retorna un objeto con los tres valores relevantes.
+  // Shorthand ES6: { precioFinal } es azúcar sintáctica de { precioFinal: precioFinal }.
+  // Quien llame a esta función puede desestructurar: const { precioFinal } = aplicarDescuento(total);
+}
+
+
+// ============================================================
+// 15. ★ INIT CALCULADORA TELA — Integración con la UI
+// ============================================================
+/**
+ * ── Integración: Calculadora de descuento en el catálogo de telas ──────────
+ * Esta IIFE conecta aplicarDescuento() con la UI del catálogo.
+ * Requiere agregar en el HTML el bloque <div id="calculadora-tela">.
+ * (Ver index.html comentado para ver la implementación del HTML)
+ */
+(function initCalculadoraTela() {
+  // IIFE: encapsula la lógica y evita variables globales innecesarias.
+
+  // ---- Precios base de las telas (en miles de CLP) ----
+  const preciosBase = {};
+  document.querySelectorAll('.fabric-card:not([data-carousel-clone])').forEach((card) => {
+    const id = card.dataset.id;
+    const precio = Number(card.dataset.price);
+
+    if (!id || isNaN(precio)) return;
+    preciosBase[id] = precio / 1000;
+  });
+
+  // ---- Selección de elementos del DOM ----
+  const inputMetros = document.getElementById('calc-metros');
+  // <input type="number"> donde el usuario escribe cuántos metros desea.
+  const selectTela = document.getElementById('calc-tela');
+  // <select> donde el usuario elige qué tela quiere calcular.
+  const resultBox = document.getElementById('calc-resultado');
+  // <div> donde se mostrará el resultado con los precios calculados.
+
+  if (!inputMetros || !selectTela || !resultBox) return;
+  // Guardián: si algún elemento no existe (la calculadora no está en esta página),
+  // sale silenciosamente sin romper nada.
+
+  // ---- Función principal de cálculo ----
+  function calcularYMostrar() {
+    // Función principal: lee los inputs, calcula el descuento y actualiza el DOM.
+
+    const metros = parseFloat(inputMetros.value) || 0;
+    // Lee cuántos metros inputted el usuario.
+    // parseFloat: convierte string a número decimal.
+    // || 0: si el campo está vacío o no es número, usa 0 como fallback seguro.
+
+    const telaKey = selectTela.value;
+    // Key de la tela seleccionada en el <select>, ej: 'lino', 'seda'.
+
+    const pxMetro = preciosBase[telaKey];
+    // Obtiene el precio por metro de la tela elegida.
+    // Si telaKey es '' (opción por defecto), pxMetro será undefined.
+
+    if (!pxMetro || metros <= 0) {
+      // Si no hay tela seleccionada O metros es 0 o negativo:
+      resultBox.innerHTML = '';
+      // Limpia el resultado (no muestra nada).
+      return;
+      // Sale de la función sin calcular.
+    }
+
+    const total = metros * pxMetro;
+    // Total antes de descuento: metros × precio por metro.
+    // Ejemplo: 15 metros × 4.2 = 63.0 (→ $63.000 CLP, califica para 10% dcto)
+
+    const { precioFinal, descuentoPct, ahorro } = aplicarDescuento(total);
+    // ★ Llama a nuestra función aplicarDescuento.
+    // Desestructura el resultado: extrae los tres valores retornados.
+
+    // ---- Conversión de "miles de CLP" a "CLP completos" para mostrar ----
+    const totalCLP = Math.round(total * 1000).toLocaleString('es-CL');
+    const finalCLP = Math.round(precioFinal * 1000).toLocaleString('es-CL');
+    const ahorroCLP = Math.round(ahorro * 1000).toLocaleString('es-CL');
+    // toLocaleString('es-CL') formatea con separador de miles con punto: 63.000
+
+    // ---- Generación del HTML del resultado ----
+    resultBox.innerHTML = `
+      <div class="calc-result__row">
+        <span>Subtotal (${metros}m × $${Math.round(pxMetro * 1000).toLocaleString('es-CL')}/m):</span>
+        <strong>$${totalCLP} CLP</strong>
+      </div>
+      ${descuentoPct > 0 ? `
+        <div class="calc-result__row calc-result__row--discount">
+          <span>Descuento aplicado (${descuentoPct}% por volumen):</span>
+          <strong class="color-green">−$${ahorroCLP} CLP</strong>
+        </div>` : '<p class="calc-hint">💡 Compra más de $50.000 para obtener 10% de descuento.</p>'}
+      <div class="calc-result__row calc-result__row--total">
+        <span><strong>Total a pagar:</strong></span>
+        <strong class="calc-result__final">$${finalCLP} CLP</strong>
+      </div>
+    `;
+    // Template literal multilínea con HTML del resultado.
+    // El operador ternario muestra la fila de descuento solo si se aplicó alguno.
+    // Si no califica, muestra un hint motivando a comprar más.
+  }
+
+  // ---- Event listeners para actualizar en tiempo real ----
+  inputMetros.addEventListener('input', calcularYMostrar);
+  // Recalcula en tiempo real mientras el usuario escribe la cantidad de metros.
+
+  selectTela.addEventListener('change', calcularYMostrar);
+  // Recalcula inmediatamente cuando el usuario cambia la tela seleccionada.
+})();
+
+
+// ============================================================
+// 16. GALERIA DE TELAS
+// Usa data-image para la vista previa de la card y para el modal.
+// ============================================================
+(function initGaleriaTelas() {
+  // Elementos del modal
+  const modal = document.getElementById('modal-galeria');
+  if (!modal) return;
+  
+  const modalDialog = modal.querySelector('.modal-galeria__dialog');
+  const modalImg = document.getElementById('modal-galeria-img');
+  const modalTitulo = document.getElementById('modal-galeria-titulo');
+  const modalTipo = document.getElementById('modal-galeria-tipo');
+  const modalLead = document.getElementById('modal-galeria-lead');
+  const modalPrecio = document.getElementById('modal-galeria-precio');
+  const modalMaterial = document.getElementById('modal-galeria-material');
+  const modalFicha = document.getElementById('modal-galeria-ficha');
+  const modalOfertas = document.getElementById('modal-galeria-ofertas');
+  const modalEnvios = document.getElementById('modal-galeria-envios');
+  const modalMetros = document.getElementById('modal-galeria-metros');
+  const modalTotal = document.getElementById('modal-galeria-total');
+  const modalClose = document.getElementById('modal-galeria-close');
+  
+  // Seleccionar todas las tarjetas de tela
+  const tarjetas = document.querySelectorAll('.fabric-card');
+  let tarjetaActiva = null;
+  let envioActivo = null;
+  let envioExpandido = '';
+
+  const zonasEnvio = [
+    {
+      icono: '🇨🇱',
+      nombre: 'Chile (Nacional)',
+      detalle: '3-5 días hábiles',
+      precio: 5490,
+      breakdown: [
+        ['Base logística', '$3.990'],
+        ['IVA (19%)', '$758'],
+        ['Seguro de transporte', '$742'],
+      ]
+    },
+    {
+      icono: '🌎',
+      nombre: 'Latinoamérica',
+      detalle: '7-14 días hábiles',
+      precio: 8990,
+      breakdown: [
+        ['Base logística', '$6.290'],
+        ['IVA (19%)', '$1.195'],
+        ['Impuesto aduanero', '$1.505'],
+      ]
+    },
+    {
+      icono: '🌍',
+      nombre: 'Internacional',
+      detalle: '14-21 días hábiles',
+      precio: 16990,
+      breakdown: [
+        ['Base logística', '$10.990'],
+        ['IVA (19%)', '$2.088'],
+        ['Impuesto aduanero', '$3.912'],
+      ]
+    },
+    {
+      icono: '🏬',
+      nombre: 'Retiro en tienda',
+      detalle: 'Sucursal coordinada con tu sastre',
+      precio: 0,
+      breakdown: [
+        ['Preparación del pedido', '$0'],
+        ['Impuestos', '$0'],
+        ['Entrega', 'Gratis'],
+      ]
+    }
+  ];
+
+  function formatCLP(valor) {
+    return `$${Number(valor).toLocaleString('es-CL')}`;
+  }
+
+  function labelTipo(tipo) {
+    const labels = {
+      natural: 'Natural',
+      sintetico: 'Sintético',
+      mezcla: 'Mezcla',
+      premium: 'Premium'
+    };
+
+    return labels[tipo] || tipo || '';
+  }
+
+  function hidratarPreview(card) {
+    const imagen = card.dataset.image;
+    const wrap = card.querySelector('.fc-wrap');
+    const fallback = wrap?.querySelector('.fc-img');
+
+    if (!imagen || !wrap || !fallback) return;
+    if (fallback.tagName.toLowerCase() === 'img') return;
+
+    const preview = new Image();
+    preview.src = imagen;
+    preview.alt = (card.dataset.name || 'Tela') + ' - Vista previa';
+    preview.className = 'fc-img';
+    preview.loading = 'lazy';
+    preview.decoding = 'async';
+
+    // Solo reemplazamos el SVG cuando la imagen carga bien.
+    preview.addEventListener('load', () => {
+      fallback.replaceWith(preview);
+    });
+  }
+
+  function renderFicha(card) {
+    const rows = [
+      ['Material', card.dataset.material],
+      ['Ancho útil', card.dataset.width],
+      ['Gramaje', card.dataset.weight],
+      ['Acabado', card.dataset.finish],
+      ['Uso recomendado', card.dataset.use]
+    ].filter(([, valor]) => valor);
+
+    modalFicha.innerHTML = rows.map(([label, valor]) => `
+      <div class="modal-spec">
+        <span>${label}</span>
+        <strong>${valor}</strong>
+      </div>
+    `).join('');
+  }
+
+  function renderOfertas(card) {
+    const precio = Number(card.dataset.price);
+    if (!precio) return;
+
+    const umbral10 = Math.max(4, Math.ceil(50000 / precio));
+    const umbral20 = Math.max(umbral10 + 1, Math.ceil(100000 / precio));
+    const escalas = Array.from(new Set([3, umbral10, umbral20]));
+
+    modalOfertas.innerHTML = escalas.map((metros) => {
+      const subtotal = precio * metros;
+      const resultado = aplicarDescuento(subtotal / 1000);
+      const total = Math.round(resultado.precioFinal * 1000);
+      const descuento = resultado.descuentoPct > 0 ? `${resultado.descuentoPct}% OFF` : 'Tarifa base';
+
+      return `
+        <div class="modal-offer">
+          <div class="modal-offer__label">
+            <span>${descuento}</span>
+            <strong>${metros} metros</strong>
+          </div>
+          <div class="modal-offer__price">
+            <strong>${formatCLP(total)}</strong>
+            <span>Subtotal: ${formatCLP(subtotal)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderEnvios() {
+    modalEnvios.innerHTML = zonasEnvio.map((zona, index) => {
+      const seleccionada = envioActivo?.nombre === zona.nombre;
+      const expandida = envioExpandido === zona.nombre;
+      const filas = zona.breakdown.map(([label, valor]) => `
+        <div class="modal-shipping__row">
+          <span>${label}</span>
+          <strong>${valor}</strong>
+        </div>
+      `).join('');
+
+      return `
+        <div class="modal-shipping ${seleccionada ? 'is-selected' : ''} ${expandida ? 'is-expanded' : ''}" data-shipping-index="${index}">
+          <button class="modal-shipping__summary" type="button" aria-expanded="${expandida ? 'true' : 'false'}">
+            <div class="modal-shipping__head">
+              <div class="modal-shipping__title">
+                <strong>${zona.icono} ${zona.nombre}</strong>
+                <span>${zona.detalle}</span>
+              </div>
+              <strong class="modal-shipping__price">${zona.precio === 0 ? 'Gratis' : formatCLP(zona.precio)}</strong>
+            </div>
+          </button>
+          <div class="modal-shipping__details">
+            ${filas}
+            <button class="modal-shipping__select" type="button">
+              ${seleccionada ? 'Envío seleccionado' : 'Seleccionar este envío'}
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    modalEnvios.querySelectorAll('.modal-shipping__summary').forEach((button) => {
+      button.addEventListener('click', () => {
+        const wrap = button.closest('.modal-shipping');
+        const zona = zonasEnvio[Number(wrap?.dataset.shippingIndex)];
+        if (!zona) return;
+
+        envioExpandido = envioExpandido === zona.nombre ? '' : zona.nombre;
+        renderEnvios();
+      });
+    });
+
+    modalEnvios.querySelectorAll('.modal-shipping__select').forEach((button) => {
+      button.addEventListener('click', () => {
+        const wrap = button.closest('.modal-shipping');
+        const zona = zonasEnvio[Number(wrap?.dataset.shippingIndex)];
+        if (!zona) return;
+
+        envioActivo = normalizarEnvio(zona);
+        envioExpandido = zona.nombre;
+        guardarEnvioSeleccionado(envioActivo);
+        renderEnvios();
+        renderTotal(tarjetaActiva);
+        showToast(`📦 ${zona.nombre} seleccionado`, 'inf');
+      });
+    });
+  }
+
+  function renderTotal(card) {
+    if (!card || !modalMetros) return;
+
+    const metros = Math.max(1, parseInt(modalMetros.value, 10) || 1);
+    const precio = Number(card.dataset.price);
+    const subtotal = precio * metros;
+    const resultado = aplicarDescuento(subtotal / 1000);
+    const total = Math.round(resultado.precioFinal * 1000);
+    const ahorro = Math.round(resultado.ahorro * 1000);
+    const precioEnvio = envioActivo?.precio || 0;
+    const totalConEnvio = total + precioEnvio;
+
+    modalMetros.value = String(metros);
+    modalTotal.innerHTML = `
+      <div class="modal-galeria__total-line">
+        <span>Subtotal (${metros} m)</span>
+        <strong>${formatCLP(subtotal)}</strong>
+      </div>
+      <div class="modal-galeria__total-line">
+        <span>Descuento por volumen</span>
+        <strong>${resultado.descuentoPct > 0 ? `${resultado.descuentoPct}% · ${formatCLP(ahorro)}` : 'No aplica'}</strong>
+      </div>
+      <div class="modal-galeria__total-line">
+        <span>Envío</span>
+        <strong>${envioActivo ? `${envioActivo.nombre} · ${precioEnvio === 0 ? 'Gratis' : formatCLP(precioEnvio)}` : 'Selecciona una zona'}</strong>
+      </div>
+      <div class="modal-galeria__total-line modal-galeria__total-line--final">
+        <span>Total estimado</span>
+        <strong>${formatCLP(totalConEnvio)}</strong>
+      </div>
+    `;
+  }
+  
+  // Función para abrir el modal
+  function abrirModal(card) {
+    const imagen = card.dataset.image;
+    const nombre = card.dataset.name;
+    const tipo = card.dataset.type;
+    const stock = card.querySelector('.fc-stock')?.textContent?.trim();
+    
+    if (!imagen) return;
+    
+    tarjetaActiva = card;
+    const envioGuardado = leerEnvioSeleccionado();
+    envioActivo = zonasEnvio.find((zona) => zona.nombre === envioGuardado?.nombre) || null;
+    envioExpandido = envioActivo?.nombre || zonasEnvio[0]?.nombre || '';
+    modalImg.src = imagen;
+    modalImg.alt = nombre + ' - Detalle de tela';
+    modalTitulo.textContent = nombre;
+    modalTipo.textContent = [labelTipo(tipo), stock].filter(Boolean).join(' · ');
+    modalLead.textContent = card.dataset.lead || '';
+    modalPrecio.textContent = formatCLP(Number(card.dataset.price));
+    modalMaterial.textContent = card.dataset.material || 'Material no especificado';
+    modalMetros.value = '1';
+    renderFicha(card);
+    renderOfertas(card);
+    renderEnvios();
+    renderTotal(card);
+    
+    modal.classList.add('active');
+    document.body.classList.add('body--lock');
+  }
+  
+  // Función para cerrar el modal
+  function cerrarModal() {
+    modal.classList.remove('active');
+    document.body.classList.remove('body--lock');
+    tarjetaActiva = null;
+  }
+  
+  // Agregar click a cada tarjeta
+  tarjetas.forEach(card => {
+    hidratarPreview(card);
+
+    card.addEventListener('click', (e) => {
+      // No abrir si se hizo click en el botón "Añadir al carro"
+      if (e.target.closest('.fc-btn')) return;
+      abrirModal(card);
+    });
+  });
+
+  modalMetros?.addEventListener('input', () => {
+    renderTotal(tarjetaActiva);
+  });
+
+  window.addEventListener('hilo-oficio:shipping-updated', () => {
+    const envioGuardado = leerEnvioSeleccionado();
+    envioActivo = zonasEnvio.find((zona) => zona.nombre === envioGuardado?.nombre) || null;
+    if (tarjetaActiva) {
+      renderEnvios();
+      renderTotal(tarjetaActiva);
+    }
+  });
+  
+  // Cerrar con botón X
+  modalClose?.addEventListener('click', cerrarModal);
+  
+  // Cerrar al hacer click fuera de la imagen
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) cerrarModal();
+  });
+
+  modalDialog?.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+  
+  // Cerrar con Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      cerrarModal();
+    }
+  });
+})();

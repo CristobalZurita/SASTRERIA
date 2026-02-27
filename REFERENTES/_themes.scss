@@ -1,0 +1,684 @@
+// =============================================================================
+// ABSTRACTS / THEMES  ← ARCHIVO NUEVO
+// Sobreescribe los CSS Custom Properties por tema.
+//
+// TEMAS:
+//   original    → sin clase en body  (default, cálido tierra)
+//   noche       → body.theme--noche  (oscuro carbón / crema / carmín)
+//   esmeralda   → body.theme--esmeralda  (bosque verde / marfil / champán)
+//
+// CÓMO AGREGAR UN TEMA NUEVO:
+//   1. Añadir entrada al mapa $themes abajo
+//   2. Compilar → se genera body.theme--nombre { ... } automáticamente
+// =============================================================================
+
+
+// ─── MAPA DE TEMAS ───────────────────────────────────────────────────────────
+//
+// Cada tema sobreescribe SOLO los tokens que cambian.
+// Los que no aparezcan heredan del :root (tema original).
+
+$themes: (
+
+  // ── NOCHE ─────────────────────────────────────────────────────────────────
+  // Inspiración: Bulls / Heat — carbón profundo, carmín, crema cálida.
+  // Para elegancia nocturna y colecciones de temporada oscura.
+  'noche': (
+    'clr-bg'          : #13100E,
+    'clr-surface'     : #1E1A17,
+    'clr-surface-alt' : #231F1B,
+    'clr-heading'     : #F0E8DC,
+    'clr-body'        : #C8B9A5,
+    'clr-muted'       : #8A7A6E,
+    'clr-p'           : #A89080,
+    'clr-primary'     : #F0E8DC,
+    'clr-accent'      : #B52828,
+    'clr-accent-dark' : #8C1A1A,
+    'clr-gold'        : #C8902A,
+    'clr-gold-lt'     : #D4A97A,
+    'clr-border'      : #2E2824,
+    'clr-border-lt'   : #3A3430,
+    'clr-dark-bg'     : #0D0B09,
+    'clr-success'     : #4A7A56,
+    'clr-error'       : #B52828,
+    'clr-info'        : #C8902A,
+    'clr-nav-bg'      : rgba(19, 16, 14, 0.95),
+    'clr-nav-scrolled': rgba(19, 16, 14, 0.99),
+  ),
+
+  // ── ESMERALDA ─────────────────────────────────────────────────────────────
+  // Inspiración: Celtics — verde bosque profundo, marfil, champán dorado.
+  // Para una estética más fresca, natural y sofisticada.
+  'esmeralda': (
+    'clr-bg'          : #EEF3EE,
+    'clr-surface'     : #F8FBF8,
+    'clr-surface-alt' : #F2F7F2,
+    'clr-heading'     : #163324,
+    'clr-body'        : #2E5040,
+    'clr-muted'       : #5A7A65,
+    'clr-p'           : #4A6E58,
+    'clr-primary'     : #163324,
+    'clr-accent'      : #C8A84B,
+    'clr-accent-dark' : #A88832,
+    'clr-gold'        : #C8A84B,
+    'clr-gold-lt'     : #DFC87C,
+    'clr-border'      : #C0D4C4,
+    'clr-border-lt'   : #D4E5D8,
+    'clr-dark-bg'     : #163324,
+    'clr-success'     : #2E5040,
+    'clr-error'       : #A84848,
+    'clr-info'        : #C8A84B,
+    'clr-nav-bg'      : rgba(238, 243, 238, 0.94),
+    'clr-nav-scrolled': rgba(238, 243, 238, 0.98),
+  ),
+
+);
+
+
+// ─── GENERADOR AUTOMÁTICO ────────────────────────────────────────────────────
+// Itera el mapa y emite body.theme--{nombre} { --token: valor; ... }
+
+@each $name, $tokens in $themes {
+  body.theme--#{$name} {
+    @each $token, $value in $tokens {
+      --#{$token}: #{$value};
+    }
+  }
+}
+
+
+// =============================================================================
+// APLICACIÓN DE TOKENS A ELEMENTOS
+// Usa var(--clr-*) para que los temas funcionen sin recompilar.
+// =============================================================================
+
+// ─── TRANSICIÓN GLOBAL AL CAMBIAR TEMA ───────────────────────────────────────
+body {
+  background-color : var(--clr-bg);
+  color            : var(--clr-body);
+  transition       : var(--theme-transition);
+}
+
+// Aplica transición suave a los componentes más visibles
+nav,
+.form-inner,
+.card,
+.skin-cta-box,
+.banner-box,
+footer,
+.hero,
+.sec,
+.modal-overlay,
+.toast,
+.btn {
+  transition: var(--theme-transition);
+}
+
+
+// ─── TIPOGRAFÍA ──────────────────────────────────────────────────────────────
+h1, h2, h3, h4 {
+  color: var(--clr-heading);
+}
+
+h5 {
+  color: var(--clr-heading);
+}
+
+p {
+  color: var(--clr-p);
+}
+
+.eyebrow {
+  color: var(--clr-accent);
+}
+
+strong {
+  color: var(--clr-body);
+}
+
+
+// ─── NAVBAR ──────────────────────────────────────────────────────────────────
+.nav {
+  background     : var(--clr-nav-bg);
+  border-bottom  : 2px solid rgba(0,0,0,0.08);
+
+  &--scrolled {
+    background: var(--clr-nav-scrolled);
+  }
+}
+
+.nav__logo-mark {
+  background: var(--clr-primary);
+  color      : var(--clr-accent);
+}
+
+.nav__logo-text strong {
+  color: var(--clr-primary);
+}
+
+.nav__logo-text small,
+.nav__link {
+  color: var(--clr-muted);
+}
+
+.nav__link:hover {
+  color: var(--clr-primary);
+}
+
+.nav__link::after {
+  background: var(--clr-accent);
+}
+
+.nav__burger span {
+  background: var(--clr-primary);
+}
+
+.nav__drawer {
+  background: var(--clr-surface);
+}
+
+.nav__drawer a {
+  color: var(--clr-heading);
+
+  &:hover { color: var(--clr-accent); }
+}
+
+.nav__btn--ghost {
+  color: var(--clr-primary);
+
+  &:hover {
+    background: rgba(0,0,0,0.06);
+  }
+}
+
+.nav__btn--fill {
+  background  : var(--clr-accent);
+  box-shadow  : 0 4px 14px rgba(0,0,0,0.18);
+
+  &:hover {
+    background: var(--clr-accent-dark);
+  }
+}
+
+#cart {
+  color: var(--clr-primary);
+}
+
+
+// ─── HERO ────────────────────────────────────────────────────────────────────
+.hero {
+  // El hero__split usa un gradiente del primary al bg
+  &__split {
+    background: linear-gradient(135deg,
+      var(--clr-surface-alt) 0%,
+      var(--clr-bg)          100%);
+  }
+}
+
+.hero__title em {
+  color: var(--clr-accent);
+}
+
+.hero__desc {
+  color: var(--clr-muted);
+}
+
+.hero__kpi strong {
+  color: var(--clr-primary);
+}
+
+.hero__kpi span {
+  color: var(--clr-muted);
+}
+
+.hero__kpi-sep {
+  background: var(--clr-border);
+}
+
+.hero__dot {
+  background: var(--clr-accent);
+}
+
+
+// ─── SECCIONES ───────────────────────────────────────────────────────────────
+.sec--light {
+  background: var(--clr-surface-alt);
+}
+
+.sec--dark {
+  background: var(--clr-dark-bg);
+
+  .sec-head h2,
+  .sec-head h3 {
+    color: var(--clr-surface);
+  }
+
+  .sec-head p {
+    color: rgba(255,255,255,0.6);
+  }
+
+  .eyebrow {
+    color: var(--clr-gold-lt);
+  }
+}
+
+
+// ─── BOTONES ─────────────────────────────────────────────────────────────────
+.btn--terra,
+.btn--primary {
+  background : var(--clr-accent);
+  color      : #fff;
+
+  &:hover {
+    background: var(--clr-accent-dark);
+  }
+}
+
+.btn--indigo {
+  background: var(--clr-primary);
+  color     : #fff;
+}
+
+.btn--mustard {
+  background : var(--clr-gold);
+  color      : #fff;
+}
+
+.btn--outline {
+  border-color : var(--clr-primary);
+  color        : var(--clr-primary);
+
+  &:hover {
+    background  : var(--clr-primary);
+    color       : var(--clr-surface);
+  }
+}
+
+.btn--outline-lt {
+  border-color : rgba(255,255,255,0.55);
+  color        : #fff;
+
+  &:hover {
+    background  : #fff;
+    color       : var(--clr-primary);
+  }
+}
+
+
+// ─── CARDS ───────────────────────────────────────────────────────────────────
+.card,
+.how-card,
+.sc-card,
+.swatch-card {
+  background   : var(--clr-surface);
+  border       : 1px solid var(--clr-border);
+}
+
+.card__badge {
+  background: var(--clr-surface-alt);
+  color     : var(--clr-accent);
+}
+
+
+// ─── FORMULARIO / FORM-INNER ─────────────────────────────────────────────────
+.form-inner {
+  background   : var(--clr-surface);
+  border-color : var(--clr-border);
+}
+
+.form-bg {
+  background-color: var(--clr-bg);
+}
+
+.fgroup label {
+  color: var(--clr-body);
+}
+
+.fgroup input,
+.fgroup select,
+.fgroup textarea {
+  background   : var(--clr-surface);
+  border-color : var(--clr-border);
+  color        : var(--clr-body);
+
+  &:focus {
+    border-color: var(--clr-accent);
+    box-shadow  : 0 0 0 3px rgba(0,0,0,0.06);
+  }
+
+  &.is-invalid {
+    border-color: var(--clr-error);
+  }
+}
+
+.group-err {
+  color: var(--clr-error);
+}
+
+.divider {
+  color: var(--clr-muted);
+
+  &::before,
+  &::after {
+    background: var(--clr-border-lt);
+  }
+}
+
+
+// ─── STEPPER ─────────────────────────────────────────────────────────────────
+.flow-tabs {
+  background: var(--clr-surface-alt);
+}
+
+.flow-tabs__btn {
+  color: var(--clr-muted);
+
+  &.is-active {
+    background : var(--clr-surface);
+    color      : var(--clr-primary);
+    box-shadow : 0 2px 8px rgba(0,0,0,0.08);
+  }
+}
+
+.stepper__step-dot {
+  background   : var(--clr-border);
+  border-color : var(--clr-border);
+
+  &.done,
+  &.active {
+    background  : var(--clr-accent);
+    border-color: var(--clr-accent);
+    color       : #fff;
+  }
+}
+
+.step-nav .btn--indigo {
+  background: var(--clr-accent);
+}
+
+
+// ─── BANNERS / CTA ───────────────────────────────────────────────────────────
+.skin-cta-box {
+  background: var(--clr-dark-bg);
+}
+
+.banner-box {
+  background: var(--clr-accent);
+}
+
+
+// ─── FOOTER ──────────────────────────────────────────────────────────────────
+.footer {
+  background   : var(--clr-dark-bg);
+  border-top   : 1px solid rgba(255,255,255,0.06);
+}
+
+.footer-name {
+  color: var(--clr-surface);
+}
+
+.footer p,
+.footer li a {
+  color: rgba(255,255,255,0.55);
+
+  &:hover { color: var(--clr-gold); }
+}
+
+.footer h5 {
+  color: var(--clr-surface);
+}
+
+.f-badge {
+  background : rgba(255,255,255,0.08);
+  color      : rgba(255,255,255,0.7);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.f-socials a {
+  color: rgba(255,255,255,0.5);
+
+  &:hover { color: var(--clr-gold); }
+}
+
+
+// ─── THEME SWITCHER (en footer) ──────────────────────────────────────────────
+.theme-switcher {
+  display        : flex;
+  align-items    : center;
+  gap            : 0.5rem;
+  flex-wrap      : wrap;
+  justify-content: center;
+  padding        : 1rem 0 0.5rem;
+}
+
+.theme-switcher__label {
+  font-family  : $font-mono;
+  font-size    : 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color        : rgba(255,255,255,0.4);
+  margin-right : 0.25rem;
+}
+
+.theme-chip {
+  appearance  : none;
+  border      : 2px solid transparent;
+  border-radius: $radius-pill;
+  cursor      : pointer;
+  font-family  : $font-sans;
+  font-size   : 0.75rem;
+  font-weight : 600;
+  letter-spacing: 0.04em;
+  padding     : 0.3rem 0.9rem;
+  transition  : all $transition-base;
+  outline     : none;
+
+  &:focus-visible {
+    outline       : 2px solid var(--clr-accent);
+    outline-offset: 3px;
+  }
+
+  // Tema: Original
+  &[data-theme="original"] {
+    background   : rgba(255,255,255,0.1);
+    color        : rgba(255,255,255,0.65);
+    border-color : rgba(255,255,255,0.15);
+
+    &:hover, &.is-active {
+      background  : rgba(255,255,255,0.2);
+      color       : #fff;
+      border-color: rgba(255,255,255,0.55);
+    }
+  }
+
+  // Tema: Noche
+  &[data-theme="noche"] {
+    background  : #13100E;
+    color       : #C8B9A5;
+    border-color: #3A3430;
+
+    &:hover { border-color: #C8902A; }
+    &.is-active {
+      border-color: #C8902A;
+      box-shadow  : 0 0 0 2px rgba(200,144,42,0.35);
+      color       : #F0E8DC;
+    }
+  }
+
+  // Tema: Esmeralda
+  &[data-theme="esmeralda"] {
+    background  : #163324;
+    color       : #C8A84B;
+    border-color: #2E5040;
+
+    &:hover { border-color: #C8A84B; }
+    &.is-active {
+      border-color: #C8A84B;
+      box-shadow  : 0 0 0 2px rgba(200,168,75,0.35);
+      color       : #F8FBF8;
+    }
+  }
+}
+
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+.toast {
+  background: var(--clr-primary);
+  color     : var(--clr-surface);
+}
+
+.toast--ok  { border-left: 3px solid var(--clr-success); }
+.toast--err { border-left: 3px solid var(--clr-error);   }
+.toast--inf { border-left: 3px solid var(--clr-gold);    }
+
+
+// ─── CARRITO ─────────────────────────────────────────────────────────────────
+.cart-drawer {
+  background  : var(--clr-surface);
+  border-left : 1px solid var(--clr-border);
+}
+
+.cart-header {
+  border-bottom: 1px solid var(--clr-border);
+
+  h3 { color: var(--clr-body); }
+
+  button { color: var(--clr-accent); }
+}
+
+.cart-overlay {
+  background: rgba(0,0,0,0.5);
+}
+
+
+// ─── MODAL EQUIPOS ───────────────────────────────────────────────────────────
+.modal-overlay {
+  background: rgba(0,0,0,0.55);
+}
+
+.modal-box {
+  background   : var(--clr-surface);
+  border       : 1px solid var(--clr-border);
+}
+
+
+// ─── SCROLL TOP ──────────────────────────────────────────────────────────────
+.scroll-top {
+  background: var(--clr-primary);
+  color     : #fff;
+
+  &:hover { background: var(--clr-accent); }
+}
+
+
+// ─── FILTROS (catálogo) ───────────────────────────────────────────────────────
+.cf-btn,
+.sec-catalog__filter-btn {
+  border-color : rgba(255,255,255,0.2);
+  color        : rgba(255,255,255,0.66);
+
+  &.active, &:hover {
+    background  : var(--clr-accent);
+    border-color: var(--clr-accent);
+  }
+}
+
+
+// ─── TEMA NOCHE: ajustes especiales ──────────────────────────────────────────
+// En el tema oscuro algunos detalles necesitan ajuste fino
+// que va más allá de cambiar CSS vars.
+
+body.theme--noche {
+
+  // Hero: el fondo del split se adapta al oscuro
+  .hero {
+    background-color: var(--clr-bg);
+  }
+
+  // Swatches de tela: borde sutil
+  .hero__swatch {
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.06),
+                0 24px 64px rgba(0,0,0,0.45);
+  }
+
+  // Nav drawer bg
+  .nav__drawer {
+    background: var(--clr-surface);
+  }
+
+  // Form background
+  .form-bg {
+    background-color: var(--clr-bg);
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 4px,
+      rgba(255,255,255,0.02) 4px, rgba(255,255,255,0.02) 5px
+    ), repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 9px,
+      rgba(255,255,255,0.01) 9px, rgba(255,255,255,0.01) 10px
+    );
+  }
+
+  // Cards con más contraste
+  .card,
+  .how-card,
+  .sc-card {
+    box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+  }
+
+  // Stepper lines
+  .stepper__line {
+    background: var(--clr-border);
+  }
+}
+
+
+// ─── TEMA ESMERALDA: ajustes especiales ──────────────────────────────────────
+
+body.theme--esmeralda {
+
+  // Hero: tono más fresco
+  .hero {
+    background-color: var(--clr-bg);
+  }
+
+  // Acento eyebrow
+  .eyebrow {
+    color: var(--clr-accent);
+  }
+
+  // Dark sections → verde bosque
+  .sec--dark {
+    background: var(--clr-dark-bg);
+  }
+
+  // Form background más limpia
+  .form-bg {
+    background-color: var(--clr-bg);
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 4px,
+      rgba(46,80,64,0.03) 4px, rgba(46,80,64,0.03) 5px
+    ), repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 9px,
+      rgba(46,80,64,0.02) 9px, rgba(46,80,64,0.02) 10px
+    );
+  }
+
+  // Banner: fondo dorado en vez de terracota
+  .banner-box {
+    background: linear-gradient(135deg, #1A3D2B 0%, #163324 100%);
+
+    h2 { color: var(--clr-gold); }
+  }
+
+  // CTA box
+  .skin-cta-box {
+    background: linear-gradient(135deg, #163324 0%, #1A3D2B 100%);
+  }
+}

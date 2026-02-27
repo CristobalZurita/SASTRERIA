@@ -1,0 +1,23 @@
+{
+  "name": "sastreria",
+  "version": "1.0.0",
+  "description": "> Conectamos a clientes con los mejores sastres artesanales de Chile, desde Arica hasta Punta Arenas.",
+  "main": "playwright_test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CristobalZurita/SASTRERIA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CristobalZurita/SASTRERIA/issues"
+  },
+  "homepage": "https://github.com/CristobalZurita/SASTRERIA#readme",
+  "dependencies": {
+    "playwright": "^1.58.2"
+  }
+}
