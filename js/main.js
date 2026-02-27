@@ -69,6 +69,54 @@
   // Al hacer clic, cierra el carrito.
 
   const cartClose = document.getElementById("cart-close");
+
+  // ========================================
+  // ---- Lógica del Carrito de Compras ----
+  // ========================================
+  let carritoItems = [];
+
+  function agregarAlCarrito(boton) {
+    const tarjeta = boton.closest(".fabric-card");
+    if (!tarjeta) return;
+    const id = tarjeta.dataset.id;
+    const nombre = tarjeta.dataset.name;
+    const precio = Number(tarjeta.dataset.price);
+    if (!id || !nombre || isNaN(precio)) return;
+    const yaExiste = carritoItems.some(item => item.id === id);
+    if (yaExiste) { showToast("Este producto ya está en el carrito", "inf"); return; }
+    carritoItems.push({ id, nombre, precio });
+    actualizarCarrito();
+    showToast(nombre + " añadido al carrito", "ok");
+  }
+
+  function actualizarCarrito() {
+    const contador = document.getElementById("cart-count");
+    if (contador) contador.textContent = carritoItems.length;
+    const container = document.getElementById("cart-items");
+    if (!container) return;
+    if (carritoItems.length === 0) {
+      container.innerHTML = "<p class=\"cart-empty\">Tu carrito está vacío.</p>";
+      return;
+    }
+    let html = "";
+    const resultado = calcularTotalCarrito(carritoItems);
+    carritoItems.forEach((item, index) => {
+      html += `<div class=\"cart-item\"><span>${item.nombre}</span><span>$${item.precio}</span><button class=\"cart-item-remove\" onclick=\"removerDelCarrito(${index})\">✕</button></div>`;
+    });
+    html += `<div class=\"cart-summary\"><p><strong>Total: $${resultado.precioFinal} CLP</strong></p></div>`;
+    container.innerHTML = html;
+  }
+
+  function removerDelCarrito(index) {
+    if (index >= 0 && index < carritoItems.length) {
+      const item = carritoItems[index];
+      carritoItems.splice(index, 1);
+      actualizarCarrito();
+    }
+  }
+  window.removerDelCarrito = removerDelCarrito;
+
+  function realizarPedido(items) { console.log("Pedido:", items); }
   // Botón ✕ dentro del carrito para cerrarlo.
 
   // ========================================
