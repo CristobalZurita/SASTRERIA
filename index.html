@@ -619,10 +619,13 @@
       <button class="cf-btn sec-catalog__filter-btn" data-filter="premium">Premium</button>
     </div>
 
-    <div class="cat-grid">
+    <div class="cat-carousel fade-up" id="catalogo-carousel">
+      <button class="cat-carousel__arrow cat-carousel__arrow--prev" type="button" aria-label="Ver telas anteriores" data-cat-nav="prev">←</button>
+      <div class="cat-carousel__viewport" tabindex="0" aria-label="Carrusel del catálogo de telas">
+        <div class="cat-grid">
 
       <!-- ====== Tarjeta: Lino ====== -->
-      <div class="fabric-card fade-up delay-1" data-type="natural" data-id="lino" data-name="Lino Premium" data-price="4200" data-image="assets/images/linoAmarillo01.webp">
+      <div class="fabric-card fade-up delay-1" data-type="natural" data-id="lino" data-name="Lino Premium" data-price="4200" data-image="assets/images/linoAmarillo01.webp" data-material="100% lino belga" data-width="150 cm" data-weight="185 g/m²" data-finish="Lavado enzimático con textura aireada" data-use="Trajes livianos, blazers desestructurados y vestidos de verano" data-lead="Lino de tono natural con trama visible y caída fresca para sastrería ligera.">
       <!-- data-id: Identificador único de la tela (usado por JS para el carrito).
            data-name: Nombre para mostrar en el carrito.
            data-price: Precio por metro (número). -->
@@ -654,7 +657,7 @@
       </div>
 
       <!-- ====== Tarjeta: Seda ====== -->
-      <div class="fabric-card fade-up delay-2" data-type="premium" data-id="seda" data-name="Seda Natural" data-price="12800" data-image="assets/images/sedaAzul.webp">
+      <div class="fabric-card fade-up delay-2" data-type="premium" data-id="seda" data-name="Seda Natural" data-price="12800" data-image="assets/images/sedaAzul.webp" data-material="100% seda natural" data-width="140 cm" data-weight="120 g/m²" data-finish="Superficie satinada con brillo suave" data-use="Blusas premium, vestidos de fiesta y forrería fina" data-lead="Seda azul de brillo controlado, pensada para prendas con movimiento elegante y terminación de lujo.">
       <!-- data-id, data-name, data-price: Attributes para el carrito de compras. -->
       <!-- Solo visible con filtro "Premium" o "Todos". -->
         <div class="fc-wrap">
@@ -673,7 +676,7 @@
       </div>
 
       <!-- ====== Tarjeta: Algodón ====== -->
-      <div class="fabric-card fade-up delay-3" data-type="natural" data-id="algodon" data-name="Algodón Popelín" data-price="2800" data-image="assets/images/blue-cotton-textures.webp">
+      <div class="fabric-card fade-up delay-3" data-type="natural" data-id="algodon" data-name="Algodón Popelín" data-price="2800" data-image="assets/images/blue-cotton-textures.webp" data-material="100% algodón peinado" data-width="148 cm" data-weight="140 g/m²" data-finish="Tejido firme, respirable y de tacto suave" data-use="Camisería, uniformes livianos y prendas casuales" data-lead="Popelín azul con textura pareja y estructura limpia para prendas de uso diario o corporativo.">
       <!-- data-id: Identificador para el carrito.
            data-name: Nombre para mostrar.
            data-price: Precio por metro. -->
@@ -693,7 +696,7 @@
       </div>
 
       <!-- ====== Tarjeta: Gabardina ====== -->
-      <div class="fabric-card fade-up delay-4" data-type="mezcla" data-id="gabardina" data-name="Gabardina Navy" data-price="3500" data-image="assets/images/Gabardina01.webp">
+      <div class="fabric-card fade-up delay-4" data-type="mezcla" data-id="gabardina" data-name="Gabardina Navy" data-price="3500" data-image="assets/images/Gabardina01.webp" data-material="Mezcla poliéster-viscosa" data-width="150 cm" data-weight="210 g/m²" data-finish="Sarga compacta con caída estructurada" data-use="Trajes, pantalones y chaquetas de trabajo" data-lead="Gabardina azul profunda de trazo diagonal, estable y resistente para sastrería de uso intensivo.">
       <!-- data-id, data-name, data-price: Attributes para el carrito de compras. -->
       <!-- data-type="mezcla": Solo visible con "Mezclas" o "Todos". -->
         <div class="fc-wrap">
@@ -711,7 +714,223 @@
         </div>
       </div>
 
-    </div><!-- /.cat-grid -->
+      <!-- ====== Nuevas tarjetas del catálogo real ====== -->
+      <div class="fabric-card fade-up" data-type="natural" data-id="lino-rojo-01" data-name="Lino Terracota Intenso" data-price="4200" data-image="assets/images/linoRojo01.webp" data-material="100% lino belga" data-width="150 cm" data-weight="185 g/m²" data-finish="Lavado enzimático con textura aireada" data-use="Blazers livianos, vestidos y pantalones frescos" data-lead="Versión terracota del lino de verano, con cuerpo medio y color cálido para piezas protagónicas.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/linoRojo01.webp" alt="Tela lino terracota para sastrería liviana" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--terracota"></div>
+          <div class="fc-stock">En stock</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Lino Terracota Intenso</div>
+          <div class="fc-type">Natural · 100% Lino belga</div>
+          <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="natural" data-id="lino-rojo-02" data-name="Lino Cobre Reserva" data-price="4200" data-image="assets/images/linoRojo03.webp" data-material="100% lino belga" data-width="150 cm" data-weight="185 g/m²" data-finish="Textura visible con mano seca" data-use="Trajes livianos, faldas y prendas de editorial" data-lead="Lino cobrizo con lectura más profunda y acabado sobrio para confección con presencia.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/linoRojo03.webp" alt="Tela lino en tono cobrizo" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--terracota"></div>
+          <div class="fc-stock">En stock</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Lino Cobre Reserva</div>
+          <div class="fc-type">Natural · 100% Lino belga</div>
+          <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="natural" data-id="lino-blanco-invierno" data-name="Lino Blanco Invierno" data-price="4300" data-image="assets/images/linoBlancoinvierno.webp" data-material="100% lino belga" data-width="150 cm" data-weight="190 g/m²" data-finish="Trama cerrada con acabado mate" data-use="Camisas estructuradas, sets monocromos y alta costura casual" data-lead="Lino blanco crudo con una lectura más fría y limpia para colecciones neutras y elegantes.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/linoBlancoinvierno.webp" alt="Tela lino blanco invierno" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--sand"></div>
+          <div class="fc-stock">Edición tono</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Lino Blanco Invierno</div>
+          <div class="fc-type">Natural · 100% Lino belga</div>
+          <div class="fc-price"><strong>$4.300</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="natural" data-id="lino-ambar" data-name="Lino Ámbar Claro" data-price="4200" data-image="assets/images/linoAmarillo02.webp" data-material="100% lino belga" data-width="150 cm" data-weight="185 g/m²" data-finish="Lavado enzimático con fibra visible" data-use="Vestuario de verano, pantalones y blazers blandos" data-lead="Lino amarillo claro con tacto seco y visual cálida, pensado para colecciones solares.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/linoAmarillo02.webp" alt="Tela lino ámbar claro" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--mustard"></div>
+          <div class="fc-stock">En stock</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Lino Ámbar Claro</div>
+          <div class="fc-type">Natural · 100% Lino belga</div>
+          <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="natural" data-id="lino-maiz" data-name="Lino Maíz Dorado" data-price="4200" data-image="assets/images/linoAmarillo03.webp" data-material="100% lino belga" data-width="150 cm" data-weight="185 g/m²" data-finish="Textura suave con carácter orgánico" data-use="Conjuntos relajados, vestidos y prendas editoriales" data-lead="Variante dorada del lino clásico, con saturación más alta y presencia luminosa en vitrina.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/linoAmarillo03.webp" alt="Tela lino maíz dorado" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--mustard"></div>
+          <div class="fc-stock">Nuevo color</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Lino Maíz Dorado</div>
+          <div class="fc-type">Natural · 100% Lino belga</div>
+          <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="natural" data-id="lino-verde-01" data-name="Lino Verde Salvia" data-price="4200" data-image="assets/images/linoVerde01.webp" data-material="100% lino belga" data-width="150 cm" data-weight="185 g/m²" data-finish="Lavado suave con relieve orgánico" data-use="Trajes relajados, prendas eco y colecciones naturales" data-lead="Lino verde salvia con lectura suave y sofisticada, ideal para líneas sostenibles.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/linoVerde01.webp" alt="Tela lino verde salvia" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--sage"></div>
+          <div class="fc-stock">En stock</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Lino Verde Salvia</div>
+          <div class="fc-type">Natural · 100% Lino belga</div>
+          <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="natural" data-id="lino-verde-02" data-name="Lino Verde Bosque" data-price="4200" data-image="assets/images/linoVerde02.webp" data-material="100% lino belga" data-width="150 cm" data-weight="185 g/m²" data-finish="Textura visible con caída media" data-use="Pantalones, chaquetas blandas y cápsulas de temporada" data-lead="Versión verde bosque con mayor profundidad visual para confección de media estación.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/linoVerde02.webp" alt="Tela lino verde bosque" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--sage"></div>
+          <div class="fc-stock">En stock</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Lino Verde Bosque</div>
+          <div class="fc-type">Natural · 100% Lino belga</div>
+          <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="natural" data-id="lino-verde-03" data-name="Lino Verde Musgo" data-price="4200" data-image="assets/images/linoVerde03.webp" data-material="100% lino belga" data-width="150 cm" data-weight="185 g/m²" data-finish="Trama orgánica con acabado mate" data-use="Prendas casuales premium y sastrería relajada" data-lead="Lino verde musgo de carácter terroso, útil para colecciones neutras y masculinas.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/linoVerde03.webp" alt="Tela lino verde musgo" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--sage"></div>
+          <div class="fc-stock">En stock</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Lino Verde Musgo</div>
+          <div class="fc-type">Natural · 100% Lino belga</div>
+          <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="premium" data-id="seda-roja" data-name="Seda Carmesí Atelier" data-price="12800" data-image="assets/images/sedaRoja.webp" data-material="100% seda natural" data-width="140 cm" data-weight="120 g/m²" data-finish="Brillo satinado con tacto sedoso" data-use="Vestidos de noche, forrería fina y piezas de ceremonia" data-lead="Seda roja de alta saturación para prendas de gala con movimiento y brillo controlado.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/sedaRoja.webp" alt="Tela seda roja de atelier" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--terracota"></div>
+          <div class="fc-stock">Premium</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Seda Carmesí Atelier</div>
+          <div class="fc-type">Premium · 100% Seda</div>
+          <div class="fc-price"><strong>$12.800</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="premium" data-id="seda-verde" data-name="Seda Verde Esmeralda" data-price="12800" data-image="assets/images/sedaVerde.webp" data-material="100% seda natural" data-width="140 cm" data-weight="120 g/m²" data-finish="Superficie satinada con brillo suave" data-use="Blusas premium, vestidos de fiesta y acentos editoriales" data-lead="Seda esmeralda con reflejo limpio y mano fluida para siluetas de alto impacto.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/sedaVerde.webp" alt="Tela seda verde esmeralda" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--sage"></div>
+          <div class="fc-stock">Premium</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Seda Verde Esmeralda</div>
+          <div class="fc-type">Premium · 100% Seda</div>
+          <div class="fc-price"><strong>$12.800</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="premium" data-id="seda-amarilla" data-name="Seda Mostaza Luz" data-price="12800" data-image="assets/images/sedaAmarilla.webp" data-material="100% seda natural" data-width="140 cm" data-weight="120 g/m²" data-finish="Brillo fino con caída fluida" data-use="Vestidos de ocasión, blusas y piezas de color protagonista" data-lead="Seda amarilla con brillo delicado para colecciones vibrantes y confección sofisticada.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/sedaAmarilla.webp" alt="Tela seda mostaza" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--mustard"></div>
+          <div class="fc-stock">Premium</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Seda Mostaza Luz</div>
+          <div class="fc-type">Premium · 100% Seda</div>
+          <div class="fc-price"><strong>$12.800</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="mezcla" data-id="gabardina-grafito" data-name="Gabardina Grafito" data-price="3500" data-image="assets/images/Gabardina02.webp" data-material="Mezcla poliéster-viscosa" data-width="150 cm" data-weight="210 g/m²" data-finish="Sarga compacta de alta resistencia" data-use="Chaquetas, trajes de oficina y pantalonería" data-lead="Gabardina grafito con trama cerrada y perfil sobrio para sastrería formal y uniforme.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/Gabardina02.webp" alt="Tela gabardina grafito" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--navy"></div>
+          <div class="fc-stock">En stock</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Gabardina Grafito</div>
+          <div class="fc-type">Mezcla · Poliéster-Viscosa</div>
+          <div class="fc-price"><strong>$3.500</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="mezcla" data-id="gabardina-azul-hondo" data-name="Gabardina Azul Hondo" data-price="3500" data-image="assets/images/Gabardina03.webp" data-material="Mezcla poliéster-viscosa" data-width="150 cm" data-weight="210 g/m²" data-finish="Sarga compacta con caída estable" data-use="Sastrería clásica, uniformes y faldas estructuradas" data-lead="Gabardina azul de profundidad alta y textura firme para prendas que necesitan sostén.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/Gabardina03.webp" alt="Tela gabardina azul hondo" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--navy"></div>
+          <div class="fc-stock">En stock</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Gabardina Azul Hondo</div>
+          <div class="fc-type">Mezcla · Poliéster-Viscosa</div>
+          <div class="fc-price"><strong>$3.500</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="sintetico" data-id="textil-urbano" data-name="Textil Urbano Azul" data-price="3100" data-image="assets/images/blue-textile-texture.webp" data-material="100% microfibra técnica" data-width="150 cm" data-weight="165 g/m²" data-finish="Tejido resistente de secado rápido" data-use="Uniformes, chaquetas livianas y piezas de alto tránsito" data-lead="Textil azul de comportamiento estable y resistencia alta para confección funcional.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/blue-textile-texture.webp" alt="Textil azul de microfibra técnica" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--algodon"></div>
+          <div class="fc-stock">Sintético</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Textil Urbano Azul</div>
+          <div class="fc-type">Sintético · Microfibra técnica</div>
+          <div class="fc-price"><strong>$3.100</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+      <div class="fabric-card fade-up" data-type="natural" data-id="lino-granada" data-name="Lino Granada Texturado" data-price="4200" data-image="assets/images/linoRojo0.webp" data-material="100% lino belga" data-width="150 cm" data-weight="185 g/m²" data-finish="Textura orgánica con color profundo" data-use="Vestuario editorial, blazers y piezas con foco cromático" data-lead="Lino granada con lectura rica y tacto seco para colecciones con carácter.">
+        <div class="fc-wrap">
+          <img class="fc-img" src="assets/images/linoRojo0.webp" alt="Tela lino granada texturado" loading="lazy" decoding="async"/>
+          <div class="fc-dot fc-dot--terracota"></div>
+          <div class="fc-stock">Nuevo color</div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-name">Lino Granada Texturado</div>
+          <div class="fc-type">Natural · 100% Lino belga</div>
+          <div class="fc-price"><strong>$4.200</strong><span>/ metro</span></div>
+          <button class="fc-btn">Añadir al carro</button>
+        </div>
+      </div>
+
+
+
+        </div><!-- /.cat-grid -->
+      </div><!-- /.cat-carousel__viewport -->
+      <button class="cat-carousel__arrow cat-carousel__arrow--next" type="button" aria-label="Ver siguientes telas" data-cat-nav="next">→</button>
+    </div><!-- /.cat-carousel -->
   </div><!-- /.wrap -->
 </section>
 
@@ -827,10 +1046,64 @@
     <div class="text-center mt-5 fade-up">
     <!-- text-center: Bootstrap → text-align:center.
          mt-5: Bootstrap → margin-top grande (3rem). -->
-      <a href="#formularios" class="btn btn--outline btn--lg">Ver todos los sastres →</a>
+      <button type="button" class="btn btn--outline btn--lg" data-bs-toggle="modal" data-bs-target="#modal-sastres-directorio">
+        Ver todos los sastres →
+      </button>
     </div>
   </div><!-- /.wrap -->
 </section>
+
+
+<!-- ═══════════════════════════
+     POPUP DIRECTORIO DE SASTRES
+═════════════════════════════ -->
+<div class="modal fade modal-sastres" id="modal-sastres-directorio" tabindex="-1" aria-labelledby="modal-sastres-titulo" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content modal-sastres__content">
+      <div class="modal-header modal-sastres__header">
+        <div>
+          <p class="modal-sastres__eyebrow mb-2">Directorio nacional · Referencias ficticias</p>
+          <h3 class="modal-title" id="modal-sastres-titulo">Sastres disponibles en Chile</h3>
+          <p class="modal-sastres__lead mb-0" id="sastres-directorio-note">
+            Selecciona una fila para ver una referencia rápida del sastre.
+          </p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body modal-sastres__body">
+        <div class="modal-sastres__summary">
+          <div class="modal-sastres__summary-copy">
+            <strong>Listado rápido tipo planilla</strong>
+            <span>10 perfiles ficticios con cobertura de Arica a Punta Arenas.</span>
+          </div>
+          <span class="badge text-bg-warning modal-sastres__count" id="sastres-directorio-count">0 registros</span>
+        </div>
+
+        <div class="table-responsive modal-sastres__sheet">
+          <table class="table table-hover table-sm align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Especialidad</th>
+                <th scope="col">Región</th>
+                <th scope="col">Dirección</th>
+                <th scope="col">Teléfono</th>
+                <th scope="col">Referencia</th>
+              </tr>
+            </thead>
+            <tbody id="sastres-directorio-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer modal-sastres__footer">
+        <a href="#formularios" class="btn btn--terra">Ir a conectar un sastre</a>
+        <button type="button" class="btn btn--outline" data-bs-dismiss="modal">Cerrar listado</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -1705,13 +1978,52 @@
      MODAL GALERÍA TELAS
 ══════════════════════════════ -->
 <div class="modal-galeria" id="modal-galeria">
-  <button class="modal-galeria__close" id="modal-galeria-close">✕</button>
-  <div class="modal-galeria__content">
-    <img src="" alt="Detalle de tela" id="modal-galeria-img">
-  </div>
-  <div class="modal-galeria__info">
-    <h3 id="modal-galeria-titulo"></h3>
-    <p id="modal-galeria-tipo"></p>
+  <div class="modal-galeria__dialog" role="dialog" aria-modal="true" aria-labelledby="modal-galeria-titulo">
+    <button class="modal-galeria__close" id="modal-galeria-close">✕</button>
+    <div class="modal-galeria__layout">
+      <div class="modal-galeria__content">
+        <img src="" alt="Detalle de tela" id="modal-galeria-img">
+      </div>
+      <div class="modal-galeria__panel">
+        <div class="modal-galeria__head">
+          <p class="modal-galeria__eyebrow" id="modal-galeria-tipo"></p>
+          <h3 id="modal-galeria-titulo"></h3>
+          <p class="modal-galeria__lead" id="modal-galeria-lead"></p>
+        </div>
+
+        <div class="modal-galeria__pricebox">
+          <div class="modal-galeria__pricecopy">
+            <span>Precio por metro</span>
+            <strong id="modal-galeria-precio"></strong>
+          </div>
+          <label class="modal-galeria__meters" for="modal-galeria-metros">
+            <span>Metros</span>
+            <input type="number" id="modal-galeria-metros" min="1" step="1" value="1"/>
+          </label>
+          <div class="modal-galeria__total" id="modal-galeria-total"></div>
+        </div>
+
+        <div class="modal-galeria__section">
+          <h4>Material</h4>
+          <p id="modal-galeria-material"></p>
+        </div>
+
+        <div class="modal-galeria__section">
+          <h4>Ficha técnica</h4>
+          <div class="modal-galeria__specs" id="modal-galeria-ficha"></div>
+        </div>
+
+        <div class="modal-galeria__section">
+          <h4>Ofertas por cantidad</h4>
+          <div class="modal-galeria__offers" id="modal-galeria-ofertas"></div>
+        </div>
+
+        <div class="modal-galeria__section">
+          <h4>Costos de envío</h4>
+          <div class="modal-galeria__shipping" id="modal-galeria-envios"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

@@ -61,14 +61,15 @@ function aplicarDescuento(total) {
   // IIFE: encapsula la lógica y evita variables globales innecesarias.
 
   // ---- Precios base de las telas (en miles de CLP) ----
-  const preciosBase = {
-    // Precios por metro en miles de CLP (para que la función de descuento
-    // reciba números en rango $50-$200 usando cantidades normales de metros).
-    'lino': 4.2,    // $4.200 / metro
-    'seda': 12.8,   // $12.800 / metro
-    'algodon': 2.8,    // $2.800 / metro
-    'gabardina': 3.5,  // $3.500 / metro
-  };
+  const preciosBase = {};
+  // El catálogo visible es la fuente de verdad: extraemos precios por metro desde las tarjetas.
+  document.querySelectorAll('.fabric-card:not([data-carousel-clone])').forEach((card) => {
+    const id = card.dataset.id;
+    const precio = Number(card.dataset.price);
+
+    if (!id || isNaN(precio)) return;
+    preciosBase[id] = precio / 1000;
+  });
 
   // ---- Selección de elementos del DOM ----
   const inputMetros = document.getElementById('calc-metros');
@@ -163,4 +164,3 @@ function realizarPedido(pedido) {
 window.calcularTotalCarrito = calcularTotalCarrito;
 window.aplicarDescuento = aplicarDescuento;
 window.realizarPedido = realizarPedido;
-

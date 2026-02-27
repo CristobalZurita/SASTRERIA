@@ -201,17 +201,18 @@
     cartClose.addEventListener("click", cerrarCarrito);
     cartOverlay.addEventListener("click", cerrarCarrito);
 
-    // ---- Binding de botones 'Añadir al carro' ----
-    document.querySelectorAll('.fc-btn').forEach(boton => {
-      boton.addEventListener('click', () => {
-        try {
-          agregarAlCarrito(boton);
-          localStorage.setItem('carrito', JSON.stringify(carritoItems));
-          console.log('🛒 Carrito actualizado:', JSON.parse(localStorage.getItem('carrito')));
-        } catch (err) {
-          console.error('Error al añadir al carrito:', err);
-        }
-      });
+    // ---- Binding delegado de botones 'Añadir al carro' ----
+    document.addEventListener('click', (e) => {
+      const boton = e.target.closest('.fc-btn');
+      if (!boton) return;
+
+      try {
+        agregarAlCarrito(boton);
+        localStorage.setItem('carrito', JSON.stringify(carritoItems));
+        console.log('🛒 Carrito actualizado:', JSON.parse(localStorage.getItem('carrito')));
+      } catch (err) {
+        console.error('Error al añadir al carrito:', err);
+      }
     });
   }
 
@@ -278,9 +279,8 @@
   // Selecciona todos los botones de filtro (Todos, Naturales, Sintéticos, etc.).
   // Cada botón tiene data-filter="all|natural|sintetico|mezcla|premium".
 
-  const cards = document.querySelectorAll('.fabric-card');
-  // Selecciona todas las tarjetas de tela del catálogo.
-  // Cada card tiene data-type="natural|premium|mezcla|etc.".
+  const getCards = () => Array.from(document.querySelectorAll('.fabric-card'));
+  // El carrousel puede clonar tarjetas en los extremos; consultamos el DOM en tiempo real.
 
   btns.forEach(btn => btn.addEventListener('click', () => {
     // Para cada botón, agrega un listener de clic.
@@ -299,6 +299,8 @@
     // btn.dataset.filter es equivalente a btn.getAttribute('data-filter').
     // Ejemplo: si se clicó "Naturales", f = "natural".
 
+    const cards = getCards();
+
     cards.forEach(c => {
       // Itera sobre cada tarjeta del catálogo.
       const match = f === 'all' || c.dataset.type === f;
@@ -309,7 +311,179 @@
       // Si NO hay match: añade 'fabric-card--dimmed' (atenúa la card).
       // Si SÍ hay match: quita 'fabric-card--dimmed' (card visible y clara).
     });
+
+    const firstMatch = cards.find(c => !c.dataset.carouselClone && (f === 'all' || c.dataset.type === f));
+    firstMatch?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
   }));
+})();
+
+
+// ============================================================
+// 3.1 CATALOG CAROUSEL
+// Navegación horizontal del catálogo con flechas y teclado.
+// ============================================================
+(function initCatalogCarousel() {
+  const carousel = document.getElementById('catalogo-carousel');
+  if (!carousel) return;
+
+  const viewport = carousel.querySelector('.cat-carousel__viewport');
+  const track = carousel.querySelector('.cat-grid');
+  const prevBtn = carousel.querySelector('[data-cat-nav="prev"]');
+  const nextBtn = carousel.querySelector('[data-cat-nav="next"]');
+  const originals = Array.from(track?.querySelectorAll('.fabric-card') || []);
+
+  if (!viewport || !track || !prevBtn || !nextBtn || !originals.length) return;
+
+  let keyboardActive = false;
+  let loopTimer = null;
+  let isNormalizing = false;
+  let teleportTimer = null;
+
+  function buildLoopClones() {
+    if (originals.length <= 1) return { prepended: [], appended: [] };
+
+    const decorateClone = (card, side) => {
+      const clone = card.cloneNode(true);
+      clone.dataset.carouselClone = side;
+      clone.classList.remove('fade-up', 'delay-1', 'delay-2', 'delay-3', 'delay-4');
+      clone.classList.add('in');
+      return clone;
+    };
+
+    const prepended = originals.map(card => decorateClone(card, 'prepend'));
+    const appended = originals.map(card => decorateClone(card, 'append'));
+
+    prepended.slice().reverse().forEach(clone => track.insertBefore(clone, track.firstChild));
+    appended.forEach(clone => track.appendChild(clone));
+
+    return { prepended, appended };
+  }
+
+  const { prepended, appended } = buildLoopClones();
+
+  function stepSize() {
+    const firstCard = originals[0];
+    if (!firstCard) return viewport.clientWidth * 0.8;
+
+    const gap = parseFloat(window.getComputedStyle(track).gap || '0');
+    return firstCard.getBoundingClientRect().width + gap;
+  }
+
+  function cycleWidth() {
+    if (!appended.length || !originals.length) return 0;
+    return appended[0].offsetLeft - originals[0].offsetLeft;
+  }
+
+  function initialOffset() {
+    return originals[0]?.offsetLeft || 0;
+  }
+
+  function moveCarousel(direction) {
+    viewport.scrollBy({
+      left: direction * stepSize(),
+      behavior: 'smooth'
+    });
+  }
+
+  function applyTeleport(target) {
+    if (teleportTimer) clearTimeout(teleportTimer);
+
+    viewport.classList.add('cat-carousel__viewport--teleport');
+    viewport.scrollLeft = target;
+    updateArrows();
+
+    teleportTimer = window.setTimeout(() => {
+      viewport.classList.remove('cat-carousel__viewport--teleport');
+      teleportTimer = null;
+    }, 48);
+  }
+
+  function scheduleLoopNormalization() {
+    if (loopTimer) clearTimeout(loopTimer);
+    loopTimer = window.setTimeout(normalizeLoopPosition, 110);
+  }
+
+  function normalizeLoopPosition() {
+    if (isNormalizing || originals.length <= 1 || !prepended.length || !appended.length) return;
+
+    const start = initialOffset();
+    const end = appended[0].offsetLeft;
+    const cycle = cycleWidth();
+    const threshold = stepSize() * 0.45;
+
+    if (!cycle) return;
+
+    if (viewport.scrollLeft < start - threshold) {
+      isNormalizing = true;
+      applyTeleport(viewport.scrollLeft + cycle);
+      isNormalizing = false;
+      return;
+    }
+
+    if (viewport.scrollLeft >= end - threshold) {
+      isNormalizing = true;
+      applyTeleport(viewport.scrollLeft - cycle);
+      isNormalizing = false;
+    }
+  }
+
+  function updateArrows() {
+    const canScroll = viewport.scrollWidth - viewport.clientWidth > 2;
+    prevBtn.disabled = !canScroll;
+    nextBtn.disabled = !canScroll;
+  }
+
+  prevBtn.addEventListener('click', () => moveCarousel(-1));
+  nextBtn.addEventListener('click', () => moveCarousel(1));
+
+  viewport.addEventListener('scroll', () => {
+    updateArrows();
+    scheduleLoopNormalization();
+  }, { passive: true });
+
+  viewport.addEventListener('scrollend', normalizeLoopPosition);
+
+  window.addEventListener('resize', () => {
+    applyTeleport(initialOffset());
+    updateArrows();
+  }, { passive: true });
+
+  carousel.addEventListener('mouseenter', () => {
+    keyboardActive = true;
+  });
+
+  carousel.addEventListener('mouseleave', () => {
+    keyboardActive = false;
+  });
+
+  carousel.addEventListener('focusin', () => {
+    keyboardActive = true;
+  });
+
+  carousel.addEventListener('focusout', () => {
+    if (!carousel.contains(document.activeElement)) keyboardActive = false;
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const modalActiva = document.getElementById('modal-galeria')?.classList.contains('active');
+    if (!keyboardActive || modalActiva) return;
+
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      moveCarousel(-1);
+    }
+
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      moveCarousel(1);
+    }
+  });
+
+  viewport.scrollLeft = initialOffset();
+  requestAnimationFrame(() => {
+    applyTeleport(initialOffset());
+    updateArrows();
+  });
 })();
 
 
@@ -1087,6 +1261,82 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
 
 // ============================================================
+// 11.1 DIRECTORIO DE SASTRES
+// Popup tabular con listado ficticio nacional.
+// ============================================================
+(function initSastresDirectorio() {
+  const modal = document.getElementById('modal-sastres-directorio');
+  const body = document.getElementById('sastres-directorio-body');
+  const count = document.getElementById('sastres-directorio-count');
+  const note = document.getElementById('sastres-directorio-note');
+
+  if (!modal || !body || !count || !note) return;
+
+  const sastres = [
+    { nombre: 'Tomás Valdés', especialidad: 'Trajes clásicos', region: 'Arica y Parinacota', direccion: 'Pasaje Las Brisas 184, Arica', telefono: '+56 9 4312 1884', referencia: 'Frente al Mercado Artesanal' },
+    { nombre: 'Isidora Mena', especialidad: 'Vestidos de fiesta', region: 'Tarapacá', direccion: 'Calle Sotomayor 921, Iquique', telefono: '+56 9 5521 7093', referencia: 'Galería textil del centro' },
+    { nombre: 'Benjamín Rojas', especialidad: 'Uniformes y camisería', region: 'Antofagasta', direccion: 'Avenida Brasil 1430, Antofagasta', telefono: '+56 9 6614 2831', referencia: 'Segundo piso, local interior 7' },
+    { nombre: 'Florencia Arancibia', especialidad: 'Alta costura femenina', region: 'Coquimbo', direccion: 'Pasaje Los Naranjos 55, La Serena', telefono: '+56 9 7488 1192', referencia: 'A media cuadra de la Recova' },
+    { nombre: 'Vicente Olguín', especialidad: 'Sastrería ejecutiva', region: 'Valparaíso', direccion: 'Subida Ecuador 408, Valparaíso', telefono: '+56 9 3905 6418', referencia: 'Casa azul con portón de madera' },
+    { nombre: 'Josefa Cárdenas', especialidad: 'Novias y ceremonia', region: 'Metropolitana de Santiago', direccion: 'Avenida Italia 1775, Ñuñoa', telefono: '+56 9 8127 5504', referencia: 'Taller interior, patio central' },
+    { nombre: 'Matías Sanhueza', especialidad: 'Pantalonería a medida', region: "Libertador General Bernardo O'Higgins", direccion: 'Calle Estado 612, Rancagua', telefono: '+56 9 6234 2087', referencia: 'Entre plaza y correo central' },
+    { nombre: 'Antonia Pizarro', especialidad: 'Moda sostenible', region: 'Biobío', direccion: 'Avenida Chacabuco 980, Concepción', telefono: '+56 9 5742 9661', referencia: 'Edificio esquina, oficina 304' },
+    { nombre: 'Gabriel Jara', especialidad: 'Abrigos y paños', region: 'Los Lagos', direccion: 'Calle Urmeneta 320, Puerto Montt', telefono: '+56 9 6839 4725', referencia: 'Junto a la feria de diseño local' },
+    { nombre: 'Amalia Soto', especialidad: 'Arreglos premium', region: 'Magallanes y de la Antártica Chilena', direccion: 'Avenida Colón 1147, Punta Arenas', telefono: '+56 9 7976 1350', referencia: 'Local con vitrina mostaza frente a la plaza' }
+  ];
+
+  function renderRows() {
+    body.innerHTML = sastres.map((sastre, index) => `
+      <tr class="sastres-directorio__row" data-sastre-index="${index}" tabindex="0">
+        <td><strong>${sastre.nombre}</strong></td>
+        <td><span class="badge text-bg-light border">${sastre.especialidad}</span></td>
+        <td>${sastre.region}</td>
+        <td>${sastre.direccion}</td>
+        <td><a href="tel:${sastre.telefono.replace(/\s+/g, '')}" class="sastres-directorio__phone">${sastre.telefono}</a></td>
+        <td>${sastre.referencia}</td>
+      </tr>
+    `).join('');
+
+    count.textContent = `${sastres.length} registros`;
+  }
+
+  function setActiveRow(index) {
+    const sastre = sastres[index];
+    if (!sastre) return;
+
+    body.querySelectorAll('.sastres-directorio__row').forEach((row, rowIndex) => {
+      row.classList.toggle('table-active', rowIndex === index);
+      row.classList.toggle('is-active', rowIndex === index);
+    });
+
+    note.textContent = `Seleccionado: ${sastre.nombre} · ${sastre.region} · Referencia: ${sastre.referencia}.`;
+  }
+
+  function activateFromTarget(target) {
+    const row = target.closest('.sastres-directorio__row');
+    if (!row) return;
+
+    setActiveRow(Number(row.dataset.sastreIndex));
+  }
+
+  modal.addEventListener('show.bs.modal', () => {
+    if (!body.children.length) renderRows();
+    setActiveRow(0);
+  });
+
+  body.addEventListener('click', (e) => {
+    activateFromTarget(e.target);
+  });
+
+  body.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    activateFromTarget(e.target);
+  });
+})();
+
+
+// ============================================================
 // 12. HELPERS — Funciones utilitarias reutilizadas en todo el archivo
 // ============================================================
 
@@ -1138,17 +1388,30 @@ function checkVals(name) {
 
 const catalogo = {};
 // Objeto vacío para almacenar el catálogo de telas.
-// key: ID de la tela, value: precio
+// key: ID de la tela, value: datos base para ficha y precio
 
 // Selecciona todas las tarjetas de tela y extrae sus datos
-document.querySelectorAll('.fabric-card').forEach(card => {
+document.querySelectorAll('.fabric-card:not([data-carousel-clone])').forEach(card => {
   const id = card.dataset.id;
   // data-id de la tarjeta (ej: 'lino', 'seda', 'algodon', 'gabardina')
   const price = Number(card.dataset.price);
   // data-price de la tarjeta (número)
 
-  catalogo[id] = price;
-  // Guarda en el objeto: { lino: 4200, seda: 12800, ... }
+  if (!id || isNaN(price)) return;
+
+  catalogo[id] = {
+    id,
+    price,
+    type: card.dataset.type || '',
+    name: card.dataset.name || '',
+    image: card.dataset.image || '',
+    material: card.dataset.material || '',
+    width: card.dataset.width || '',
+    weight: card.dataset.weight || '',
+    finish: card.dataset.finish || '',
+    use: card.dataset.use || '',
+  };
+  // Guarda en el objeto la ficha mínima del catálogo.
 });
 
 /**
@@ -1159,12 +1422,13 @@ function mostrarCatalogo() {
   console.log("Catálogo disponible:");
 
   for (let producto in catalogo) {
-    console.log(producto + " - $" + catalogo[producto]);
+    console.log(producto + " - $" + catalogo[producto].price + " - " + catalogo[producto].type);
   }
 }
 
 // Ejecutar al cargar para verificar en consola
 mostrarCatalogo();
+window.catalogoTelas = catalogo;
 
 
 // ============================================================
@@ -1264,14 +1528,14 @@ function aplicarDescuento(total) {
   // IIFE: encapsula la lógica y evita variables globales innecesarias.
 
   // ---- Precios base de las telas (en miles de CLP) ----
-  const preciosBase = {
-    // Precios por metro en miles de CLP (para que la función de descuento
-    // reciba números en rango $50-$200 usando cantidades normales de metros).
-    'lino': 4.2,    // $4.200 / metro
-    'seda': 12.8,   // $12.800 / metro
-    'algodon': 2.8,    // $2.800 / metro
-    'gabardina': 3.5,  // $3.500 / metro
-  };
+  const preciosBase = {};
+  document.querySelectorAll('.fabric-card:not([data-carousel-clone])').forEach((card) => {
+    const id = card.dataset.id;
+    const precio = Number(card.dataset.price);
+
+    if (!id || isNaN(precio)) return;
+    preciosBase[id] = precio / 1000;
+  });
 
   // ---- Selección de elementos del DOM ----
   const inputMetros = document.getElementById('calc-metros');
@@ -1362,13 +1626,85 @@ function aplicarDescuento(total) {
   const modal = document.getElementById('modal-galeria');
   if (!modal) return;
   
+  const modalDialog = modal.querySelector('.modal-galeria__dialog');
   const modalImg = document.getElementById('modal-galeria-img');
   const modalTitulo = document.getElementById('modal-galeria-titulo');
   const modalTipo = document.getElementById('modal-galeria-tipo');
+  const modalLead = document.getElementById('modal-galeria-lead');
+  const modalPrecio = document.getElementById('modal-galeria-precio');
+  const modalMaterial = document.getElementById('modal-galeria-material');
+  const modalFicha = document.getElementById('modal-galeria-ficha');
+  const modalOfertas = document.getElementById('modal-galeria-ofertas');
+  const modalEnvios = document.getElementById('modal-galeria-envios');
+  const modalMetros = document.getElementById('modal-galeria-metros');
+  const modalTotal = document.getElementById('modal-galeria-total');
   const modalClose = document.getElementById('modal-galeria-close');
   
   // Seleccionar todas las tarjetas de tela
   const tarjetas = document.querySelectorAll('.fabric-card');
+  let tarjetaActiva = null;
+
+  const zonasEnvio = [
+    {
+      icono: '🇨🇱',
+      nombre: 'Chile (Nacional)',
+      detalle: '3-5 días hábiles',
+      precio: 5490,
+      breakdown: [
+        ['Base logística', '$3.990'],
+        ['IVA (19%)', '$758'],
+        ['Seguro de transporte', '$742'],
+      ]
+    },
+    {
+      icono: '🌎',
+      nombre: 'Latinoamérica',
+      detalle: '7-14 días hábiles',
+      precio: 8990,
+      breakdown: [
+        ['Base logística', '$6.290'],
+        ['IVA (19%)', '$1.195'],
+        ['Impuesto aduanero', '$1.505'],
+      ]
+    },
+    {
+      icono: '🌍',
+      nombre: 'Internacional',
+      detalle: '14-21 días hábiles',
+      precio: 16990,
+      breakdown: [
+        ['Base logística', '$10.990'],
+        ['IVA (19%)', '$2.088'],
+        ['Impuesto aduanero', '$3.912'],
+      ]
+    },
+    {
+      icono: '🏬',
+      nombre: 'Retiro en tienda',
+      detalle: 'Sucursal coordinada con tu sastre',
+      precio: 0,
+      breakdown: [
+        ['Preparación del pedido', '$0'],
+        ['Impuestos', '$0'],
+        ['Entrega', 'Gratis'],
+      ]
+    }
+  ];
+
+  function formatCLP(valor) {
+    return `$${Number(valor).toLocaleString('es-CL')}`;
+  }
+
+  function labelTipo(tipo) {
+    const labels = {
+      natural: 'Natural',
+      sintetico: 'Sintético',
+      mezcla: 'Mezcla',
+      premium: 'Premium'
+    };
+
+    return labels[tipo] || tipo || '';
+  }
 
   function hidratarPreview(card) {
     const imagen = card.dataset.image;
@@ -1390,19 +1726,126 @@ function aplicarDescuento(total) {
       fallback.replaceWith(preview);
     });
   }
+
+  function renderFicha(card) {
+    const rows = [
+      ['Material', card.dataset.material],
+      ['Ancho útil', card.dataset.width],
+      ['Gramaje', card.dataset.weight],
+      ['Acabado', card.dataset.finish],
+      ['Uso recomendado', card.dataset.use]
+    ].filter(([, valor]) => valor);
+
+    modalFicha.innerHTML = rows.map(([label, valor]) => `
+      <div class="modal-spec">
+        <span>${label}</span>
+        <strong>${valor}</strong>
+      </div>
+    `).join('');
+  }
+
+  function renderOfertas(card) {
+    const precio = Number(card.dataset.price);
+    if (!precio) return;
+
+    const umbral10 = Math.max(4, Math.ceil(50000 / precio));
+    const umbral20 = Math.max(umbral10 + 1, Math.ceil(100000 / precio));
+    const escalas = Array.from(new Set([3, umbral10, umbral20]));
+
+    modalOfertas.innerHTML = escalas.map((metros) => {
+      const subtotal = precio * metros;
+      const resultado = aplicarDescuento(subtotal / 1000);
+      const total = Math.round(resultado.precioFinal * 1000);
+      const descuento = resultado.descuentoPct > 0 ? `${resultado.descuentoPct}% OFF` : 'Tarifa base';
+
+      return `
+        <div class="modal-offer">
+          <div class="modal-offer__label">
+            <span>${descuento}</span>
+            <strong>${metros} metros</strong>
+          </div>
+          <div class="modal-offer__price">
+            <strong>${formatCLP(total)}</strong>
+            <span>Subtotal: ${formatCLP(subtotal)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderEnvios() {
+    modalEnvios.innerHTML = zonasEnvio.map((zona) => {
+      const filas = zona.breakdown.map(([label, valor]) => `
+        <div class="modal-shipping__row">
+          <span>${label}</span>
+          <strong>${valor}</strong>
+        </div>
+      `).join('');
+
+      return `
+        <div class="modal-shipping">
+          <div class="modal-shipping__head">
+            <div class="modal-shipping__title">
+              <strong>${zona.icono} ${zona.nombre}</strong>
+              <span>${zona.detalle}</span>
+            </div>
+            <strong class="modal-shipping__price">${zona.precio === 0 ? 'Gratis' : formatCLP(zona.precio)}</strong>
+          </div>
+          ${filas}
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderTotal(card) {
+    if (!card || !modalMetros) return;
+
+    const metros = Math.max(1, parseInt(modalMetros.value, 10) || 1);
+    const precio = Number(card.dataset.price);
+    const subtotal = precio * metros;
+    const resultado = aplicarDescuento(subtotal / 1000);
+    const total = Math.round(resultado.precioFinal * 1000);
+    const ahorro = Math.round(resultado.ahorro * 1000);
+
+    modalMetros.value = String(metros);
+    modalTotal.innerHTML = `
+      <div class="modal-galeria__total-line">
+        <span>Subtotal (${metros} m)</span>
+        <strong>${formatCLP(subtotal)}</strong>
+      </div>
+      <div class="modal-galeria__total-line">
+        <span>Descuento por volumen</span>
+        <strong>${resultado.descuentoPct > 0 ? `${resultado.descuentoPct}% · ${formatCLP(ahorro)}` : 'No aplica'}</strong>
+      </div>
+      <div class="modal-galeria__total-line modal-galeria__total-line--final">
+        <span>Total estimado</span>
+        <strong>${formatCLP(total)}</strong>
+      </div>
+    `;
+  }
   
   // Función para abrir el modal
   function abrirModal(card) {
     const imagen = card.dataset.image;
     const nombre = card.dataset.name;
     const tipo = card.dataset.type;
+    const stock = card.querySelector('.fc-stock')?.textContent?.trim();
     
     if (!imagen) return;
     
+    tarjetaActiva = card;
     modalImg.src = imagen;
     modalImg.alt = nombre + ' - Detalle de tela';
     modalTitulo.textContent = nombre;
-    modalTipo.textContent = tipo ? tipo.charAt(0).toUpperCase() + tipo.slice(1) : '';
+    modalTipo.textContent = [labelTipo(tipo), stock].filter(Boolean).join(' · ');
+    modalLead.textContent = card.dataset.lead || '';
+    modalPrecio.textContent = formatCLP(Number(card.dataset.price));
+    modalMaterial.textContent = card.dataset.material || 'Material no especificado';
+    modalMetros.value = '1';
+    renderFicha(card);
+    renderOfertas(card);
+    renderEnvios();
+    renderTotal(card);
     
     modal.classList.add('active');
     document.body.classList.add('body--lock');
@@ -1412,6 +1855,7 @@ function aplicarDescuento(total) {
   function cerrarModal() {
     modal.classList.remove('active');
     document.body.classList.remove('body--lock');
+    tarjetaActiva = null;
   }
   
   // Agregar click a cada tarjeta
@@ -1424,6 +1868,10 @@ function aplicarDescuento(total) {
       abrirModal(card);
     });
   });
+
+  modalMetros?.addEventListener('input', () => {
+    renderTotal(tarjetaActiva);
+  });
   
   // Cerrar con botón X
   modalClose?.addEventListener('click', cerrarModal);
@@ -1431,6 +1879,10 @@ function aplicarDescuento(total) {
   // Cerrar al hacer click fuera de la imagen
   modal.addEventListener('click', (e) => {
     if (e.target === modal) cerrarModal();
+  });
+
+  modalDialog?.addEventListener('click', (e) => {
+    e.stopPropagation();
   });
   
   // Cerrar con Escape

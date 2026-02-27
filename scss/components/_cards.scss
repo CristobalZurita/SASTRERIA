@@ -168,12 +168,17 @@
 
 /* Fabric catalog cards */
 .fabric-card {
+  position: relative;
+  height: 100%;
   overflow: hidden;
   border: 1px solid v.$c-linen;
   border-radius: v.$r-lg;
   background: v.$c-white;
   box-shadow: v.$shadow-xs;
   transition: transform v.$ease-base, box-shadow v.$ease-base, opacity v.$ease-base;
+  display: flex;
+  flex-direction: column;
+  @include m.focus-ring(v.$c-mustard);
 }
 
 .fabric-card:hover {
@@ -226,6 +231,9 @@
 
 .fc-body {
   padding: v.$sp-3 v.$sp-4 v.$sp-4;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .fc-name {
@@ -278,6 +286,22 @@
   background: #1e2a45;
 }
 
+.fc-dot--sage {
+  background: v.$c-sage;
+}
+
+.fc-dot--mustard {
+  background: v.$c-mustard;
+}
+
+.fc-dot--sand {
+  background: v.$c-sand-dark;
+}
+
+.fc-dot--algodon {
+  background: v.$c-indigo-soft;
+}
+
 /* Tailor cards */
 .sastre-card {
   height: 100%;
@@ -297,7 +321,7 @@
 }
 
 .sastre-card:hover .sc-img {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .sc-cover {
@@ -307,8 +331,8 @@
 }
 
 .sc-img {
-  width: 100%;
-  height: 100%;
+  width: fit-content;
+  height: fit-content;
   display: block;
   object-fit: cover;
   transition: transform v.$ease-slow;
