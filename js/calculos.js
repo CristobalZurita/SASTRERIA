@@ -8,7 +8,7 @@ function calcularTotalCarrito(items) {
     total += item.precio;
   });
 
-  return total;
+  const resultado = aplicarDescuento(total); return resultado;
 }
 
 
