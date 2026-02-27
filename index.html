@@ -230,6 +230,14 @@
 <!-- <section>: Elemento semántico HTML5. Agrupa contenido relacionado.
      id="inicio": Permite href="#inicio" en links de navegación. -->
 
+  <video class="hero__bg-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+    <source src="assets/video.mp4" type="video/mp4"/>
+  </video>
+  <!-- Video de fondo del hero. Va detrás de todo el contenido y se trata con blur/velo en SASS. -->
+
+  <div class="hero__bg-veil"></div>
+  <!-- Velo de contraste para que el video aporte sin competir con el texto ni las muestras. -->
+
   <div class="hero__split"></div>
   <!-- Div decorativo que crea la división visual del hero (diagonal/gradiente).
        Sin contenido. Manejado 100% con CSS. -->

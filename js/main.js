@@ -73,6 +73,20 @@ function guardarEnvioSeleccionado(envio) {
   }
 }
 
+(function initHeroVideo() {
+  const heroVideo = document.querySelector('.hero__bg-video');
+  if (!heroVideo) return;
+
+  const syncPlayback = () => {
+    heroVideo.defaultPlaybackRate = 0.72;
+    heroVideo.playbackRate = 0.72;
+  };
+
+  syncPlayback();
+  heroVideo.addEventListener('loadedmetadata', syncPlayback);
+  heroVideo.addEventListener('play', syncPlayback);
+})();
+
 
 // ============================================================
 // 1. NAVBAR + CARRITO
