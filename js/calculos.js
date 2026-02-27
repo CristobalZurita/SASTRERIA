@@ -5,24 +5,33 @@ function calcularTotalCarrito(items) {
   let total = 0;
 
   items.forEach(item => {
-    total += item.precio;
+    // Los precios en el carrito están en valores completos (ej: 4200 = $4.200)
+    // Convertir a miles para aplicarDescuento (ej: 4.2)
+    total += item.precio / 1000;
   });
 
-  const resultado = aplicarDescuento(total); // con esto se carga el descuento
-
-  return resultado;
+  // aplicarDescuento devuelve precios en miles, convertir de vuelta a completos
+  const resultado = aplicarDescuento(total); 
+  
+  return {
+    precioFinal: Math.round(resultado.precioFinal * 1000),
+    descuentoPct: resultado.descuentoPct,
+    ahorro: Math.round(resultado.ahorro * 1000)
+  };
 }
 
 
 // 3. Aplicando descuentos con funciones anidadas
 /***
- @param {number} total  // Es el dato que se asigna a la función
+ @param {number} total  // Es el dato que se asigna a la función (en miles de CLP: 4.2 = $4.200)
  @returns {{ precioFinal: number, descuentoPct: number, ahorro: number }} // Esta función devuelve un número.
  ***/
 
 
 function aplicarDescuento(total) {
-
+  // El total llega en miles de CLP (ej: 4.2 = $4.200)
+  // Umbrales: > 100 miles = > $100.000, > 50 miles = > $50.000
+  
   let descuentoPct = 0;  // Variable para guardar el porcentaje de descuento aplicado.
 
   if (total > 100) {
@@ -149,4 +158,9 @@ function realizarPedido(pedido) {
   console.log("Ahorro:", resultado.ahorro);
   console.log("✅ Pedido confirmado. ¡Gracias por tu compra!");
 }
+
+// Exponer funciones globalmente para uso desde main.js
+window.calcularTotalCarrito = calcularTotalCarrito;
+window.aplicarDescuento = aplicarDescuento;
+window.realizarPedido = realizarPedido;
 

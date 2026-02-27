@@ -1351,3 +1351,92 @@ function aplicarDescuento(total) {
   selectTela.addEventListener('change', calcularYMostrar);
   // Recalcula inmediatamente cuando el usuario cambia la tela seleccionada.
 })();
+
+
+// ============================================================
+// 16. GALERIA DE TELAS
+// Usa data-image para la vista previa de la card y para el modal.
+// ============================================================
+(function initGaleriaTelas() {
+  // Elementos del modal
+  const modal = document.getElementById('modal-galeria');
+  if (!modal) return;
+  
+  const modalImg = document.getElementById('modal-galeria-img');
+  const modalTitulo = document.getElementById('modal-galeria-titulo');
+  const modalTipo = document.getElementById('modal-galeria-tipo');
+  const modalClose = document.getElementById('modal-galeria-close');
+  
+  // Seleccionar todas las tarjetas de tela
+  const tarjetas = document.querySelectorAll('.fabric-card');
+
+  function hidratarPreview(card) {
+    const imagen = card.dataset.image;
+    const wrap = card.querySelector('.fc-wrap');
+    const fallback = wrap?.querySelector('.fc-img');
+
+    if (!imagen || !wrap || !fallback) return;
+    if (fallback.tagName.toLowerCase() === 'img') return;
+
+    const preview = new Image();
+    preview.src = imagen;
+    preview.alt = (card.dataset.name || 'Tela') + ' - Vista previa';
+    preview.className = 'fc-img';
+    preview.loading = 'lazy';
+    preview.decoding = 'async';
+
+    // Solo reemplazamos el SVG cuando la imagen carga bien.
+    preview.addEventListener('load', () => {
+      fallback.replaceWith(preview);
+    });
+  }
+  
+  // Función para abrir el modal
+  function abrirModal(card) {
+    const imagen = card.dataset.image;
+    const nombre = card.dataset.name;
+    const tipo = card.dataset.type;
+    
+    if (!imagen) return;
+    
+    modalImg.src = imagen;
+    modalImg.alt = nombre + ' - Detalle de tela';
+    modalTitulo.textContent = nombre;
+    modalTipo.textContent = tipo ? tipo.charAt(0).toUpperCase() + tipo.slice(1) : '';
+    
+    modal.classList.add('active');
+    document.body.classList.add('body--lock');
+  }
+  
+  // Función para cerrar el modal
+  function cerrarModal() {
+    modal.classList.remove('active');
+    document.body.classList.remove('body--lock');
+  }
+  
+  // Agregar click a cada tarjeta
+  tarjetas.forEach(card => {
+    hidratarPreview(card);
+
+    card.addEventListener('click', (e) => {
+      // No abrir si se hizo click en el botón "Añadir al carro"
+      if (e.target.closest('.fc-btn')) return;
+      abrirModal(card);
+    });
+  });
+  
+  // Cerrar con botón X
+  modalClose?.addEventListener('click', cerrarModal);
+  
+  // Cerrar al hacer click fuera de la imagen
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) cerrarModal();
+  });
+  
+  // Cerrar con Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      cerrarModal();
+    }
+  });
+})();

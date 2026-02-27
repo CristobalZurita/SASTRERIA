@@ -384,6 +384,107 @@
   transform: translateY(-2px);
 }
 
+// ================================================================
+// Modal Galería de Telas
+// ================================================================
+.modal-galeria {
+  position: fixed;
+  inset: 0;
+  z-index: v.$z-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(v.$c-umber, 0.85);
+  opacity: 0;
+  visibility: hidden;
+  transition: all v.$ease-base;
+  
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    
+    .modal-galeria__content {
+      transform: scale(1);
+    }
+  }
+}
+
+.modal-galeria__close {
+  position: absolute;
+  top: v.$sp-4;
+  right: v.$sp-4;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: v.$c-white;
+  color: v.$c-umber;
+  font-size: v.$fs-18;
+  cursor: pointer;
+  transition: all v.$ease-base;
+  @include m.flex-center;
+  
+  &:hover {
+    background: v.$c-terra;
+    color: #fff;
+    transform: rotate(90deg);
+  }
+}
+
+.modal-galeria__content {
+  max-width: 90vw;
+  max-height: 80vh;
+  border-radius: v.$r-lg;
+  overflow: hidden;
+  background: v.$c-white;
+  box-shadow: v.$shadow-xl;
+  transform: scale(0.9);
+  transition: transform v.$ease-spring;
+  
+  img {
+    display: block;
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+  }
+}
+
+.modal-galeria__info {
+  position: absolute;
+  bottom: v.$sp-8;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  background: v.$c-white;
+  padding: v.$sp-4 v.$sp-8;
+  border-radius: v.$r-xl;
+  box-shadow: v.$shadow-lg;
+  
+  h3 {
+    margin: 0 0 v.$sp-1;
+    color: v.$c-indigo;
+    font-family: v.$font-serif;
+    font-size: v.$fs-24;
+  }
+  
+  p {
+    margin: 0;
+    color: v.$c-umber-soft;
+    font-size: v.$fs-14;
+  }
+}
+
+// ================================================================
+// Fabric Card - Click para galería
+// ================================================================
+.fabric-card {
+  cursor: pointer;
+  
+  &:hover .fc-wrap {
+    box-shadow: 0 0 0 3px v.$c-terra;
+  }
+}
+
 @media (max-width: v.$bp-lg) {
   .how-grid,
   .cat-grid {
