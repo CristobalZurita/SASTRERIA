@@ -73,53 +73,63 @@
 
   // main.js
 
-// Array para almacenar los productos del carrito
-let carritoItems = [];
+  // Array para almacenar los productos del carrito
+  let carritoItems = [];
 
-// Función para agregar productos al carrito
-function agregarAlCarrito(boton) {
-  const tarjeta = boton.closest('.fabric-card');
+  // Función para agregar productos al carrito
+  function agregarAlCarrito(boton) {
+    const tarjeta = boton.closest('.fabric-card');
 
-  const id = tarjeta.dataset.id;
-  const nombre = tarjeta.dataset.name;
-  const precio = Number(tarjeta.dataset.price);
+    const id = tarjeta.dataset.id;
+    const nombre = tarjeta.dataset.name;
+    const precio = Number(tarjeta.dataset.price);
 
-  if (!id || !nombre || isNaN(precio)) return;
+    if (!id || !nombre || isNaN(precio)) return;
 
-  carritoItems.push({ id, nombre, precio });
-  actualizarCarrito();
-}
-
-// Función para actualizar el carrito en pantalla
-function actualizarCarrito() {
-  const contador = document.getElementById('cart-count');
-  if (contador) contador.textContent = carritoItems.length;
-
-  const container = document.getElementById('cart-items');
-  if (!container) return;
-
-  if (carritoItems.length === 0) {
-    container.innerHTML = '<p>Tu carrito está vacío.</p>';
-    return;
+    carritoItems.push({ id, nombre, precio });
+    actualizarCarrito();
   }
 
-  let html = '';
+  // Función para actualizar el carrito en pantalla
+  function actualizarCarrito() {
 
-  // 👉 EL TOTAL SE CALCULA USANDO LA FUNCIÓN DE calculos.js
-  const total = calcularTotalCarrito(carritoItems);
+    const contador = document.getElementById('cart-count');
+    if (contador) contador.textContent = carritoItems.length;
 
-  carritoItems.forEach(item => {
-    html += `
+    const container = document.getElementById('cart-items');
+    if (!container) return;
+
+    if (carritoItems.length === 0) {
+      container.innerHTML = '<p>Tu carrito está vacío.</p>';
+      return;
+    }
+
+    let html = '';
+
+    // 👉 Calculamos total y descuento
+    const resultado = calcularTotalCarrito(carritoItems);
+
+    // 👉 Mostramos productos
+    carritoItems.forEach(item => {
+      html += `
       <div class="cart-item">
         <span>${item.nombre}</span>
         <span>$${item.precio}</span>
       </div>
     `;
-  });
+    });
 
-  html += `<p class="cart-total"><strong>Total: $${total}</strong></p>`;
-  container.innerHTML = html;
-}
+    // 👉 Mostramos resumen final
+    html += `
+    <div class="cart-summary">
+      <p><strong>Total final: $${resultado.precioFinal}</strong></p>
+      <p>Descuento aplicado: ${resultado.descuentoPct}%</p>
+      <p>Ahorro: $${resultado.ahorro}</p>
+    </div>
+  `;
+
+    container.innerHTML = html;
+  }
 
   // ========================================
   // ---- Comportamiento del Navbar al hacer scroll ----
@@ -183,6 +193,7 @@ function actualizarCarrito() {
   // Solo inicializa si todos los elementos del carrito existen en el DOM.
   if (cartBtn && cartDrawer && cartOverlay && cartClose) {
 
+
     // Función para cerrar el carrito
     function cerrarCarrito() {
       cartDrawer.classList.remove("active");
@@ -202,6 +213,30 @@ function actualizarCarrito() {
     // Cerrar carrito al hacer clic en ✕ o en el overlay
     cartClose.addEventListener("click", cerrarCarrito);
     cartOverlay.addEventListener("click", cerrarCarrito);
+
+    // ---- Botón Finalizar Pedido ---- 
+    const cartCheckout = document.getElementById('cart-checkout');
+
+    cartCheckout?.addEventListener('click', () => {
+      if (carritoItems.length === 0) {
+        showToast('Tu carrito está vacío.', 'err');
+        return;
+      }
+
+      const resultado = calcularTotalCarrito(carritoItems);
+      realizarPedido(carritoItems);
+
+      showToast(
+        `Pedido confirmado 🎉
+        Total: $${resultado.precioFinal.toLocaleString('es-CL')} CLP
+        Descuento: ${resultado.descuentoPct}% · Ahorro: $${resultado.ahorro.toLocaleString('es-CL')}`,
+        'ok'
+      );
+
+      carritoItems = [];
+      actualizarCarrito();
+    });
+
   }
 
   // ---- Binding de botones 'Añadir al carro' ----
@@ -648,8 +683,8 @@ function createStepper(config) {
     // Sale si no existe.
 
     el.innerHTML = Object.entries(formData)
-    // Object.entries() convierte el objeto en array de pares [clave, valor].
-    // Ejemplo: [['Nombre', 'Ana Muñoz'], ['Región', 'RM'], ...]
+      // Object.entries() convierte el objeto en array de pares [clave, valor].
+      // Ejemplo: [['Nombre', 'Ana Muñoz'], ['Región', 'RM'], ...]
 
       .filter(([, v]) => v && String(v).trim())
       // Filtra pares donde el valor existe y no es solo espacios.
@@ -1136,7 +1171,7 @@ function checkVals(name) {
 
 // ============================================================
 // 13. CATÁLOGO DE TELAS
-// Función para construir un objeto con las telas disponibles.
+// 1. Función para construir un objeto con las telas disponibles.
 // ============================================================
 
 const catalogo = {};
@@ -1158,6 +1193,5 @@ function mostrarCatalogo() {
     console.log(producto + " - $" + catalogo[producto]);
   }
 }
-
 mostrarCatalogo();
 

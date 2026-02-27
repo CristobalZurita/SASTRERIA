@@ -284,8 +284,8 @@ strong {
   box-shadow: 0 8px 20px rgba(196, 92, 58, 0.42);
 }
 
-.nav__burger {
-  display: none;
+.nav .nav__burger {
+  display: none !important;
   width: 38px;
   height: 38px;
   appearance: none;
@@ -299,6 +299,11 @@ strong {
   align-items: center;
   justify-content: center;
   gap: 5px;
+}
+@media (max-width: 1024px) {
+  .nav .nav__burger {
+    display: flex !important;
+  }
 }
 
 .nav__burger span {
@@ -328,7 +333,7 @@ strong {
   z-index: 300;
   opacity: 0;
   pointer-events: none;
-  background: #FAF7F3;
+  background: #D9CEBC;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -336,10 +341,18 @@ strong {
   gap: 2rem;
   transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
+@media (min-width: 1025px) {
+  .nav__drawer {
+    display: none !important;
+  }
+}
 
 .nav__drawer.open {
   opacity: 1;
   pointer-events: auto;
+  background: rgba(250, 247, 243, 0.94);
+  height: fit-content;
+  padding: 1rem;
 }
 
 .nav__drawer a {
@@ -379,7 +392,7 @@ strong {
   .nav__actions {
     display: none;
   }
-  .nav__burger {
+  .nav .nav__burger {
     display: flex;
   }
   .nav__wrap {
@@ -501,7 +514,6 @@ strong {
   box-shadow: 0 8px 20px rgba(196, 92, 58, 0.42);
 }
 
-/* Scrollbar simple */
 .cart-body::-webkit-scrollbar {
   width: 8px;
 }
