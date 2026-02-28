@@ -23,3 +23,7 @@
 
 // 5. PAGES
 @use 'pages/home';
+
+// 6. LOCAL THEMES
+// Loaded last so body.theme--* can override compiled colors at runtime.
+@use 'abstracts/themes';

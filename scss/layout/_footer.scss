@@ -81,6 +81,120 @@
   color: rgba(255, 255, 255, 0.35);
 }
 
+.footer-theme-switcher {
+  margin-top: v.$sp-8;
+  padding-top: v.$sp-6;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  @include m.flex(column, center, center, v.$sp-3);
+}
+
+.footer-theme-title {
+  font-family: v.$font-mono;
+  font-size: v.$fs-10;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.footer-theme-row {
+  width: 100%;
+  @include m.flex(row, center, center, v.$sp-4);
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: v.$sp-1 2px v.$sp-2;
+  scrollbar-width: thin;
+}
+
+.theme-chip {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 176px;
+  padding: 10px 12px;
+  border: 1px solid rgba(v.$c-white, 0.18);
+  border-radius: 14px;
+  background: rgba(v.$c-white, 0.06);
+  color: rgba(255, 255, 255, 0.86);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color v.$ease-base, box-shadow v.$ease-base, transform v.$ease-base, background v.$ease-base;
+}
+
+.theme-chip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(v.$c-mustard-soft, 0.75);
+}
+
+.theme-chip:focus-visible {
+  outline: none;
+  border-color: v.$c-mustard;
+  box-shadow: 0 0 0 2px rgba(v.$c-mustard, 0.3);
+}
+
+.theme-chip.is-active {
+  border-color: rgba(v.$c-mustard-soft, 0.82);
+  background: rgba(v.$c-mustard, 0.14);
+  box-shadow: 0 0 0 1px rgba(v.$c-mustard, 0.35), 0 0 18px rgba(v.$c-mustard, 0.18);
+}
+
+.theme-chip-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.theme-chip-name-wrap {
+  min-width: 0;
+  @include m.flex(column, flex-start, center, v.$sp-1);
+}
+
+.theme-chip-name {
+  color: #fff;
+  font-size: v.$fs-13;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.theme-chip-colors {
+  @include m.flex(row, center, flex-start, 6px);
+}
+
+.theme-chip-colors span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.theme-chip[data-theme='original'] .theme-chip-logo {
+  background: linear-gradient(135deg, v.$c-indigo 0%, v.$c-terra 52%, v.$c-mustard 100%);
+}
+
+.theme-chip[data-theme='original'] .theme-chip-colors span:nth-child(1) { background: v.$c-indigo; }
+.theme-chip[data-theme='original'] .theme-chip-colors span:nth-child(2) { background: v.$c-terra; }
+.theme-chip[data-theme='original'] .theme-chip-colors span:nth-child(3) { background: v.$c-mustard; }
+.theme-chip[data-theme='original'] .theme-chip-colors span:nth-child(4) { background: v.$c-sand; }
+
+.theme-chip[data-theme='noche'] .theme-chip-logo {
+  background: linear-gradient(135deg, #13100E 0%, #B52828 55%, #C8902A 100%);
+}
+
+.theme-chip[data-theme='noche'] .theme-chip-colors span:nth-child(1) { background: #13100E; }
+.theme-chip[data-theme='noche'] .theme-chip-colors span:nth-child(2) { background: #F0E8DC; }
+.theme-chip[data-theme='noche'] .theme-chip-colors span:nth-child(3) { background: #B52828; }
+.theme-chip[data-theme='noche'] .theme-chip-colors span:nth-child(4) { background: #C8902A; }
+
+.theme-chip[data-theme='esmeralda'] .theme-chip-logo {
+  background: linear-gradient(135deg, #163324 0%, #2E5040 55%, #C8A84B 100%);
+}
+
+.theme-chip[data-theme='esmeralda'] .theme-chip-colors span:nth-child(1) { background: #163324; }
+.theme-chip[data-theme='esmeralda'] .theme-chip-colors span:nth-child(2) { background: #EEF3EE; }
+.theme-chip[data-theme='esmeralda'] .theme-chip-colors span:nth-child(3) { background: #2E5040; }
+.theme-chip[data-theme='esmeralda'] .theme-chip-colors span:nth-child(4) { background: #C8A84B; }
+
 .f-socials {
   @include m.flex(row, center, flex-end, v.$sp-3);
 }
@@ -112,5 +226,18 @@
 @media (max-width: v.$bp-sm) {
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+
+  .footer-bottom {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .footer-theme-row {
+    justify-content: flex-start;
+  }
+
+  .theme-chip {
+    min-width: 164px;
   }
 }

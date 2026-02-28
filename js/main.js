@@ -29,6 +29,8 @@
 // y hace el código más predecible y seguro. Siempre debe ir al inicio.
 
 const ENVIO_STORAGE_KEY = 'hilo-oficio-shipping';
+const THEME_STORAGE_KEY = 'hilo-oficio-theme';
+const THEMES_DISPONIBLES = ['original', 'noche', 'esmeralda'];
 
 function normalizarEnvio(envio) {
   if (!envio) return null;
@@ -85,6 +87,64 @@ function guardarEnvioSeleccionado(envio) {
   syncPlayback();
   heroVideo.addEventListener('loadedmetadata', syncPlayback);
   heroVideo.addEventListener('play', syncPlayback);
+})();
+
+(function initThemes() {
+  const themeButtons = Array.from(document.querySelectorAll('.theme-chip'));
+  if (!themeButtons.length) return;
+
+  const themeClasses = THEMES_DISPONIBLES
+    .filter((theme) => theme !== 'original')
+    .map((theme) => `theme--${theme}`);
+
+  function guardarTemaLocal(themeName) {
+    try {
+      if (!themeName || themeName === 'original') {
+        localStorage.removeItem(THEME_STORAGE_KEY);
+      } else {
+        localStorage.setItem(THEME_STORAGE_KEY, themeName);
+      }
+    } catch (err) {
+      console.error('No se pudo guardar el tema local:', err);
+    }
+  }
+
+  function leerTemaLocal() {
+    try {
+      return localStorage.getItem(THEME_STORAGE_KEY) || 'original';
+    } catch (err) {
+      console.error('No se pudo leer el tema local:', err);
+      return 'original';
+    }
+  }
+
+  function aplicarTemaLocal(themeName, persist = true) {
+    const theme = THEMES_DISPONIBLES.includes(themeName) ? themeName : 'original';
+
+    document.body.classList.remove(...themeClasses);
+
+    if (theme !== 'original') {
+      document.body.classList.add(`theme--${theme}`);
+    }
+
+    themeButtons.forEach((button) => {
+      const isActive = button.dataset.theme === theme;
+      button.classList.toggle('is-active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+
+    if (persist) {
+      guardarTemaLocal(theme);
+    }
+  }
+
+  themeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      aplicarTemaLocal(button.dataset.theme);
+    });
+  });
+
+  aplicarTemaLocal(leerTemaLocal(), false);
 })();
 
 
